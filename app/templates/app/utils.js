@@ -2,11 +2,13 @@
  * Utility functions.
  */
 
-/* global window, document, pym, _ */
+/* global window, document, pym */
 'use strict';
 
 // Dependencies
 import queryString from 'query-string';
+import _ from 'underscore';
+//import smoothscroll from 'smoothscroll-polyfill';
 
 // Util class
 class Util {
@@ -18,6 +20,9 @@ class Util {
 
     // Read in query params
     this.parseQuery();
+
+    // Smoothscroll polyyfill
+    //smoothscroll.polyfill();
 
     // Enable pym
     if (this.options.pym) {
@@ -90,6 +95,36 @@ class Util {
     }
     else {
       done('Geolocation not available');
+    }
+  }
+
+  // Scroll to id
+  goTo(id) {
+    const el = _.isElement(id) ? id :
+      id[0] && _.isElement(id[0]) ? id[0] :
+      document.getElementById(id);
+
+    if (!el) {
+      return;
+    }
+
+    if (this.isEmbedded() && this.pym) {
+      this.pym.scrollParentToChildEl(el);
+    }
+    else {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  // Google analytics page update
+  // https://developers.google.com/analytics/devguides/collection/analyticsjs/single-page-applications
+  gaPageUpdate(path) {
+    path = path ? path : document.location.pathname +
+      document.location.search + document.location.hash;
+
+    if (window.ga) {
+      window.ga('set', 'page', path);
+      window.ga('send', 'pageview');
     }
   }
 }

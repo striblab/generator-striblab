@@ -32,12 +32,3 @@ url: https://example.com/<%= package.name %>
     The link will automatically be added but can
     be overrided with "url: https://example.com"
   :endskip
-
-
-:skip
-  Other optional fields:
-
-  data source: We got this data from XYZ.
-  credits: Defaults to "Star Tribune Visuals"
-
-:endskip

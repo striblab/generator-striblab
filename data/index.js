@@ -102,7 +102,7 @@ const App = class extends Generator {
 
   // Install
   installing() {
-    this.yarnInstall();
+    this.npmInstall();
   }
 };
 

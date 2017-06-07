@@ -44,7 +44,7 @@
     <meta name="twitter:description" content="<%%= content.social.description.replace(/"/g, '&quot;') %>">
     <meta name="twitter:image" content="<%%= content.url %><%%= content.social.image %>">
 
-    <% if (config.googleAnalytics) { %>
+    <%% if (config.googleAnalytics) { %>
       <!-- Google Analytics -->
       <script type="text/javascript">
         var _gaq = _gaq || [];
@@ -61,34 +61,25 @@
   </head>
 
   <body>
-    <header class="project-header">
-      <h1><%%= content.title %><h1>
+    <!-- Screen reader announcements -->
+    <div aria-live="polite" id="announcer" class="sr-only"></div>
 
-      <%% if (content.introduction) { %>
-        <h2><%%= content.title %><h2>
-      <%% } %>
+    <!-- Skip to main content -->
+    <a href="#main-content" class="to-main-content sr-only">Skip to main content</a>
 
-      <div class="header-links">
-        <a class="header-link social-link fb-link" title="Share on Facebook" href="https://www.facebook.com/sharer/sharer.php?u=<%%= content.url %>" target="_blank"rel="noopener">
-          <i class="fa fa-facebook"></i>
-        </a>
-
-        <a class="header-link social-link twitter-link" title="Tweet" href="https://twitter.com/share?url=<%%= encodeURIComponent(content.url) %>&text=<%%= encodeURIComponent(content.tweet.text) %>&via=<%%= (content.tweet.account || 'datanews').replace('@', '') %>" target="_blank" rel="noopener">
-          <i class="fa fa-twitter"></i>
-        </a>
-      </div>
+    <!-- Header -->
+    <header class="project-header" role="banner">
+      @@include('./_header.ejs.html')
     </header>
 
-
     <!-- Main content here -->
-    <section class="content">
+    <main id="main-content" class="content" role="main">
 
+    </main>
 
-    </section>
-
-    <footer>
-
-
+    <!-- Footer -->
+    <footer role="contentinfo">
+      @@include('./_footer.ejs.html')
     </footer>
 
     <!-- Global/external scripts -->

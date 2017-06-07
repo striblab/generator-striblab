@@ -4,14 +4,11 @@
  * http://sass-lang.com/
  */
 
-html {
-  font-size: 16px;
+@import 'fonts';
+@import 'variables';
+@import 'reset';
+@import 'helpers';
+@import 'base';
 
-  @media screen and (min-width: 900px) {
-    font-size: 18px;
-  }
-
-  @media screen and (min-width: 1200px) {
-    font-size: 20px;
-  }
-}
+// The project style is the main one to edit
+@import 'project';

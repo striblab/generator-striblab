@@ -5,7 +5,7 @@
 ## Install
 
 1. Install [NodeJS](https://nodejs.org/en/).
-1. Install [Yeoman](http://yeoman.io/), Yarn, and Gulp: `npm install -g yo yarn gulp`
+1. Install [Yeoman](http://yeoman.io/), and Gulp: `npm install -g yo gulp`
 1. Install generator:
     1. Get this codebase: `git clone https://github.com/datanews/generator-striblab.git && generator-striblab`
     1. Install dependencies and link: `npm install && npm link`

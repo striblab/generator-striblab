@@ -21,6 +21,9 @@ const eslint = require('gulp-eslint');
 const stylelint = require('gulp-stylelint');
 const sass = require('gulp-sass');
 const server = require('gulp-server-livereload');
+const htmlhint = require('gulp-htmlhint');
+const autoprefixer = require('gulp-autoprefixer');
+const include = require('gulp-file-include');
 
 const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
@@ -36,7 +39,11 @@ const config = exists('config.custom.json') ? require('./config.custom.json') : 
 gulp.task('html', () => {
   const content = archieml.load(exists('content.custom.aml') ? readFile('content.custom.aml') : readFile('content.aml'));
 
-  return gulp.src('templates/**/*.ejs.html')
+  return gulp.src(['templates/**/*.ejs.html', '!templates/**/_*.ejs.html'])
+    .pipe(include({
+      prefix: '@@',
+      basepath: '@file'
+    }))
     .pipe(ejs({ config: config, content: content, package: pkg }))
     .pipe(rename(function(path) {
       path.basename = path.basename.replace('.ejs', '');
@@ -47,6 +54,19 @@ gulp.task('html', () => {
     }))
     .pipe(noopener.warn())
     .pipe(gulp.dest('build/'));
+});
+
+// Lint HTML (happens after HTML build process).  The "stylish" version
+// is more succinct but its less helpful to find issues.
+gulp.task('html:lint', ['html'], () => {
+  return gulp.src('build/*.html')
+    .pipe(htmlhint('.htmlhintrc'))
+    .pipe(htmlhint.reporter('htmlhint-stylish'));
+});
+gulp.task('html:lint:details', ['html'], () => {
+  return gulp.src('build/*.html')
+    .pipe(htmlhint('.htmlhintrc'))
+    .pipe(htmlhint.reporter());
 });
 
 // Lint JS
@@ -71,6 +91,10 @@ gulp.task('styles', ['styles:lint'], () => {
     .pipe(sass({
       outputStyle: 'compressed'
     }).on('error', sass.logError))
+    .pipe(autoprefixer({
+      // browsers: See browserlist file
+      cascade: false
+    }))
     .pipe(rename((path) => {
       path.basename = path.basename === 'index' ? 'styles.bundle' : path.basename;
     }))
@@ -114,13 +138,13 @@ gulp.task('server', () => {
 // Watch for building
 gulp.task('watch', () => {
   gulp.watch(['styles/**/*.scss'], ['styles']);
-  gulp.watch(['templates/**/*', 'config.*json', 'package.json', 'content.*aml'], ['html']);
+  gulp.watch(['templates/**/*', 'config.*json', 'package.json', 'content.*aml'], ['html:lint']);
   gulp.watch(['app/**/*', 'config.json'], ['js']);
   gulp.watch(['assets/**/*'], ['assets']);
 });
 
 // Full build
-gulp.task('build', ['assets', 'html', 'styles', 'js']);
+gulp.task('build', ['assets', 'html:lint', 'styles', 'js']);
 gulp.task('default', ['build']);
 
 // Server and watching (development)
