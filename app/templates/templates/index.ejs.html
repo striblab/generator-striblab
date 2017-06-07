@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title><%%= content.title %> | <%%= content.organization || 'Star Tribune' %></title>
+
+    <meta name="author" content="<%%= content.author || 'Star Tribune Visuals' %>">
+    <meta name="description" content="<%%= content.social.description.replace(/"/g, '&quot;') %>">
+    <meta name="robots" content="index, follow">
+
+    <!-- Shortcut and related icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/images/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/images/favicons/favicon-16x16.png">
+    <link rel="manifest" href="./assets/images/favicons/manifest.json">
+    <link rel="mask-icon" href="./assets/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="./assets/images/favicons/favicon.ico">
+    <meta name="msapplication-config" content="./assets/images/favicons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- For proper phone zoom -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Global/external styles -->
+    <%% if (config.styles && config.styles.globals) { config.styles.globals.forEach(function(s) { %>
+      <link href="<%%= s %>" rel="stylesheet" type="text/css">
+    <%% }); } %>
+
+    <!-- Project-specific styles-->
+    <link rel="stylesheet" href="./styles.bundle.css" type="text/css">
+
+    <!-- Social Media Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<%%= content.url %>">
+    <meta property="og:title" content="<%%= content.title.replace(/"/g, '&quot;') %>">
+    <meta property="og:description" content="<%%= content.social.description.replace(/"/g, '&quot;') %>">
+    <meta property="og:image" content="<%%= content.url %><%%= content.social.image %>">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="<%%= content.tweet.account || '@StarTribune' %>">
+    <meta name="twitter:title" content="<%%= content.title.replace(/"/g, '&quot;') %>">
+    <meta name="twitter:description" content="<%%= content.social.description.replace(/"/g, '&quot;') %>">
+    <meta name="twitter:image" content="<%%= content.url %><%%= content.social.image %>">
+
+    <% if (config.googleAnalytics) { %>
+      <!-- Google Analytics -->
+      <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', '<%%= config.googleAnalytics %>']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0];
+          s.parentNode.insertBefore(ga, s);
+        })();
+      </script>
+    <%% } %>
+  </head>
+
+  <body>
+    <header class="project-header">
+      <h1><%%= content.title %><h1>
+
+      <%% if (content.introduction) { %>
+        <h2><%%= content.title %><h2>
+      <%% } %>
+
+      <div class="header-links">
+        <a class="header-link social-link fb-link" title="Share on Facebook" href="https://www.facebook.com/sharer/sharer.php?u=<%%= content.url %>" target="_blank"rel="noopener">
+          <i class="fa fa-facebook"></i>
+        </a>
+
+        <a class="header-link social-link twitter-link" title="Tweet" href="https://twitter.com/share?url=<%%= encodeURIComponent(content.url) %>&text=<%%= encodeURIComponent(content.tweet.text) %>&via=<%%= (content.tweet.account || 'datanews').replace('@', '') %>" target="_blank" rel="noopener">
+          <i class="fa fa-twitter"></i>
+        </a>
+      </div>
+    </header>
+
+
+    <!-- Main content here -->
+    <section class="content">
+
+
+    </section>
+
+    <footer>
+
+
+    </footer>
+
+    <!-- Global/external scripts -->
+    <%% if (config.js && config.js.globals) { config.js.globals.forEach(function(s) { %>
+      <script src="<%%= s %>"></script>
+    <%% }); } %>
+
+    <!-- Scripts -->
+    <script src="./app.bundle.js"></script>
+  </body>
+</html>

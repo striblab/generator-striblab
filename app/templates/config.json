@@ -1,0 +1,17 @@
+{
+  "about this file": "This document defines configuration for this project that is not content (see content.aml).",
+  "styles": {
+    "globals": [
+      "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    ]
+  },
+  "js": {
+    "globals": [
+      "https://cdnjs.cloudflare.com/ajax/libs/pym/1.1.2/pym.v1.min.js",
+      "https://cdn.polyfill.io/v2/polyfill.min.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"
+    ]
+  },
+  "urlWhitelist": "/(localhost|w3[.]org|www[.]highcharts[.]com)/",
+  "TODO googleAnalytics": "UA-XXXXXX-XX"
+}

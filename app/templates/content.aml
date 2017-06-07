@@ -1,0 +1,43 @@
+:skip
+  This document holds content that will be used in this project.  It is
+  ArchieML format.
+  http://archieml.org/
+:endskip
+
+organization: Star Tribune
+
+title: <%= answers.title %>
+
+author: <%= answers.author %>
+
+introduction: <%= answers.description %>
+:end
+
+url: https://example.com/<%= package.name %>
+
+
+{social}
+  description: <%= answers.description %>
+  :end
+
+  image: assets/images/strib/strib-logo-name-social-card.png
+
+
+{tweet}
+  text: Check out this new project by Star Tribune:
+
+  account: @startribune
+
+  :skip
+    The link will automatically be added but can
+    be overrided with "url: https://example.com"
+  :endskip
+
+
+:skip
+  Other optional fields:
+
+  data source: We got this data from XYZ.
+  credits: Defaults to "Star Tribune Visuals"
+
+:endskip
