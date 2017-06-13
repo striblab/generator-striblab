@@ -1,4 +1,5 @@
 # Common
+*yarn.lock
 .tmp
 .yo-rc.json
 node_modules/
