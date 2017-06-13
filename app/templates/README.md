@@ -24,9 +24,7 @@ The following should be performed for initial and each code update:
 
 ### Local
 
-To run a local web server that will auto-reload, watch for file changes and re-build: `gulp develop`
-
-*There's an odd issue where the very first time this command is run, it does not work completely.  Simple exit out and run it again, and all should be fine.*
+To run a local web server that will auto-reload with [Browsersync](https://browsersync.io/), watch for file changes and re-build: `gulp develop`
 
 ### Directories and files
 

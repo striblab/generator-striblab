@@ -20,11 +20,12 @@ const noopener = require('gulp-noopener');
 const eslint = require('gulp-eslint');
 const stylelint = require('gulp-stylelint');
 const sass = require('gulp-sass');
-const server = require('gulp-server-livereload');
 const htmlhint = require('gulp-htmlhint');
 const autoprefixer = require('gulp-autoprefixer');
 const include = require('gulp-file-include');
 const jest = require('gulp-jest').default;
+
+const browserSync = require('browser-sync').create();
 
 const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
@@ -131,14 +132,12 @@ gulp.task('js:test', () => {
 });
 
 // Web server for development
-gulp.task('server', () => {
-  return gulp.src('./build/')
-    .pipe(server({
-      // Note that directoryListing conflicts with opening index.html files
-      livereload: true,
-      open: true,
-      port: 8088
-    }));
+gulp.task('server', ['build'], () => {
+  return browserSync.init({
+    port: 3001,
+    server: './build/',
+    files: './build/**/*'
+  });
 });
 
 // Watch for building
@@ -154,7 +153,7 @@ gulp.task('build', ['assets', 'html:lint', 'styles', 'js']);
 gulp.task('default', ['build']);
 
 // Server and watching (development)
-gulp.task('develop', ['build', 'server', 'watch']);
+gulp.task('develop', ['server', 'watch']);
 
 // Read text file into memory
 function readFile(file) {
