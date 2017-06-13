@@ -102,7 +102,7 @@ class Util {
   goTo(id) {
     const el = _.isElement(id) ? id :
       id[0] && _.isElement(id[0]) ? id[0] :
-      document.getElementById(id);
+        document.getElementById(id);
 
     if (!el) {
       return;

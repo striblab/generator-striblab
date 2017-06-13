@@ -95,11 +95,15 @@ Depending on what you need to include there are a few different ways to include.
 
 ### Testing
 
-(todo)
+Testing is run via [Jest](https://facebook.github.io/jest/).  Fast, unit and higher level testing will happen on build.  You can run these test manually with `gulp js:test` or `npm test`.
+
+*TODO*: There is a start of using headless Chrome for some functional testing in `tests/functional/basics.test.TODO.js`.  Unfortunately these take about 30 seconds to run so they are not really appropriate for on-build testing, as well as they need the Chrome (Canary) binary installed independently.
+
+*TODO*: Some basic automated, cross-browser testing would be very beneficial.  Unfortunately things like Browserstack are very expensive, and managing our own servers to do this would be very expensive time-wise as well.
 
 #### Embed testing
 
-A manual test page is provided for looking at the piece embeded.
+A manual test page is provided for looking at the piece embeded in another page.
 
 1. Assumes you are running the development server with `gulp develop`
 1. Run a local server for the test directory, such as `cd tests && python -m SimpleHTTPServer` or `http-server ./tests/`

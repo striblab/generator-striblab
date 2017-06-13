@@ -20,6 +20,9 @@ module.exports = function(context, dependencies) {
       email: context.authorEmail
     },
     main: context.main || 'app/index.js',
+    scripts: {
+      test: 'jest'
+    },
     keywords: context.keywords || [],
     engines: {
       node: '>=6.9'

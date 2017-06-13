@@ -24,6 +24,7 @@ const server = require('gulp-server-livereload');
 const htmlhint = require('gulp-htmlhint');
 const autoprefixer = require('gulp-autoprefixer');
 const include = require('gulp-file-include');
+const jest = require('gulp-jest').default;
 
 const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
@@ -102,7 +103,7 @@ gulp.task('styles', ['styles:lint'], () => {
 });
 
 // Build JS
-gulp.task('js', ['js:lint'], () => {
+gulp.task('js', ['js:lint', 'js:test'], () => {
   // Use the webpack.config.js to manage locations and options.
   return gulp.src('app/index.js')
     .pipe(webpackStream(webpackConfig, webpack))
@@ -122,6 +123,11 @@ gulp.task('assets', () => {
 // Clean build
 gulp.task('clean', () => {
   return del([ 'build/**/*' ]);
+});
+
+// Testing
+gulp.task('js:test', () => {
+  return gulp.src('tests/**/*.test.js').pipe(jest({ }));
 });
 
 // Web server for development
