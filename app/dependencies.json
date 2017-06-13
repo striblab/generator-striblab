@@ -22,6 +22,7 @@
     "gulp-noopener": "^1.0.5",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^3.1.0",
+    "gulp-sourcemaps": "^2.6.0",
     "gulp-stylelint": "^3.9.0",
     "htmlhint-stylish": "^1.0.3",
     "jest-cli": "^20.0.4",

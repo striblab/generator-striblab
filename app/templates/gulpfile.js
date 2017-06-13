@@ -24,6 +24,7 @@ const htmlhint = require('gulp-htmlhint');
 const autoprefixer = require('gulp-autoprefixer');
 const include = require('gulp-file-include');
 const jest = require('gulp-jest').default;
+const sourcemaps = require('gulp-sourcemaps');
 
 const browserSync = require('browser-sync').create();
 
@@ -90,6 +91,7 @@ gulp.task('styles:lint', () => {
 // Compile styles
 gulp.task('styles', ['styles:lint'], () => {
   return gulp.src('styles/index.scss')
+    .pipe(sourcemaps.init())
     .pipe(sass({
       outputStyle: 'compressed'
     }).on('error', sass.logError))
@@ -100,6 +102,7 @@ gulp.task('styles', ['styles:lint'], () => {
     .pipe(rename((path) => {
       path.basename = path.basename === 'index' ? 'styles.bundle' : path.basename;
     }))
+    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('build/'));
 });
 
