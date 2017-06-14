@@ -7,11 +7,13 @@
 const path = require('path');
 const _ = require('lodash');
 const ejs = require('ejs');
+const chalk = require('chalk');
 const Generator = require('yeoman-generator');
 const inputs = require('./input.js');
 const dependencies = require('./dependencies.json');
 const common = {
   inputs: require('../common/lib/input.js'),
+  output: require('../common/lib/output.js'),
   package: require('../common/lib/package.js')
 };
 
@@ -32,6 +34,8 @@ const App = class extends Generator {
 
   // Input prompts
   prompting() {
+    this.log(common.output.welcome());
+
     return this.prompt(inputs(this)).then((answers) => {
       this.answers = answers;
     });
@@ -112,6 +116,13 @@ const App = class extends Generator {
   // Install
   installing() {
     this.npmInstall();
+  }
+
+  // All done
+  end() {
+    this.log(common.output.done());
+    this.log(chalk.cyan('Run ') + chalk.bgYellow.black(' gulp develop ') + chalk.cyan(' to start developing.'));
+    this.log();
   }
 };
 

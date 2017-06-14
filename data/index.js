@@ -11,6 +11,7 @@ const Generator = require('yeoman-generator');
 const dependencies = require('./dependencies.json');
 const common = {
   inputs: require('../common/lib/input.js'),
+  output: require('../common/lib/output.js'),
   package: require('../common/lib/package.js')
 };
 
@@ -27,6 +28,10 @@ const App = class extends Generator {
 
   // Input prompts
   prompting() {
+    if (!this.options.composedWith) {
+      this.log(common.output.welcome());
+    }
+
     if (!this.options.answers) {
       return this.prompt(common.inputs(this)).then((answers) => {
         this.answers = answers;
@@ -103,6 +108,13 @@ const App = class extends Generator {
   // Install
   installing() {
     this.npmInstall();
+  }
+
+  // All done
+  done() {
+    if (!this.options.composedWith) {
+      this.log(common.output.done());
+    }
   }
 };
 
