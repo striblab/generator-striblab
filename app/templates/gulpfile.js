@@ -11,7 +11,6 @@
 // Dependencies
 const fs = require('fs');
 const path = require('path');
-
 const gulp = require('gulp');
 const ejs = require('gulp-ejs');
 const rename = require('gulp-rename');
@@ -25,35 +24,34 @@ const autoprefixer = require('gulp-autoprefixer');
 const include = require('gulp-file-include');
 const jest = require('gulp-jest').default;
 const sourcemaps = require('gulp-sourcemaps');
-
+const gutil = require('gulp-util');
 const browserSync = require('browser-sync').create();
-
 const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
 const webpackConfig = require('./webpack.config.js');
-
-const archieml = require('archieml');
 const del = require('del');
+const gulpContent = require('./lib/gulp-content.js');
 const pkg = require('./package.json');
 const config = exists('config.custom.json') ? require('./config.custom.json') : require('./config.json');
 
+require('dotenv').load({ silent: true });
 
 // Process base html templates (not templates used in front-end JS)
 gulp.task('html', () => {
-  const content = archieml.load(exists('content.custom.aml') ? readFile('content.custom.aml') : readFile('content.aml'));
+  const content = exists('content.json') ? require('./content.json') : {};
 
   return gulp.src(['templates/**/*.ejs.html', '!templates/**/_*.ejs.html'])
     .pipe(include({
       prefix: '@@',
       basepath: '@file'
     }))
-    .pipe(ejs({ config: config, content: content, package: pkg }))
+    .pipe(ejs({ config: config, content: content, package: pkg }).on('error', gutil.log))
     .pipe(rename(function(path) {
       path.basename = path.basename.replace('.ejs', '');
     }))
     .pipe(insecurity.html({
       passive: true,
-      whitelist: new RegExp(config.urlWhitelist)
+      whitelist: new RegExp(config.linting.urlWhitelist)
     }))
     .pipe(noopener.warn())
     .pipe(gulp.dest('build/'));
@@ -71,6 +69,13 @@ gulp.task('html:lint:details', ['html'], () => {
     .pipe(htmlhint('.htmlhintrc'))
     .pipe(htmlhint.reporter());
 });
+
+// Content tasks
+gulp.task('content', gulpContent.getContent(gulp, config));
+gulp.task('content:create', gulpContent.createSheet(gulp, config));
+gulp.task('content:open', gulpContent.openContent(gulp, config));
+gulp.task('content:owner', gulpContent.share(gulp, config, 'owner'));
+gulp.task('content:share', gulpContent.share(gulp, config, 'writer'));
 
 // Lint JS
 gulp.task('js:lint', () => {
@@ -146,7 +151,7 @@ gulp.task('server', ['build'], () => {
 // Watch for building
 gulp.task('watch', () => {
   gulp.watch(['styles/**/*.scss'], ['styles']);
-  gulp.watch(['templates/**/*', 'config.*json', 'package.json', 'content.*aml'], ['html:lint']);
+  gulp.watch(['templates/**/*', 'config.*json', 'package.json', 'content.json'], ['html:lint']);
   gulp.watch(['app/**/*', 'config.json'], ['js']);
   gulp.watch(['assets/**/*'], ['assets']);
 });
@@ -157,11 +162,6 @@ gulp.task('default', ['build']);
 
 // Server and watching (development)
 gulp.task('develop', ['server', 'watch']);
-
-// Read text file into memory
-function readFile(file) {
-  return fs.readFileSync(path.join(__dirname, file), 'utf-8');
-}
 
 // Check file/fir exists
 function exists(file) {

@@ -7,7 +7,7 @@
     <title><%%= content.title %> | <%%= content.organization || 'Star Tribune' %></title>
 
     <meta name="author" content="<%%= content.author || 'Star Tribune Visuals' %>">
-    <meta name="description" content="<%%= content.social.description.replace(/"/g, '&quot;') %>">
+    <meta name="description" content="<%%= content.socialDescription ? content.socialDescription.replace(/"/g, '&quot;') : '' %>">
     <meta name="robots" content="index, follow">
 
     <!-- Shortcut and related icons -->
@@ -33,16 +33,16 @@
 
     <!-- Social Media Tags -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="<%%= content.url %>">
-    <meta property="og:title" content="<%%= content.title.replace(/"/g, '&quot;') %>">
-    <meta property="og:description" content="<%%= content.social.description.replace(/"/g, '&quot;') %>">
-    <meta property="og:image" content="<%%= content.url %><%%= content.social.image %>">
+    <meta property="og:url" content="<%%= config.url %>">
+    <meta property="og:title" content="<%%= content.title ? content.title.replace(/"/g, '&quot;') : '' %>">
+    <meta property="og:description" content="<%%= content.socialDescription ? content.socialDescription.replace(/"/g, '&quot;') : '' %>">
+    <meta property="og:image" content="<%%= config.url %><%%= config.social.image %>">
 
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:creator" content="<%%= content.tweet.account || '@StarTribune' %>">
-    <meta name="twitter:title" content="<%%= content.title.replace(/"/g, '&quot;') %>">
-    <meta name="twitter:description" content="<%%= content.social.description.replace(/"/g, '&quot;') %>">
-    <meta name="twitter:image" content="<%%= content.url %><%%= content.social.image %>">
+    <meta name="twitter:creator" content="<%%= content.twitterAccount || '@StarTribune' %>">
+    <meta name="twitter:title" content="<%%= content.title ? content.title.replace(/"/g, '&quot;') : '' %>">
+    <meta name="twitter:description" content="<%%= content.socialDescription ? content.socialDescription.replace(/"/g, '&quot;') : '' %>">
+    <meta name="twitter:image" content="<%%= config.url %><%%= config.social.image %>">
 
     <%% if (config.googleAnalytics) { %>
       <!-- Google Analytics -->

@@ -1,5 +1,5 @@
 {
-  "about this file": "This document defines configuration for this project that is not content (see content.aml).",
+  "about this file": "This document defines configuration for this project that is not content or copy.",
   "styles": {
     "globals": [
       "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -12,6 +12,15 @@
       "https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"
     ]
   },
-  "urlWhitelist": "/(localhost|w3[.]org|www[.]highcharts[.]com)/",
+  "url": "https://example.com/<%= package.name %>",
+  "social": {
+    "image": "assets/images/strib/strib-logo-name-social-card.png"
+  },
+  "content": {
+
+  },
+  "linting": {
+    "urlWhitelist": "/(localhost|w3[.]org|www[.]highcharts[.]com)/"
+  },
   "TODO googleAnalytics": "UA-XXXXXX-XX"
 }
