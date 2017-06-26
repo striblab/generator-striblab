@@ -21,7 +21,7 @@ module.exports = function(generator) {
   {
     type: 'input',
     name: 'title',
-    message: 'Title',
+    message: 'Project title',
     required: true,
     validate: function(str) {
       return str.length > 0;

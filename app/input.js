@@ -6,13 +6,81 @@
 // Dependencies
 const common = require('../common/lib/input.js');
 
+// Tests
+const emailTest = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i;
+
 // Input config
 module.exports = function(generator) {
   var c = common(generator);
+
+  // Use google for content
   c.push({
     type: 'confirm',
-    name: 'data-template',
+    name: 'googleSpreadsheet',
+    message : 'Would you like to use Google Spreadsheets to maintain the content/copy\n   of this project? Note that this will require some extra setup.'
+  });
+
+  c.push({
+    type: 'input',
+    name: 'googleSpreadsheetEmail',
+    message : 'Enter your Google API client email.\n   This is something like: XXXXXX@XXXXXX.iam.gserviceaccount.com',
+    required: true,
+    validate: function(str) {
+      return str.length > 0 && emailTest.test(str);
+    },
+    default: () => {
+      return process.env.GOOGLE_AUTH_CLIENT_EMAIL || undefined;
+    },
+    when: (answers) => {
+      return answers.googleSpreadsheet === true;
+    }
+  });
+
+  c.push({
+    type: 'input',
+    name: 'googleSpreadsheetKey',
+    message : 'Enter your Google API private key.\n   This is something like: --BEGIN PRIVATE--XX\\nXX\\nXX--END PRIVATE KEY--',
+    required: true,
+    validate: function(str) {
+      return str.length > 0;
+    },
+    default: () => {
+      return process.env.GOOGLE_AUTH_PRIVATE_KEY || undefined;
+    },
+    when: (answers) => {
+      return answers.googleSpreadsheet === true;
+    }
+  });
+
+  c.push({
+    type: 'input',
+    name: 'googleSpreadsheetOwner',
+    message : 'Enter your personal Google Email to set the owner of the spreadsheet.\n   This may be something like name@gmail.com and will be different than the email above.',
+    required: true,
+    validate: function(str) {
+      return str.length > 0 && emailTest.test(str);
+    },
+    default: () => {
+      return process.env.GOOGLE_DEFAULT_SPREADSHEET_OWNER || generator.user.git.email() || undefined;
+    },
+    when: (answers) => {
+      return answers.googleSpreadsheet === true;
+    }
+  });
+
+
+  // Include data template
+  c.push({
+    type: 'confirm',
+    name: 'dataTemplate',
     message : 'Would you like to include the data analysis template?'
+  });
+
+  // Add newline at the end of each, as its a bit easier on
+  // the eyes.
+  c = c.map((i) => {
+    i.message = i.message + '\n';
+    return i;
   });
 
   return c;

@@ -43,7 +43,7 @@ const App = class extends Generator {
 
   // Determine parts (sub generators)
   default() {
-    if (this.answers['data-template']) {
+    if (this.answers.dataTemplate) {
       this.composeWith(require.resolve('../data'), {
         answers: this.answers,
         skipInstall: true,
@@ -55,7 +55,7 @@ const App = class extends Generator {
   // Write files
   writing() {
     // Package.json
-    if (this.answers['data-template']) {
+    if (this.answers.dataTemplate) {
       const d = require(path.join(dataTemplate, '../', 'dependencies.json'));
       dependencies.devDependencies = _.extend({}, d.devDependencies, d.dependencies, dependencies.devDependencies);
     }
@@ -100,14 +100,14 @@ const App = class extends Generator {
     this.fs.write(this.destinationPath('.gitignore'),
       ejs.render([
         this.fs.read(this.templatePath('.gitignore')),
-        (this.answers['data-template']) ? this.fs.read(path.join(dataTemplate, '.gitignore')) : '',
+        (this.answers.dataTemplate) ? this.fs.read(path.join(dataTemplate, '.gitignore')) : '',
         this.fs.read(path.join(common.parts, '.gitignore'))
       ].join('\n\n'), tContext));
 
     this.fs.write(this.destinationPath('README.md'),
       ejs.render([
         this.fs.read(path.join(common.parts, 'README-header.md')),
-        (this.answers['data-template']) ? this.fs.read(path.join(dataTemplate, 'README.md')) : '',
+        (this.answers.dataTemplate) ? this.fs.read(path.join(dataTemplate, 'README.md')) : '',
         this.fs.read(this.templatePath('README.md')),
         this.fs.read(path.join(common.parts, 'README-footer.md'))
       ].join('\n\n'), tContext));

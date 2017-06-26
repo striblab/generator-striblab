@@ -26,17 +26,34 @@ The following should be performed for initial and each code update:
 
 To run a local web server that will auto-reload with [Browsersync](https://browsersync.io/), watch for file changes and re-build: `gulp develop`
 
+### Directories and files
+
+* `config.json`: Non-content config for application.
+    * Use this to add non-local JS or CSS assets, such as from a CDN.
+    * This can be overridden with a `config.custom.json` if there is a need to add configuration that should not be put into revision history.
+* `content.json`: See *Content and copy*.  This file is used to hold content values.  If the project is hooked up to a Google Spreadsheet, you should not manually edit this file.
+* `templates/`: Holds HTML-like templates.  Any files in here will get run through [EJS](http://www.embeddedjs.com/) templating and passed values from `config.json`, `content.aml`, and `package.json`.
+    * `templates/index.ejs.html`: The default page for the application.
+* `styles/`: Styles in [SASS](http://sass-lang.com/) syntax.
+    * `styles/index.scss`: Main point of entry for styles.
+    * `styles/_*.scss`: Any includes should be prefixed with an underscore.
+* `app/`: Where JS logic goes.  This supports ES2015 JS syntax with [Babel](https://babeljs.io/) and gets compiled with [Webpack](https://webpack.js.org/).
+    * `app/index.js`: Main entry point of application.
+* `assets/`: Various media files.  This gets copied directly to build.
+* `sources/`: Directory is for all non-data source material, such as wireframes or original images.  Note that if there are materials that should not be made public, consider using Dropbox and make a note in this file about how to access.
+* `lib/`: Modules used in building or other non-data tasks.
+* `tests/`: Tests for app; see Testing section below.
+* The rest of the files are for building or meta-information about the project.
+
 ### Content and copy
 
-By default, content items can be managed in `content.json`.  The values put in here will be available in the templates in the `templates/` directory.  This can be a helpful way to separate out content from code.
+By default, content items can be managed in `content.json`.  The values put in here will be available in the templates in the `templates/` directory as the `content` object.  This can be a helpful way to separate out content from code.
 
 #### Google Spreadsheets
 
 If `config.json` has a `content.spreadsheetId` value specified, `content.json` can be updated with information from a Google Spreadsheet.
 
-Since getting this content may not be very speedy, this is not done during `gulp develop`, so it requires a manual call:
-
-  gulp content
+Since getting this content may not be very speedy, this is not done during `gulp develop`, so it requires a manual call: `gulp content`
 
 ##### Setting up
 
@@ -59,30 +76,11 @@ You can then add collaborators to the spreadsheet with the following command.  N
 
 ##### Spreadsheet format
 
-If you are using Google Spreadsheets for content, the headers should be `Key`, `Value`, `Type`, and `Notes`.  It is important that these are there in that exact way.  It is suggest to freeze the header row in case someone changes the order of the spreadsheet.
-
-### Directories and files
-
-* `config.json`: Non-content config for application.
-    * Use this to add non-local JS or CSS assets, such as from a CDN.
-    * This can be overridden with a `config.custom.json` if there is a need to add configuration that should not be put into revision history.
-* `content.json`: See *Content and copy*.  This file is used to hold content values.  If the project is hooked up to a Google Spreadsheet, you should not manually edit this file.
-* `templates/`: Holds HTML-like templates.  Any files in here will get run through [EJS](http://www.embeddedjs.com/) templating and passed values from `config.json`, `content.aml`, and `package.json`.
-    * `templates/index.ejs.html`: The default page for the application.
-* `styles/`: Styles in [SASS](http://sass-lang.com/) syntax.
-    * `styles/index.scss`: Main point of entry for styles.
-    * `styles/_*.scss`: Any includes should be prefixed with an underscore.
-* `app/`: Where JS logic goes.  This supports ES2015 JS syntax with [Babel](https://babeljs.io/) and gets compiled with [Webpack](https://webpack.js.org/).
-    * `app/index.js`: Main entry point of application.
-* `assets/`: Various media files.  This gets copied directly to build.
-* `sources/`: Directory is for all non-data source material, such as wireframes or original images.  Note that if there are materials that should not be made public, consider using Dropbox and make a note in this file about how to access.
-* `lib/`: Modules used in building or other non-data tasks.
-* `tests/`: Tests for app; see Testing section below.
-* The rest of the files are for building or meta-information about the project.
+If you are using Google Spreadsheets for content, the headers should be `Key`, `Value`, `Type`, and `Notes`.  It is important that these are there in that exact way.  It is suggested to freeze the header row in case someone changes the order of the spreadsheet.
 
 ### Dependencies and modules
 
-Depending on what you need to include there are a few different ways to include.
+Depending on what libraries or dependencies you need to include there are a few different ways to get those into the project.
 
 * **JS**
     * Include it with `npm`.
