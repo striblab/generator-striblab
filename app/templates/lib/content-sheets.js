@@ -81,7 +81,7 @@ class ContentSheets {
       const authClient = new authFactory.JWT(
         process.env.GOOGLE_AUTH_CLIENT_EMAIL,
         null,
-        process.env.GOOGLE_AUTH_PRIVATE_KEY,
+        process.env.GOOGLE_AUTH_PRIVATE_KEY.replace(/\\n/g, '\n'),
         [
           'https://www.googleapis.com/auth/spreadsheets',
           'https://www.googleapis.com/auth/drive',

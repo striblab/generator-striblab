@@ -114,14 +114,52 @@ const App = class extends Generator {
   }
 
   // Install
-  installing() {
-    this.npmInstall();
+  install() {
+    this.npmInstall(undefined, undefined, () => {
+      // Do Google Spreadsheet steps here
+      if (this.answers.googleSpreadsheet) {
+        this._createSpreadsheet();
+      }
+    });
   }
 
   // All done
   end() {
     this.log(common.output.done());
     this.log(chalk.cyan('Run ') + chalk.bgYellow.black(' gulp develop ') + chalk.cyan(' to start developing.'));
+    this.log();
+  }
+
+  // Create google spreadsheet step
+  _createSpreadsheet() {
+    this.log();
+    this.log(chalk.cyan('Setting up the Google Spreadsheet.'));
+    this.log();
+
+    // TODO: Find a way to make these commands not show output.
+    let create = this.spawnCommandSync('gulp', ['content:create', '--quiet', '--email', this.answers.googleSpreadsheetOwner]);
+    if (create && create.error) {
+      this.log(chalk.red('Error creating spreadsheet.'));
+      throw create.error;
+    }
+
+    let owner = this.spawnCommandSync('gulp', ['content:owner', '--email', this.answers.googleSpreadsheetOwner]);
+    if (owner && owner.error) {
+      this.log(chalk.red('Error changing owner to: ' + this.answers.googleSpreadsheetOwner));
+      throw owner.error;
+    }
+
+    this.log();
+    this.log(
+      chalk.cyan('Spreadsheet setup successfully. We changed the owner to this \nemail address:\n\n') +
+      '  ' + chalk.green(this.answers.authorEmail) +
+      '\n\n' +
+      chalk.cyan('If you want to share this speadsheet with other \nGoogle accounts, you can run something like:\n\n') +
+      '  ' + chalk.bgYellow.black('gulp content:share --email XXXXXX@XXXXX.COM') +
+      '\n\n' +
+      chalk.cyan('To open the spreadsheet in your browser, use:\n\n') +
+      '  ' + chalk.bgYellow.black('gulp content:open'));
+    this.log();
     this.log();
   }
 };

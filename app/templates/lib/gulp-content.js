@@ -75,7 +75,10 @@ function createSheet(gulp, config) {
         gutil.log('A new spreasheet has been created and can be viewed at:');
         gutil.log('  ' + url);
         gutil.log('');
-        openurl.open(url);
+
+        if (!argv.quiet) {
+          openurl.open(url);
+        }
       }).catch(done);
     }).catch(done);
   };
@@ -85,20 +88,21 @@ function createSheet(gulp, config) {
 function share(gulp, config, role) {
   return (done) => {
     let configPath = path.join(__dirname, '..', 'config.json');
+    let command = role === 'owner' ? 'content:owner' : 'content:share';
 
     // Ensure we have some auth
     if (checkAuth()) {
-      return done(new gutil.PluginError('content:create', 'Cannot create new sheet without the needed environment variables.'));
+      return done(new gutil.PluginError(command, 'Cannot create new sheet without the needed environment variables.'));
     }
 
     // Ensure we have a spreadsheet ID
     if (checkspreadsheetId(config)) {
-      return done(new gutil.PluginError('content:create', 'There is no content.spreadsheetId in config.json.'));
+      return done(new gutil.PluginError(command, 'There is no content.spreadsheetId in config.json.'));
     }
 
     // Check for email
     if (!argv.email) {
-      return done(new gutil.PluginError('content:create', 'Make sure a valid Google email is provided to transfer ownership to. Example: "gulp content:create --email your.name@gmail.com"'));
+      return done(new gutil.PluginError(command, 'Make sure a valid Google email is provided to share with. Example: "gulp ' + command + ' --email your.name@gmail.com"'));
     }
 
     let s = new ContentSheets();
