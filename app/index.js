@@ -66,7 +66,8 @@ const App = class extends Generator {
     const tContext = {
       _: _,
       answers: this.answers,
-      package: this.pkg
+      package: this.pkg,
+      env: process.env
     };
 
     // Copy common files to pass through template
@@ -152,7 +153,7 @@ const App = class extends Generator {
     this.log();
     this.log(
       chalk.cyan('Spreadsheet setup successfully. We changed the owner to this \nemail address:\n\n') +
-      '  ' + chalk.green(this.answers.authorEmail) +
+      '  ' + chalk.green(this.answers.googleSpreadsheetOwner) +
       '\n\n' +
       chalk.cyan('If you want to share this speadsheet with other \nGoogle accounts, you can run something like:\n\n') +
       '  ' + chalk.bgYellow.black('gulp content:share --email XXXXXX@XXXXX.COM') +

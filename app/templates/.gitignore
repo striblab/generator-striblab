@@ -1,4 +1,4 @@
-# WNYC front-end app
+# Front-end app
 build/*
-content.custom.aml
 config.custom.json
+.awspublish*

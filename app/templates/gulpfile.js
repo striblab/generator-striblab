@@ -14,7 +14,6 @@ const path = require('path');
 const gulp = require('gulp');
 const ejs = require('gulp-ejs');
 const rename = require('gulp-rename');
-const insecurity = require('gulp-insecurity');
 const noopener = require('gulp-noopener');
 const eslint = require('gulp-eslint');
 const stylelint = require('gulp-stylelint');
@@ -25,12 +24,14 @@ const include = require('gulp-file-include');
 const jest = require('gulp-jest').default;
 const sourcemaps = require('gulp-sourcemaps');
 const gutil = require('gulp-util');
+const runSequence = require('run-sequence');
 const browserSync = require('browser-sync').create();
 const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
 const webpackConfig = require('./webpack.config.js');
 const del = require('del');
 const gulpContent = require('./lib/gulp-content.js');
+const gulpPublish = require('./lib/gulp-publish.js');
 const pkg = require('./package.json');
 const config = exists('config.custom.json') ? require('./config.custom.json') : require('./config.json');
 
@@ -48,10 +49,6 @@ gulp.task('html', () => {
     .pipe(ejs({ config: config, content: content, package: pkg }).on('error', gutil.log))
     .pipe(rename(function(path) {
       path.basename = path.basename.replace('.ejs', '');
-    }))
-    .pipe(insecurity.html({
-      passive: true,
-      whitelist: new RegExp(config.linting.urlWhitelist)
     }))
     .pipe(noopener.warn())
     .pipe(gulp.dest('build/'));
@@ -154,11 +151,25 @@ gulp.task('watch', () => {
   gulp.watch(['templates/**/*', 'config.*json', 'package.json', 'content.json'], ['html:lint']);
   gulp.watch(['app/**/*', 'config.json'], ['js']);
   gulp.watch(['assets/**/*'], ['assets']);
+  gulp.watch(['config.*json'], ['publish:build']);
 });
 
+// Publishing
+gulp.task('publish', ['publish:token', 'publish:confirm'], gulpPublish.publish(gulp));
+gulp.task('publish:token', gulpPublish.createToken(gulp));
+gulp.task('publish:build', gulpPublish.buildConfig(gulp));
+gulp.task('publish:confirm', gulpPublish.confirmToken(gulp));
+gulp.task('publish:open', gulpPublish.openURL(gulp));
+
 // Full build
-gulp.task('build', ['assets', 'html:lint', 'styles', 'js']);
+gulp.task('build', ['publish:build', 'assets', 'html:lint', 'styles', 'js']);
 gulp.task('default', ['build']);
+
+// Deploy (build and publish)
+gulp.task('deploy', (done) => {
+  return runSequence('clean', 'build', 'publish', done);
+});
+gulp.task('deploy:open', ['publish:open']);
 
 // Server and watching (development)
 gulp.task('develop', ['server', 'watch']);

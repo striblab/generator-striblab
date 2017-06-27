@@ -90,7 +90,7 @@ Depending on what libraries or dependencies you need to include there are a few 
           import awesome from 'awesome-lib';
           awesome.radical();
           ```
-    * For dependencies that are very common and are available through a trusted CDN, you can include it in `config.json`.
+    * For dependencies that are very common and are available through a trusted CDN, you can include it in `config.json`.  Consider using the [StribLab static libs CDN](https://github.com/striblab/static-libs).
         * For instance:
           ```js
           "js": {
@@ -112,7 +112,7 @@ Depending on what libraries or dependencies you need to include there are a few 
           ```
 * **CSS**
     * *(TODO) Find a good way to include CSS libraries locally.  Many are available on npm, so maybe just do include in SASS files?*
-    * For dependencies that are very common and are available through a trusted CDN, you can include it in `config.json`.
+    * For dependencies that are very common and are available through a trusted CDN, you can include it in `config.json`.  Consider using the [StribLab static libs CDN](https://github.com/striblab/static-libs).
         * For instance:
           ```js
           "css": {
@@ -143,6 +143,46 @@ A manual test page is provided for looking at the piece embeded in another page.
 
 All parts are compiled into the `build/` folder.  The default complete build can be done with `gulp` or `gulp build`
 
-### Deploy
+## Publish and deploy
 
-(todo)
+Deployment is setup for AWS S3.  To setup, set the following environment variables; they can be set in a [.env](https://www.npmjs.com/package/dotenv) file as well.  For further reading on setting up access, see [Configureing the JS-SDK](http://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/configuring-the-jssdk.html).
+
+* `AWS_ACCESS_KEY_ID`
+* `AWS_SECRET_ACCESS_KEY`
+* OR `AWS_DEFAULT_PROFILE`
+* OR `AWS_CONFIG_FILE`
+
+To deploy, run `gulp deploy`.  This will build and publish to the location configured as `default` (see *Configuration* below).
+
+To deploy to say the `production` location, simply use that flag like: `gulp deploy --production`
+
+A handy command is to use `gulp publish:open` to open the URl to that project.
+
+### Configuration
+
+Publishing is configured in the `config.json` file.  The `publish` property can have the following keys: `default`, `testing`, `staging`, and `production`.  Only the `default` is actually necessary.  Each key should correspond to an object with `bucket`, `path`, and `url`.  For example:
+
+```js
+{
+  "publish": {
+    "default": {
+      "bucket": "static.startribune.com",
+      "path": "projects-staging/<%= package.name %>/",
+      "url": "http://static.startribune.com/projects-staging/<%= package.name %>/"
+    },
+    "production": {
+      "bucket": "static.startribune.com",
+      "path": "projects/<%= package.name %>/",
+      "url": "http://static.startribune.com/projects/<%= package.name %>/"
+    }
+  }
+}
+```
+
+Using the flags `--testing`, `--staging`, or `--production` will switch context for any relevant `publish` or `deploy` commands.  Note that if the flag is not configured, the `default` will be used.
+
+### Publishing token
+
+The publishing function, uses a token that helps ensure a name collision with another project doesn't overwrite files unwittingly.  The `publishToken` in `config.json` is used as an identifier.  This gets deployed to S3 and then checked whenever publishing happens again.  The `gulp publish` (run via `gulp deploy`) will automatically create this token if it doesn't exist.
+
+If you see an error message that states that the tokens do not match, make sure that the location you are publishing to doesn't have a different project at it, or converse with teammates or administrators about the issue.
