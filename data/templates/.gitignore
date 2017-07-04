@@ -1,4 +1,4 @@
-# WNYC data template
+# Data parts
 data/sources/*
 # Exceptions, like
 # !data/sources/source-data.csv

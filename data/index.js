@@ -8,6 +8,7 @@ const path = require('path');
 const _ = require('lodash');
 const ejs = require('ejs');
 const Generator = require('yeoman-generator');
+const inputs = require('./input.js');
 const dependencies = require('./dependencies.json');
 const common = {
   inputs: require('../common/lib/input.js'),
@@ -32,14 +33,10 @@ const App = class extends Generator {
       this.log(common.output.welcome());
     }
 
-    if (!this.options.answers) {
-      return this.prompt(common.inputs(this)).then((answers) => {
-        this.answers = answers;
-      });
-    }
-    else {
-      this.answers = this.options.answers;
-    }
+    // If already has answers, then is probably being composed with
+    return this.prompt(inputs(this, !!this.options.answers)).then((answers) => {
+      this.answers = answers;
+    });
   }
 
   // Write files
@@ -79,12 +76,16 @@ const App = class extends Generator {
         tContext, null, tOptions);
     }
 
-    // Copy data files to pass through template
+    // Copy data files to pass through template (any)
     this.fs.copyTpl(this.templatePath('data/**/*'), this.destinationPath('data'), tContext, null, tOptions);
+    if (this.answers.useDrake) {
+      this.fs.copyTpl(this.templatePath('data.workflow'), this.destinationPath('data.workflow'), tContext, null, tOptions);
+    }
+
+    // Copy data files to pass through template (standalone)
     if (!this.options.composedWith) {
       this.fs.copyTpl(this.templatePath('.gitignore'), this.destinationPath('.gitignore'), tContext, null, tOptions);
       this.fs.copyTpl(this.templatePath('README.md'), this.destinationPath('README.md'), tContext, null, tOptions);
-      this.fs.copyTpl(this.templatePath('gulpfile.js'), this.destinationPath('gulpfile.js'), tContext, null, tOptions);
     }
 
     // Specifics that should be combined with common elements, should not
