@@ -1,5 +1,6 @@
 /**
- * Super simple tests to see if things are loaded alright in the browser.
+ * Acceptance test that check things like load, performance,
+ * availability.
  */
 
  // Available from Jest
@@ -17,7 +18,7 @@ const _ = require('lodash');
 const lighthouse = require('lighthouse');
 const chromeLauncher = require('lighthouse/chrome-launcher/chrome-launcher');
 const chromeRemote = require('chrome-remote-interface');
-const debug = require('debug')('tests:functional:basics');
+const debug = require('debug')('tests:acceptance:basics');
 
 // Test parts
 const localApp = http.createServer(localHTTP);

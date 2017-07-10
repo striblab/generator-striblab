@@ -127,7 +127,9 @@ Depending on what libraries or dependencies you need to include there are a few 
 
 Testing is run via [Jest](https://facebook.github.io/jest/).  Fast, unit and higher level testing will happen on build.  You can run these test manually with `gulp js:test` or `npm test`.
 
-*TODO*: There is a start of using headless Chrome for some functional testing in `tests/functional/basics.test.TODO.js`.  Unfortunately these take about 30 seconds to run so they are not really appropriate for on-build testing, as well as they need the Chrome (Canary) binary installed independently.
+Acceptance testing (i.e. high level quality assurance) is done separately as running headless Chrome takes more than a couple seconds.  You will need a new version of Chrome or Chrome Canary installed, then run `js:test:acceptance`.
+
+*NOTE*: Acceptance test will fail until [this fix](https://github.com/GoogleChrome/lighthouse/issues/2618) is published.
 
 *TODO*: Some basic automated, cross-browser testing would be very beneficial.  Unfortunately things like Browserstack are very expensive, and managing our own servers to do this would be very expensive time-wise as well.
 

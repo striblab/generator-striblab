@@ -21,7 +21,6 @@ const sass = require('gulp-sass');
 const htmlhint = require('gulp-htmlhint');
 const autoprefixer = require('gulp-autoprefixer');
 const include = require('gulp-file-include');
-const jest = require('gulp-jest').default;
 const sourcemaps = require('gulp-sourcemaps');
 const gutil = require('gulp-util');
 const runSequence = require('run-sequence');
@@ -32,6 +31,7 @@ const webpackConfig = require('./webpack.config.js');
 const del = require('del');
 const gulpContent = require('./lib/gulp-content.js');
 const gulpPublish = require('./lib/gulp-publish.js');
+const jest = require('./lib/gulp-jest.js');
 const pkg = require('./package.json');
 const config = exists('config.custom.json') ? require('./config.custom.json') : require('./config.json');
 
@@ -131,12 +131,19 @@ gulp.task('clean', () => {
   return del([ 'build/**/*' ]);
 });
 
-// Testing
-gulp.task('js:test', () => {
-  return gulp.src('tests/**/*.test.js').pipe(jest({ }));
-});
+// Testing ,manully using jest module because
+gulp.task('js:test', jest('js:test', {
+  rootDir: __dirname,
+  testMatch: ['**/*.test.js'],
+  testPathIgnorePatterns: ['acceptance']
+}));
+gulp.task('js:test:acceptance', jest('js:test:acceptance', {
+  rootDir: __dirname,
+  // Not sure why full path is needed
+  testMatch: [path.join(__dirname, 'tests/acceptance/*.test.js')]
+}));
 
-// Web server for development
+// Web server for development.  Do build to ensure something is there.
 gulp.task('server', ['build'], () => {
   return browserSync.init({
     port: 3001,
