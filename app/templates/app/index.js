@@ -7,6 +7,7 @@
 'use strict';
 
 // Dependencies
+import utilsFn from './utils.js';
 
 // Import local ES6 modules like this:
 //import utilsFn from './utils.js';
@@ -15,4 +16,5 @@
 // import module from 'module';
 
 // Setup utils function
-//let utils = utilsFn({ });
+let utils = utilsFn({ }).setView();
+utils.setView();

@@ -13,10 +13,14 @@ import _ from 'underscore';
 // Util class
 class Util {
   constructor(options) {
-    this.options = options;
+    this.options = options || {};
 
     // Defaults
     this.options.pym = this.options.pym === undefined ? true : this.options.pym;
+    this.options.view = this.options.view || {
+      develop: /localhost.*|127\.0\.0\.1.*/i,
+      staging: /staging/i
+    };
 
     // Read in query params
     this.parseQuery();
@@ -27,6 +31,24 @@ class Util {
     // Enable pym
     if (this.options.pym) {
       this.pym = !_.isUndefined(window.pym) ? new pym.Child({ polling: 500 }) : undefined;
+    }
+  }
+
+  // Set view (make note)
+  setView() {
+    if (this.options.view) {
+      let view ;
+      _.find(this.options.view, (match, v) => {
+        view = v;
+        return window.location.href.match(match) ? v : undefined;
+      });
+
+      if (view) {
+        let div = document.createElement('div');
+        let body = document.getElementsByTagName('body')[0];
+        div.className = 'site-view site-view-' + view;
+        body.insertBefore(div, body.childNodes[0]);
+      }
     }
   }
 

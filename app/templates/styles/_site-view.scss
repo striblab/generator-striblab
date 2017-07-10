@@ -1,0 +1,32 @@
+/**
+ * Some basic notes on the page to note that its
+ * a staging or dev site.
+ */
+
+.site-view {
+  position: fixed;
+  z-index: 10000;
+  bottom: 0;
+  right: 0;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 0.85em;
+}
+
+.site-view-develop {
+  padding: 0.5em 1em;
+  background-color: #7B4200;
+
+  &::after {
+    content: 'Develop';
+  }
+}
+
+.site-view-staging {
+  padding: 0.5em 1em;
+  background-color: #6B0029;
+
+  &::after {
+    content: 'Demo version';
+  }
+}
