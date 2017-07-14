@@ -3,12 +3,12 @@
  * availability.
  */
 
- // Available from Jest
- // https://facebook.github.io/jest/docs/en/api.html#content
- // https://facebook.github.io/jest/docs/en/expect.html#content
+// Available from Jest
+// https://facebook.github.io/jest/docs/en/api.html#content
+// https://facebook.github.io/jest/docs/en/expect.html#content
 
- // Implicit dependencies
- /* global jasmine, beforeAll, afterAll, describe, it, expect, fail */
+// Implicit dependencies
+/* global jasmine, beforeAll, afterAll, describe, it, expect, fail */
 
 // Test dependencies
 const fs = require('fs');
