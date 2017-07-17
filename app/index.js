@@ -85,7 +85,10 @@ const App = class extends Generator {
       {
         globOptions: {
           dot: true,
-          ignore: [this.templatePath('./assets/**/*')]
+          ignore: [
+            this.templatePath('./assets/**/*'),
+            this.answers.dataTemplate ? undefined : this.templatePath('./tests/data/**/*')
+          ]
         }
       }
     );

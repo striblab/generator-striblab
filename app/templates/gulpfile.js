@@ -95,7 +95,10 @@ gulp.task('styles', ['styles:lint'], () => {
   return gulp.src('styles/index.scss')
     .pipe(sourcemaps.init())
     .pipe(sass({
-      outputStyle: 'compressed'
+      outputStyle: 'compressed',
+      includePaths: [
+        path.join(__dirname, 'node_modules')
+      ]
     }).on('error', sass.logError))
     .pipe(autoprefixer({
       // browsers: See browserlist file
@@ -143,13 +146,39 @@ gulp.task('js:test:acceptance', jest('js:test:acceptance', {
   testMatch: [path.join(__dirname, 'tests/acceptance/*.test.js')]
 }));
 
-// Web server for development.  Do build to ensure something is there.
-gulp.task('server', ['build'], () => {
+// Web server for development.  Do build first to ensure something is there.
+gulp.task('server', ['build'], () => {<% if (answers.projectType === 'cms' ) { %>
+  // Proxy the dev version of news-platform.  (assumes the host file has been set up)
+  // https://github.com/MinneapolisStarTribune/news-platform
+  //
+  // We serve the build files in a way that can be used by the serve_static
+  // function in news-platform.  This means that the path is the same, but
+  // the domain changes; locally we serve it from here at localhost:3000,
+  // but for production it runs from static.startribune.com.
+  //
+  // news-platform knows about the local domain through the ASSETS_STATIC_URL
+  // environment variable.  This can be in a .env file in your locally running
+  // news-platform.
+  //
+  // The publish.production can change location but the "route" option below
+  // will need to change so local and production act the same.
+  //
+  // serve_static function for reference:
+  // https://github.com/MinneapolisStarTribune/news-platform/blob/1a56bd11892f79e5d48a9263bed2db7c5539fc60/app/Extensions/helpers/url.php#L272
   return browserSync.init({
-    port: 3001,
+    port: 3000,
+    proxy: 'http://www.startribune.dev/x/' + config.cms.id + '?preview=1',
+    serveStatic: [{
+      route: '/' + config.publish.production.path,
+      dir: './build'
+    }],
+    files: './build/**/*'
+  });<% } else { %>
+  return browserSync.init({
+    port: 3000,
     server: './build/',
     files: './build/**/*'
-  });
+  });<% } %>
 });
 
 // Watch for building

@@ -1,12 +1,37 @@
+<% if (answers.projectType === 'standalone') { %>
 ## Embed
 
-The project is designed to be a full page, linkable piece, as well as an embed.  The best way to embed the piece is with the following code:
+This project is best used as a full, standalone page, or an embed.  The best way to embed the piece is with the following code:
 
 ```html
-<div data-pym-src="https://example.com/<%= package.name %>">Loading...</div>
+<div data-pym-src="http://static.startribune.com/projects/<%= package.name %>">Loading...</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pym/1.1.2/pym.v1.min.js" type="text/javascript"></script>
 ```
+<% } else if (answers.projectType === 'cms') { %>
+## CMS
 
+This project is meant to live within the [Star Tribune CMS](https://cms.clickability.com/cms).  Overall, this means that the markup and content are stored within the CMS, while the styling and javascript is created and managed here.
+
+It is necessary to have [news-platform](https://github.com/MinneapolisStarTribune/news-platform/) running locally as this will create a connection to the CMS data.  It is also important to have it configured with the `ASSETS_STATIC_URL` environment variable set to `http://localhost:3000/` so that [news-platform](https://github.com/MinneapolisStarTribune/news-platform/) can find the files in this project.
+
+Once a CMS article has been created and the template is set up, make sure to include the article ID in `config.json`.
+
+### Template
+
+In the [Twig](https://twig.symfony.com/) template for the article(s), use something like the following to get the assets created in this project.
+
+```twig
+{% block styles %}
+  {{ parent() }}
+  <link rel="stylesheet" href="{{ static_asset('news/projects/all/<%= package.name %>/style.bundle.css') }}">
+{% endblock %}
+
+{% block scripts %}
+  {{ parent() }}
+  <script type="text/javascript" src="{{ static_asset('news/projects/all/<%= package.name %>/app.bundle.js') }}"></script>
+{% endblock %}
+```
+<% }%>
 ## Development
 
 ### Install
@@ -32,12 +57,12 @@ To run a local web server that will auto-reload with [Browsersync](https://brows
     * Use this to add non-local JS or CSS assets, such as from a CDN.
     * This can be overridden with a `config.custom.json` if there is a need to add configuration that should not be put into revision history.
 * `content.json`: See *Content and copy*.  This file is used to hold content values.  If the project is hooked up to a Google Spreadsheet, you should not manually edit this file.
-* `templates/`: Holds HTML-like templates.  Any files in here will get run through [EJS](http://www.embeddedjs.com/) templating and passed values from `config.json`, `content.aml`, and `package.json`.
+* `templates/`: Holds HTML-like templates.  Any files in here will get run through [EJS](http://www.embeddedjs.com/) templating and passed values from `config.json`, `content.json`, and `package.json`.
     * `templates/index.ejs.html`: The default page for the application.
 * `styles/`: Styles in [SASS](http://sass-lang.com/) syntax.
     * `styles/index.scss`: Main point of entry for styles.
     * `styles/_*.scss`: Any includes should be prefixed with an underscore.
-* `app/`: Where JS logic goes.  This supports ES2015 JS syntax with [Babel](https://babeljs.io/) and gets compiled with [Webpack](https://webpack.js.org/).
+* `app/`: Where JS logic goes.  This supports ES6+ JS syntax with [Babel](https://babeljs.io/) and gets compiled with [Webpack](https://webpack.js.org/).
     * `app/index.js`: Main entry point of application.
 * `assets/`: Various media files.  This gets copied directly to build.
 * `sources/`: Directory is for all non-data source material, such as wireframes or original images.  Note that if there are materials that should not be made public, consider using Dropbox and make a note in this file about how to access.
@@ -45,6 +70,7 @@ To run a local web server that will auto-reload with [Browsersync](https://brows
 * `tests/`: Tests for app; see Testing section below.
 * The rest of the files are for building or meta-information about the project.
 
+<% if (answers.projectType !== 'cms') { %>
 ### Content and copy
 
 By default, content items can be managed in `content.json`.  The values put in here will be available in the templates in the `templates/` directory as the `content` object.  This can be a helpful way to separate out content from code.
@@ -77,7 +103,7 @@ You can then add collaborators to the spreadsheet with the following command.  N
 ##### Spreadsheet format
 
 If you are using Google Spreadsheets for content, the headers should be `Key`, `Value`, `Type`, and `Notes`.  It is important that these are there in that exact way.  It is suggested to freeze the header row in case someone changes the order of the spreadsheet.
-
+<% } %>
 ### Dependencies and modules
 
 Depending on what libraries or dependencies you need to include there are a few different ways to get those into the project.
@@ -90,7 +116,7 @@ Depending on what libraries or dependencies you need to include there are a few 
           import awesome from 'awesome-lib';
           awesome.radical();
           ```
-    * For dependencies that are very common and are available through a trusted CDN, you can include it in `config.json`.  Consider using the [StribLab static libs CDN](https://github.com/striblab/static-libs).
+    * <% if (answers.projectType !== 'cms') { %>For dependencies that are very common and are available through a trusted CDN, you can include it in `config.json`.<% } else { %>In the template, you can include libraries from a CDN.<% } %>  Consider using the [StribLab static libs CDN](https://github.com/striblab/static-libs).<% if (answers.projectType !== 'cms') { %>
         * For instance:
           ```js
           "js": {
@@ -98,7 +124,7 @@ Depending on what libraries or dependencies you need to include there are a few 
               "https://cdnjs.cloudflare.com/ajax/libs/pym/1.1.2/pym.v1.min.js"
             ]
           }
-          ```
+          ```<% } %>
         * In your application, make sure to add a comment like the following so that linters will know that the dependency is already loaded.
           ```js
           /* global Pym */
@@ -111,8 +137,13 @@ Depending on what libraries or dependencies you need to include there are a few 
           let utils = utilsFn({ });
           ```
 * **CSS**
-    * *(TODO) Find a good way to include CSS libraries locally.  Many are available on npm, so maybe just do include in SASS files?*
-    * For dependencies that are very common and are available through a trusted CDN, you can include it in `config.json`.  Consider using the [StribLab static libs CDN](https://github.com/striblab/static-libs).
+    * Include it with `npm`.
+        * For instance: `npm install --save normalize-scss`
+        * This can then be included in the application, with something like:
+          ```css
+          @import 'normalize-scss/sass/_normalize.scss';
+          ```
+    * <% if (answers.projectType !== 'cms') { %>For dependencies that are very common and are available through a trusted CDN, you can include it in `config.json`.<% } else { %>In the template, you can include libraries from a CDN.<% } %>  Consider using the [StribLab static libs CDN](https://github.com/striblab/static-libs).<% if (answers.projectType !== 'cms') { %>
         * For instance:
           ```js
           "css": {
@@ -120,7 +151,7 @@ Depending on what libraries or dependencies you need to include there are a few 
               "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
             ]
           }
-          ```
+          ```<% } %>
         * **IMPORTANT** Make sure to always use a specific version from a CDN; do not use *latest* or something similar.
 
 ### Testing
@@ -147,7 +178,7 @@ All parts are compiled into the `build/` folder.  The default complete build can
 
 ## Publish and deploy
 
-Deployment is setup for AWS S3.  To setup, set the following environment variables; they can be set in a [.env](https://www.npmjs.com/package/dotenv) file as well.  For further reading on setting up access, see [Configureing the JS-SDK](http://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/configuring-the-jssdk.html).
+Deployment is setup for AWS S3.  Set the following environment variables; they can be set in a [.env](https://www.npmjs.com/package/dotenv) file as well.  For further reading on setting up access, see [Configureing the JS-SDK](http://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/configuring-the-jssdk.html).
 
 * `AWS_ACCESS_KEY_ID`
 * `AWS_SECRET_ACCESS_KEY`
@@ -156,9 +187,9 @@ Deployment is setup for AWS S3.  To setup, set the following environment variabl
 
 To deploy, run `gulp deploy`.  This will build and publish to the location configured as `default` (see *Configuration* below).
 
-To deploy to say the `production` location, simply use that flag like: `gulp deploy --production`
+To deploy to the `production` location, for instance, simply use that flag like: `gulp deploy --production`
 
-A handy command is to use `gulp publish:open` to open the URl to that project.
+A handy command is to use `gulp publish:open` to open the URL to that project.
 
 ### Configuration
 
@@ -169,13 +200,13 @@ Publishing is configured in the `config.json` file.  The `publish` property can 
   "publish": {
     "default": {
       "bucket": "static.startribune.com",
-      "path": "projects-staging/<%= package.name %>/",
-      "url": "http://static.startribune.com/projects-staging/<%= package.name %>/"
+      "path": "news/projects-staging/all/<%= package.name %>/",
+      "url": "http://static.startribune.com/news/projects-staging/all/<%= package.name %>/"
     },
     "production": {
       "bucket": "static.startribune.com",
-      "path": "projects/<%= package.name %>/",
-      "url": "http://static.startribune.com/projects/<%= package.name %>/"
+      "path": "news/projects/all/<%= package.name %>/",
+      "url": "http://static.startribune.com/news/projects/all/<%= package.name %>/"
     }
   }
 }

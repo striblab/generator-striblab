@@ -13,11 +13,29 @@ const emailTest = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"
 module.exports = function(generator) {
   var c = common(generator);
 
+  // Type of project
+  c.push({
+    type: 'list',
+    name: 'projectType',
+    message : 'What type of project is this?',
+    default: 'standalone',
+    choices: [
+      { name: 'Standalone embed -- Will probably be used in an iframe.',
+        value: 'standalone', short: 'Standalone embed' },
+      { name: 'CMS integration -- Markup lives in the CMS with assets managed in project.',
+        value: 'cms', short: 'CMS integration' }
+    ]
+  });
+
   // Use google for content
   c.push({
     type: 'confirm',
     name: 'googleSpreadsheet',
-    message : 'Would you like to use Google Spreadsheets to maintain the content/copy\n   of this project? Note that this will require some extra setup.'
+    message : 'Would you like to use Google Spreadsheets to maintain some content/copy\n   of this project? Note that this will require some extra setup.',
+    when: (answers) => {
+      // CMS will most likely not use a Google Spreadsheet for content
+      return answers.projectType !== 'cms';
+    }
   });
 
   c.push({

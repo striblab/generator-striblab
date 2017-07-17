@@ -36,13 +36,17 @@
     <meta property="og:url" content="<%%= config.url %>">
     <meta property="og:title" content="<%%= content.title ? content.title.replace(/"/g, '&quot;') : '' %>">
     <meta property="og:description" content="<%%= content.socialDescription ? content.socialDescription.replace(/"/g, '&quot;') : '' %>">
-    <meta property="og:image" content="<%%= config.url %><%%= config.social.image %>">
+    <%% if (config.social && config.social.image) { %>
+      <meta property="og:image" content="<%%= config.url %><%%= config.social.image %>">
+    <%% } %>
 
     <meta name="twitter:card" content="summary">
     <meta name="twitter:creator" content="<%%= content.twitterAccount || '@StarTribune' %>">
     <meta name="twitter:title" content="<%%= content.title ? content.title.replace(/"/g, '&quot;') : '' %>">
     <meta name="twitter:description" content="<%%= content.socialDescription ? content.socialDescription.replace(/"/g, '&quot;') : '' %>">
-    <meta name="twitter:image" content="<%%= config.url %><%%= config.social.image %>">
+    <%% if (config.social && config.social.image) { %>
+      <meta name="twitter:image" content="<%%= config.url %><%%= config.social.image %>">
+    <%% } %>
 
     <%% if (config.googleAnalytics) { %>
       <!-- Google Analytics -->
