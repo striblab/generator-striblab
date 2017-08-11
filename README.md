@@ -5,6 +5,7 @@
 ## Install
 
 1. Install [NodeJS](https://nodejs.org/en/).
+    * On a Mac, install Homebrew and do: `brew install node`
 1. Install [Yeoman](http://yeoman.io/), and Gulp: `npm install -g yo gulp`
 1. Install generator:
     1. Get this codebase: `git clone https://github.com/datanews/generator-striblab.git && generator-striblab`
@@ -20,7 +21,7 @@ Needs to be public so that install generator with `npm install -g generator-stri
     * (Recommended) Create a repo on github first.
 1. Run generator:
     * `yo striblab`: Front-end application.  Will ask about including the data analysis template.
-    * `yo striblab:data`: Data just the analysis template.
+    * `yo striblab:data`: Just the data analysis template.
 
 ## Development
 

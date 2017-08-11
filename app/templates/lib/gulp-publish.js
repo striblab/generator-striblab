@@ -178,4 +178,3 @@ module.exports = {
   getPublishConfig: getPublishConfig,
   openURL: openURL
 };
-''

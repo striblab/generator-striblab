@@ -130,6 +130,7 @@ Depending on what libraries or dependencies you need to include there are a few 
           /* global Pym */
           ```
         * **IMPORTANT** Make sure to always use a specific version from a CDN; do not use *latest* or something similar.
+        * For testing, these need to be available and should be added to `tests/global.js`
     * For local modules that you have written yourself, you can use the ES6 module syntax.
         * For instance, say you have created a `utils.js` module file, just use a relative path to include it:
           ```js

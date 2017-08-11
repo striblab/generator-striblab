@@ -16,5 +16,4 @@ import utilsFn from './utils.js';
 // import module from 'module';
 
 // Setup utils function
-let utils = utilsFn({ }).setView();
-utils.setView();
+utilsFn({ });

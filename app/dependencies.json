@@ -36,6 +36,7 @@
     "run-sequence": "^1.2.2",
     "stylelint-config-standard": "^15.0.1",
     "uglifyjs-webpack-plugin": "^0.4.6",
+    "underscore": "^1.8.3",
     "webpack": "^3.1.0",
     "webpack-stream": "^3.2.0",
     "yargs": "^8.0.2"

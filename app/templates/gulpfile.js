@@ -138,7 +138,8 @@ gulp.task('clean', () => {
 gulp.task('js:test', jest('js:test', {
   rootDir: __dirname,
   testMatch: ['**/*.test.js'],
-  testPathIgnorePatterns: ['acceptance']
+  testPathIgnorePatterns: ['acceptance'],
+  setupFiles: [ './tests/globals.js' ]
 }));
 gulp.task('js:test:acceptance', jest('js:test:acceptance', {
   rootDir: __dirname,
