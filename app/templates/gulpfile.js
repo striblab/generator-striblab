@@ -23,6 +23,7 @@ const autoprefixer = require('gulp-autoprefixer');
 const include = require('gulp-file-include');
 const sourcemaps = require('gulp-sourcemaps');
 const gutil = require('gulp-util');
+const a11y = require('gulp-a11y');
 const runSequence = require('run-sequence');
 const browserSync = require('browser-sync').create();
 const webpack = require('webpack');
@@ -59,12 +60,16 @@ gulp.task('html', () => {
 gulp.task('html:lint', ['html'], () => {
   return gulp.src('build/*.html')
     .pipe(htmlhint('.htmlhintrc'))
-    .pipe(htmlhint.reporter('htmlhint-stylish'));
+    .pipe(htmlhint.reporter('htmlhint-stylish'))
+    .pipe(a11y())
+    .pipe(a11y.reporter());
 });
 gulp.task('html:lint:details', ['html'], () => {
   return gulp.src('build/*.html')
     .pipe(htmlhint('.htmlhintrc'))
-    .pipe(htmlhint.reporter());
+    .pipe(htmlhint.reporter())
+    .pipe(a11y())
+    .pipe(a11y.reporter());
 });
 
 // Content tasks
