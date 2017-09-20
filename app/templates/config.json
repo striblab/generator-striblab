@@ -33,18 +33,18 @@
     "default": {
       "bucket": "static.startribune.com",
       "path": "news/projects-staging/all/<%= package.name %>/",
-      "url": "http://static.startribune.com/news/projects-staging/all/<%= package.name %>/index.html"
+      "url": "http://static.startribune.com/news/projects-staging/all/<%= package.name %>/"
     },
     "testing": {
       "bucket": "stribtest-bucket",
       "path": "news/projects/<%= package.name %>/",
-      "url": "https://s3.amazonaws.com/stribtest-bucket/news/projects/<%= package.name %>/index.html"
+      "url": "https://s3.amazonaws.com/stribtest-bucket/news/projects/<%= package.name %>/"
     },
 <% } %>
     "production": {
       "bucket": "static.startribune.com",
       "path": "news/projects/all/<%= package.name %>/",
-      "url": "http://static.startribune.com/news/projects/all/<%= package.name %>/index.html"
+      "url": "http://static.startribune.com/news/projects/all/<%= package.name %>/"
     }
   }
 }

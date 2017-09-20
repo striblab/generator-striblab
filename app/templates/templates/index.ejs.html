@@ -33,11 +33,11 @@
 
     <!-- Social Media Tags -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="<%%= config.url %>">
+    <meta property="og:url" content="<%%= config.publish.production.url %>">
     <meta property="og:title" content="<%%= content.title ? content.title.replace(/"/g, '&quot;') : '' %>">
     <meta property="og:description" content="<%%= content.socialDescription ? content.socialDescription.replace(/"/g, '&quot;') : '' %>">
     <%% if (config.social && config.social.image) { %>
-      <meta property="og:image" content="<%%= config.url %><%%= config.social.image %>">
+      <meta property="og:image" content="<%%= config.publish.production.url %><%%= config.social.image %>">
     <%% } %>
 
     <meta name="twitter:card" content="summary">
@@ -45,8 +45,40 @@
     <meta name="twitter:title" content="<%%= content.title ? content.title.replace(/"/g, '&quot;') : '' %>">
     <meta name="twitter:description" content="<%%= content.socialDescription ? content.socialDescription.replace(/"/g, '&quot;') : '' %>">
     <%% if (config.social && config.social.image) { %>
-      <meta name="twitter:image" content="<%%= config.url %><%%= config.social.image %>">
+      <meta name="twitter:image" content="<%%= config.publish.production.url %><%%= config.social.image %>">
     <%% } %>
+
+    <!-- Google structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "http://schema.org",
+        "@type": "NewsArticle",
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": "<%%= config.publish.production.url %>"
+        },
+        "headline": "<%%= content.title ? content.title.replace(/"/g, '\\"') : '' %>",
+        "image": {
+          "@type": "ImageObject",
+          "url": "<%%= config.publish.production.url %><%%= config.social.image %>"
+        },
+        "author": {
+          "@type": "Person",
+          "name": "<%%= content.author || 'Star Tribune Visuals' %>"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "<%%= content.organization || 'Star Tribune' %>",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "<%%= config.publish.production.url %>assets/images/strib/strib-logo-transparent-307.png",
+            "width": 307,
+            "height": 292
+          }
+        },
+        "description": "<%%= content.socialDescription ? content.socialDescription.replace(/"/g, '\\"') : '' %>"
+      }
+    </script>
 
     <%% if (config.googleAnalytics) { %>
       <!-- Google Analytics -->

@@ -194,7 +194,7 @@ A handy command is to use `gulp publish:open` to open the URL to that project.
 
 ### Configuration
 
-Publishing is configured in the `config.json` file.  The `publish` property can have the following keys: `default`, `testing`, `staging`, and `production`.  Only the `default` is actually necessary.  Each key should correspond to an object with `bucket`, `path`, and `url`.  For example:
+Publishing is configured in the `config.json` file.  The `publish` property can have the following keys: `default`, `testing`, `staging`, and `production`.  It is suggested to use default in place of the `staging` as the default gets used when no flag is specified (see below).  Each key should correspond to an object with `bucket`, `path`, and `url`.  **IMPORTANT**: The `url` should be a fully qualified URL that ends with a `/`.  This URL will get inserted into some meta tags on the page by default.  For example:
 
 ```js
 {
