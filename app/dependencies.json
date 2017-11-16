@@ -36,6 +36,7 @@
     "moment": "^2.19.1",
     "openurl": "^1.1.1",
     "run-sequence": "^1.2.2",
+    "strib-styles": "^0.0.2",
     "stylelint-config-standard": "^17.0.0",
     "uglifyjs-webpack-plugin": "^0.4.6",
     "underscore": "^1.8.3",

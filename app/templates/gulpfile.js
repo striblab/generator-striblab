@@ -32,6 +32,7 @@ const webpackConfig = require('./webpack.config.js');
 const del = require('del');
 const gulpContent = require('./lib/gulp-content.js');
 const gulpPublish = require('./lib/gulp-publish.js');
+const _ = require('lodash');
 const jest = require('./lib/gulp-jest.js');
 const pkg = require('./package.json');
 const config = exists('config.custom.json') ? require('./config.custom.json') : require('./config.json');
@@ -47,7 +48,7 @@ gulp.task('html', () => {
       prefix: '@@',
       basepath: '@file'
     }))
-    .pipe(ejs({ config: config, content: content, package: pkg }).on('error', gutil.log))
+    .pipe(ejs({ config: config, content: content, package: pkg, _: _ }).on('error', gutil.log))
     .pipe(rename(function(path) {
       path.basename = path.basename.replace('.ejs', '');
     }))
