@@ -4,7 +4,8 @@
     @@include('./_head.ejs.html')
   </head>
 
-  <body class="<% if (answers.projectType === 'cms') { %>strib strib-styles strib-styles-specifically<% } else { %>strib<% } %>">
+  <body class="<% if (answers.projectType !== 'cms') { %>strib<% } %>">
+    <% if (answers.projectType === 'cms') { %><div class="strib strib-styles strib-styles-specifically"><% } %>
     <!-- Screen reader announcements -->
     <div aria-live="polite" id="announcer" class="sr-only"></div>
 
@@ -33,5 +34,6 @@
 
     <!-- Scripts -->
     <script src="./app.bundle.js"></script>
+    <% if (answers.projectType === 'cms') { %></div><% } %>
   </body>
 </html>
