@@ -39,11 +39,11 @@ const config = exists('config.custom.json') ? require('./config.custom.json') : 
 
 require('dotenv').load({ silent: true });
 
-// Process base html templates (not templates used in front-end JS)
+// Process base html templates/pages (not templates used in front-end JS)
 gulp.task('html', () => {
   const content = exists('content.json') ? require('./content.json') : {};
 
-  return gulp.src(['templates/**/*.ejs.html', '!templates/**/_*.ejs.html'])
+  return gulp.src(['pages/**/*.ejs.html', '!pages/**/_*.ejs.html'])
     .pipe(include({
       prefix: '@@',
       basepath: '@file'
@@ -191,7 +191,7 @@ gulp.task('server', ['build'], () => {<% if (answers.projectType === 'cms' ) { %
 // Watch for building
 gulp.task('watch', () => {
   gulp.watch(['styles/**/*.scss'], ['styles']);
-  gulp.watch(['templates/**/*', 'config.*json', 'package.json', 'content.json'], ['html:lint']);
+  gulp.watch(['pages/**/*', 'config.*json', 'package.json', 'content.json'], ['html:lint']);
   gulp.watch(['app/**/*', 'config.json'], ['js']);
   gulp.watch(['assets/**/*'], ['assets']);
   gulp.watch(['config.*json'], ['publish:build']);

@@ -57,8 +57,10 @@ To run a local web server that will auto-reload with [Browsersync](https://brows
     * Use this to add non-local JS or CSS assets, such as from a CDN.
     * This can be overridden with a `config.custom.json` if there is a need to add configuration that should not be put into revision history.
 * `content.json`: See *Content and copy*.  This file is used to hold content values.  If the project is hooked up to a Google Spreadsheet, you should not manually edit this file.
-* `templates/`: Holds HTML-like templates.  Any files in here will get run through [EJS](http://www.embeddedjs.com/) templating and passed values from `config.json`, `content.json`, and `package.json`.
-    * `templates/index.ejs.html`: The default page for the application.
+* `pages/`: Holds HTML-like templates.  Any files in here will get run through [EJS](http://www.embeddedjs.com/) templating and passed values from `config.json`, `content.json`, and `package.json`.
+    * `pages/index.ejs.html`: The default page for the application.
+    * `pages/_*.ejs.html`: Includes for other templates.
+    * `pages/*.ejs.html`: Any templates without a `_` prefix will be rendered into an full HTML page.
 * `styles/`: Styles in [SASS](http://sass-lang.com/) syntax.
     * `styles/index.scss`: Main point of entry for styles.
     * `styles/_*.scss`: Any includes should be prefixed with an underscore.
@@ -73,7 +75,7 @@ To run a local web server that will auto-reload with [Browsersync](https://brows
 <% if (answers.projectType !== 'cms') { %>
 ### Content and copy
 
-By default, content items can be managed in `content.json`.  The values put in here will be available in the templates in the `templates/` directory as the `content` object.  This can be a helpful way to separate out content from code.
+By default, content items can be managed in `content.json`.  The values put in here will be available in the templates in the `pages/` directory as the `content` object.  This can be a helpful way to separate out content from code.
 
 #### Google Spreadsheets
 
