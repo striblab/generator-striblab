@@ -14,7 +14,9 @@
 ;
 
 
-; Base directory for all inputs and output
+; Base directory for all inputs and output.  Note that the $BASE variable
+; is not used in the task definition (first line), but for the commands,
+; it is needed.
 BASE=data
 
 
@@ -23,6 +25,7 @@ BASE=data
 sources/population-zip-code-2010.csv, %download <- [-timecheck]
   mkdir -p $BASE/sources
   wget -O $OUTPUT "https://data.lacity.org/api/views/nxs9-385f/rows.csv?accessType=DOWNLOAD"
+  echo "If you have mutliple inputs and outputs, then you can do $INPUT, $INPUT2, $OUTPUT, $OUTPUT2, etc"
 
 sources/youth-tobacco-survey.csv, %download <- [-timecheck]
   mkdir -p $BASE/sources

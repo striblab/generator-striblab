@@ -34,7 +34,7 @@ const App = class extends Generator {
     }
 
     // If already has answers, then is probably being composed with
-    return this.prompt(inputs(this, !!this.options.answers)).then((answers) => {
+    return this.prompt(inputs(this, !!this.options.answers)).then(answers => {
       this.answers = answers;
     });
   }
@@ -46,7 +46,6 @@ const App = class extends Generator {
     if (!this.options.composedWith) {
       this.fs.writeJSON(this.destinationPath('package.json'), this.pkg);
     }
-
     // Templating context
     const tContext = {
       _: _,
@@ -73,36 +72,73 @@ const App = class extends Generator {
       this.fs.copyTpl(
         path.join(common.files, '**/*'),
         this.destinationPath('./'),
-        tContext, null, tOptions);
+        tContext,
+        null,
+        tOptions
+      );
     }
 
     // Copy data files to pass through template (any)
-    this.fs.copyTpl(this.templatePath('data/**/*'), this.destinationPath('data'), tContext, null, tOptions);
+    this.fs.copyTpl(
+      this.templatePath('data/**/*'),
+      this.destinationPath('data'),
+      tContext,
+      null,
+      tOptions
+    );
     if (this.answers.useDrake) {
-      this.fs.copyTpl(this.templatePath('data.workflow'), this.destinationPath('data.workflow'), tContext, null, tOptions);
+      this.fs.copyTpl(
+        this.templatePath('data.workflow'),
+        this.destinationPath('data.workflow'),
+        tContext,
+        null,
+        tOptions
+      );
     }
 
     // Copy data files to pass through template (standalone)
     if (!this.options.composedWith) {
-      this.fs.copyTpl(this.templatePath('.gitignore'), this.destinationPath('.gitignore'), tContext, null, tOptions);
-      this.fs.copyTpl(this.templatePath('README.md'), this.destinationPath('README.md'), tContext, null, tOptions);
+      this.fs.copyTpl(
+        this.templatePath('.gitignore'),
+        this.destinationPath('.gitignore'),
+        tContext,
+        null,
+        tOptions
+      );
+      this.fs.copyTpl(
+        this.templatePath('README.md'),
+        this.destinationPath('README.md'),
+        tContext,
+        null,
+        tOptions
+      );
     }
 
     // Specifics that should be combined with common elements, should not
     // be needed for use in sub generator.
     if (!this.options.composedWith) {
-      this.fs.write(this.destinationPath('.gitignore'),
-        ejs.render([
-          this.fs.read(this.templatePath('.gitignore')),
-          this.fs.read(path.join(common.parts, '.gitignore'))
-        ].join('\n\n'), tContext));
+      this.fs.write(
+        this.destinationPath('.gitignore'),
+        ejs.render(
+          [
+            this.fs.read(this.templatePath('.gitignore')),
+            this.fs.read(path.join(common.parts, '.gitignore'))
+          ].join('\n\n'),
+          tContext
+        )
+      );
 
-      this.fs.write(this.destinationPath('README.md'),
-        ejs.render([
-          this.fs.read(path.join(common.parts, 'README-header.md')),
-          this.fs.read(this.templatePath('README.md')),
-          this.fs.read(path.join(common.parts, 'README-footer.md'))
-        ].join('\n\n'), tContext));
+      this.fs.write(
+        this.destinationPath('README.md'),
+        ejs.render(
+          [
+            this.fs.read(path.join(common.parts, 'README-header.md')),
+            this.fs.read(this.templatePath('README.md')),
+            this.fs.read(path.join(common.parts, 'README-footer.md'))
+          ].join('\n\n'),
+          tContext
+        )
+      );
     }
   }
 
@@ -118,7 +154,6 @@ const App = class extends Generator {
     }
   }
 };
-
 
 // Export
 module.exports = App;
