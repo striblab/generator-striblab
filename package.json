@@ -1,15 +1,10 @@
 {
   "name": "generator-striblab",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Project generators for the Star Tribune newsroom projects",
-  "keywords": [
-    "yeoman-generator"
-  ],
+  "keywords": ["yeoman-generator"],
   "main": "app/index.js",
-  "files": [
-    "app",
-    "data"
-  ],
+  "files": ["app", "data"],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -21,8 +16,8 @@
     "url": "git+https://github.com/striblab/generator-striblab.git"
   },
   "author": {
-    "name" : "Alan Palazzolo",
-    "email" : "alan.palazzolo@startribune.com"
+    "name": "Alan Palazzolo",
+    "email": "alan.palazzolo@startribune.com"
   },
   "license": "MIT",
   "bugs": {
