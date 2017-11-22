@@ -4,7 +4,6 @@
 .tmp
 .yo-rc.json
 node_modules/
-components/
 bower_components/
 .npm-debug
 .npm-log
