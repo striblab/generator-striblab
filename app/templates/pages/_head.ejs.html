@@ -56,10 +56,12 @@
     },
     "headline": "<%%= _.escape(content.title) %>",,
     "description": "<%%= _.escape(content.socialDescription) %>"
+    <%% if (config.social && config.social.image) { %>
     "image": {
       "@type": "ImageObject",
       "url": "<%%= config.publish.production.url %><%%= config.social.image %>"
     },
+    <%% } %>
     "author": {
       "@type": "Person",
       "name": "<%%= _.escape(content.author) || 'Star Tribune Visuals' %>"
@@ -84,8 +86,12 @@
     _gaq.push(['_setAccount', '<%%= config.googleAnalytics %>']);
     _gaq.push(['_trackPageview']);
     (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var ga = document.createElement('script');
+      ga.type = 'text/javascript';
+      ga.async = true;
+      ga.src =
+        ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') +
+        '.google-analytics.com/ga.js';
       var s = document.getElementsByTagName('script')[0];
       s.parentNode.insertBefore(ga, s);
     })();

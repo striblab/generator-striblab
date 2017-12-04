@@ -50,6 +50,9 @@ The following should be performed for initial and each code update:
 ### Local
 
 To run a local web server that will auto-reload with [Browsersync](https://browsersync.io/), watch for file changes and re-build: `gulp develop`
+<% if (answers.projectType === 'cms') { %>
+For the mobile version of the site, use `gulp develop --mobile`.  If your project has multiple pages, you can target a specific article ID with `gulp develop --cms-id=123456`.  You can combine both of these and run multiple versions in different terminal tab.
+<% } %>
 
 ### Directories and files
 

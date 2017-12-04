@@ -3,9 +3,9 @@
   "projectIdentifier": "<%= package.name %>",
 <% if (answers.projectType === 'cms' ) { %>
   "cms": {
-    "id": "NEEDS-CMS-ID-IN-CONFIG.JSON",
-    "pages": ["other", "cms-ids"],
-    "lcd": ["id1", "id2"]
+    "id": "<%= answers.cmsIDs ? answers.cmsIDs[0] : 'NEEDS-CMS-ID-IN-CONFIG.JSON' %>",
+    "pages": <%- answers.cmsIDs ? JSON.stringify(answers.cmsIDs) : '["other", "cms-ids"]' %>,
+    "lcds": <%- answers.lcdIDs ? JSON.stringify(answers.lcdIDs) : '["other", "cms-ids"]' %>
   },
 <% } %>
 <% if (answers.projectType === 'standalone' ) { %>

@@ -178,7 +178,7 @@ gulp.task('server', ['build'], () => {<% if (answers.projectType === 'cms' ) { %
     proxy: 'http://' +
       (argv.mobile ? 'vm-m' : 'vm-www') +
       '.startribune.com/x/' +
-      config.cms.id +
+      (argv['cms-id'] ? argv['cms-id'] : config.cms.id) +
       '?preview=1&cache=trash',
     serveStatic: [{
       route: '/' + config.publish.production.path,

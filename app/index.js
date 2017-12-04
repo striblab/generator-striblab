@@ -37,6 +37,14 @@ const App = class extends Generator {
     this.log(common.output.welcome());
 
     return this.prompt(inputs(this)).then(answers => {
+      // Format some ansers
+      answers.cmsIDs = answers.cmsIDs
+        ? _.map(answers.cmsIDs.split(','), d => d.trim())
+        : answers.cmsIDs;
+      answers.lcdIDs = answers.lcdIDs
+        ? _.map(answers.lcdIDs.split(','), d => d.trim())
+        : answers.lcdIDs;
+
       this.answers = answers;
     });
   }
