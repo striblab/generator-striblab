@@ -149,11 +149,13 @@ gulp.task('js:test', jest('js:test', {
   testPathIgnorePatterns: ['acceptance'],
   setupFiles: [ './tests/globals.js' ]
 }));
-gulp.task('js:test:acceptance', jest('js:test:acceptance', {
-  rootDir: __dirname,
-  // Not sure why full path is needed
-  testMatch: [path.join(__dirname, 'tests/acceptance/*.test.js')]
-}));
+
+// TODO: Use https://github.com/GoogleChrome/puppeteer
+// gulp.task('js:test:acceptance', jest('js:test:acceptance', {
+//   rootDir: __dirname,
+//   // Not sure why full path is needed
+//   testMatch: [path.join(__dirname, 'tests/acceptance/*.test.js')]
+// }));
 
 // Web server for development.  Do build first to ensure something is there.
 gulp.task('server', ['build'], () => {<% if (answers.projectType === 'cms' ) { %>
