@@ -24,6 +24,7 @@ const include = require('gulp-file-include');
 const sourcemaps = require('gulp-sourcemaps');
 const gutil = require('gulp-util');
 const a11y = require('gulp-a11y');
+const taskListing = require('gulp-task-listing');
 const runSequence = require('run-sequence');
 const browserSync = require('browser-sync').create();
 const webpack = require('webpack');
@@ -229,6 +230,9 @@ gulp.task('deploy:open', ['publish:open']);
 
 // Server and watching (development)
 gulp.task('develop', ['server', 'watch']);
+
+// Help
+gulp.task('help', taskListing);
 
 // Check file/fir exists
 function exists(file) {

@@ -185,6 +185,12 @@ const App = class extends Generator {
         chalk.cyan(' to start developing.')
     );
     this.log();
+    this.log(
+      chalk.cyan('Run ') +
+        chalk.bgYellow.black(' gulp help ') +
+        chalk.cyan(' to see the other available commands.')
+    );
+    this.log();
   }
 
   // Create google spreadsheet step
