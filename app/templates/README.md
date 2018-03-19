@@ -6,7 +6,7 @@ This project is best used as a full, standalone page, or an embed. The best way 
 
 ```html
 <div data-pym-src="http://static.startribune.com/projects/<%= package.name %>">Loading...</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pym/1.1.2/pym.v1.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pym/1.3.2/pym.v1.min.js" type="text/javascript"></script>
 ```
 
 <% } else if (answers.projectType === 'cms') { %>
