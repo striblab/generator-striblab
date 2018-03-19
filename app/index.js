@@ -104,12 +104,15 @@ const App = class extends Generator {
         globOptions: {
           dot: true,
           // Ignore assets (and data if needed)
-          ignore: this.answers.dataTemplate
-            ? [this.templatePath('./assets/**/*')]
-            : [
-              this.templatePath('./assets/**/*'),
-              this.templatePath('./tests/data/**/*')
-            ]
+          ignore: _.filter([
+            this.templatePath('./assets/**/*'),
+            this.answers.dataTemplate
+              ? undefined
+              : this.templatePath('./tests/data/**/*'),
+            this.answers.projectType === 'cms'
+              ? undefined
+              : this.templatePath('./cms/**/*')
+          ])
         }
       }
     );

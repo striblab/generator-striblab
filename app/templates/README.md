@@ -15,13 +15,19 @@ This project is best used as a full, standalone page, or an embed. The best way 
 
 This project is meant to live within the [Star Tribune CMS](https://cms.clickability.com/cms). Overall, this means that the markup and content are stored within the CMS, while the styling and javascript is created and managed here.
 
-It is necessary to have [news-platform](https://github.com/MinneapolisStarTribune/news-platform/) running locally as this will create a connection to the CMS data. It is also important to have it configured with the `ASSETS_STATIC_URL` environment variable set to `http://localhost:3000/` so that [news-platform](https://github.com/MinneapolisStarTribune/news-platform/) can find the files in this project.
+It is necessary to have [news-platform](https://github.com/MinneapolisStarTribune/news-platform/) running locally as this will create a connection to the CMS data. It is also important to have `news-platform` configured with the `ASSETS_STATIC_URL` environment variable set to `http://localhost:3000/` so that [news-platform](https://github.com/MinneapolisStarTribune/news-platform/) can find the files in this project.
 
 Once a CMS article has been created and the template is set up, make sure to include the article ID in `config.json`.
 
 ### Template
 
-In the [Twig](https://twig.symfony.com/) template for the article(s), use something like the following to get the assets created in this project.
+The `news-platform`/CMS templates are written in [Twig](https://twig.symfony.com/). There are two templates, one for mobile, and one for desktop (though mobile can be ignored with an option in the CMS).
+
+In the `./cms/` directory, there are generic templates that can be used for most projects. All content and variable data is managed in an LCD (Linked Content Data). For more details, see [`./cms/README.md`](./cms/README.md).
+
+#### Static asset function
+
+To manually include specific includes that will work locally and in production, one must use the `static_asset` function in the `news-platform` template. Basically, the path should be the path to where the assets will be published on `static.startribune.com`. To have the local server to react correctly to this, make sure that the `publish.production.path` is set to the same base path in `config.json`.
 
 ```twig
 {% block styles %}
@@ -56,8 +62,12 @@ The following should be performed for initial and each code update:
 
 To run a local web server that will auto-reload with [Browsersync](https://browsersync.io/), watch for file changes and re-build: `gulp develop`
 <% if (answers.projectType === 'cms') { %>
-For the mobile version of the site, use `gulp develop --mobile`. If your project has multiple pages, you can target a specific article ID with `gulp develop --cms-id=123456`. You can combine both of these and run multiple versions in different terminal tab.
-<% } %>
+There are some arguments that can alter the server behavior; you can run these in multiple Terminal tabs for different development needs:
+
+* For the mobile version of the site, use `gulp develop --mobile`.
+* If your project has multiple pages, you can target a specific article ID with `gulp develop --cms-id=123456`.
+* In a pinch, you can do `gulp develop --no-cms` which will not run the project through the CMS and thus not be fully tested.
+  <% } %>
 
 ### Directories and files
 

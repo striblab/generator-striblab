@@ -173,6 +173,14 @@ gulp.task('server', ['build'], () => {<% if (answers.projectType === 'cms' ) { %
   //
   // serve_static function for reference:
   // https://github.com/MinneapolisStarTribune/news-platform/blob/1a56bd11892f79e5d48a9263bed2db7c5539fc60/app/Extensions/helpers/url.php#L272
+  if (argv.cms === false) {
+    return browserSync.init({
+      port: 3000,
+      server: './build/',
+      files: './build/**/*'
+    });
+  }
+
   return browserSync.init({
     port: 3000,
     proxy: 'http://' +
