@@ -2,11 +2,12 @@
  * Utility functions.
  */
 
-/* global window, document, pym, _ */
+/* global window, document, pym */
 'use strict';
 
 // Dependencies
 import queryString from 'query-string';
+import _ from 'lodash';
 
 // If smooth scrolling is needed
 //import smoothscroll from 'smoothscroll-polyfill';
@@ -27,7 +28,8 @@ class Util {
 
     // Defaults
     this.options.pym = this.options.pym === undefined ? true : this.options.pym;
-    this.options.useView = this.options.useView === undefined ? true : this.options.useView;
+    this.options.useView =
+      this.options.useView === undefined ? true : this.options.useView;
     this.options.views = this.options.views || {
       develop: /localhost.*|127\.0\.0\.1.*/i,
       staging: /staging/i
@@ -37,21 +39,23 @@ class Util {
     this.parseQuery();
 
     // Set the view
-    this.setView();
+    //this.setView();
 
     // Smoothscroll polyyfill
     //smoothscroll.polyfill();
 
     // Enable pym
     if (this.options.pym) {
-      this.pym = !_.isUndefined(window.pym) ? new pym.Child({ polling: 500 }) : undefined;
+      this.pym = !_.isUndefined(window.pym)
+        ? new pym.Child({ polling: 500 })
+        : undefined;
     }
   }
 
   // Set view (make note)
   setView() {
     if (this.options.useView) {
-      let view ;
+      let view;
       _.find(this.options.views, (match, v) => {
         view = v;
         return window.location.href.match(match) ? v : undefined;
@@ -90,7 +94,7 @@ class Util {
     try {
       this.embedded = window.self !== window.top;
     }
-    catch(e) {
+    catch (e) {
       this.embedded = true;
     }
 
@@ -108,7 +112,7 @@ class Util {
       window.localStorage.removeItem('test');
       this.localStorage = true;
     }
-    catch(e) {
+    catch (e) {
       this.localStorage = false;
     }
 
@@ -117,17 +121,23 @@ class Util {
 
   // Check for geolocation
   hasGeolocate() {
-    return (window.navigator && 'geolocation' in window.navigator);
+    return window.navigator && 'geolocation' in window.navigator;
   }
 
   // Basic geolocation function
   geolocate(done) {
     if (this.hasGeolocate()) {
-      window.navigator.geolocation.getCurrentPosition((position) => {
-        done(null, { lat: position.coords.latitude, lng: position.coords.longitude });
-      }, () => {
-        done('Unable to find your position.');
-      });
+      window.navigator.geolocation.getCurrentPosition(
+        position => {
+          done(null, {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          });
+        },
+        () => {
+          done('Unable to find your position.');
+        }
+      );
     }
     else {
       done('Geolocation not available');
@@ -136,9 +146,9 @@ class Util {
 
   // Scroll to id
   goTo(id) {
-    const el = _.isElement(id) ? id :
-      id[0] && _.isElement(id[0]) ? id[0] :
-        document.getElementById(id);
+    const el = _.isElement(id)
+      ? id
+      : id[0] && _.isElement(id[0]) ? id[0] : document.getElementById(id);
 
     if (!el) {
       return;
@@ -155,8 +165,11 @@ class Util {
   // Google analytics page update
   // https://developers.google.com/analytics/devguides/collection/analyticsjs/single-page-applications
   gaPageUpdate(path) {
-    path = path ? path : document.location.pathname +
-      document.location.search + document.location.hash;
+    path = path
+      ? path
+      : document.location.pathname +
+        document.location.search +
+        document.location.hash;
 
     if (window.ga) {
       window.ga('set', 'page', path);
@@ -166,6 +179,6 @@ class Util {
 }
 
 // Export a generator for the class.
-export default (options) => {
+export default options => {
   return new Util(options);
 };

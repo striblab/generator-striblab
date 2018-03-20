@@ -210,18 +210,18 @@ gulp.task('watch', () => {
   gulp.watch(['pages/**/*', 'config.*json', 'package.json', 'content.json'], ['html:lint']);
   gulp.watch(['app/**/*', 'config.json'], ['js']);
   gulp.watch(['assets/**/*'], ['assets']);
-  gulp.watch(['config.*json'], ['publish:build']);
+  gulp.watch(['config.*json'], ['publish:config']);
 });
 
 // Publishing
 gulp.task('publish', ['publish:token', 'publish:confirm'], gulpPublish.publish(gulp));
 gulp.task('publish:token', gulpPublish.createToken(gulp));
-gulp.task('publish:build', gulpPublish.buildConfig(gulp));
+gulp.task('publish:config', gulpPublish.buildConfig(gulp));
 gulp.task('publish:confirm', gulpPublish.confirmToken(gulp));
 gulp.task('publish:open', gulpPublish.openURL(gulp));
 
 // Full build
-gulp.task('build', ['publish:build', 'assets', 'html:lint', 'styles', 'js']);
+gulp.task('build', ['publish:config', 'assets', 'html:lint', 'styles', 'js']);
 gulp.task('default', ['build']);
 
 // Deploy (build and publish)

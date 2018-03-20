@@ -3,5 +3,5 @@
  * that are included via a CDN.
  */
 
-let _ = require('underscore');
-global._ = _;
+// let _ = require('underscore');
+// global._ = _;
