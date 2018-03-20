@@ -9,9 +9,6 @@
 import queryString from 'query-string';
 import _ from 'lodash';
 
-// If smooth scrolling is needed
-//import smoothscroll from 'smoothscroll-polyfill';
-
 // Util class
 class Util {
   /**
@@ -40,9 +37,6 @@ class Util {
 
     // Set the view
     //this.setView();
-
-    // Smoothscroll polyyfill
-    //smoothscroll.polyfill();
 
     // Enable pym
     if (this.options.pym) {
@@ -104,51 +98,88 @@ class Util {
   // Check for local storage
   hasLocalStorage() {
     if (!_.isUndefined(this.localStorage)) {
-      return this.localStorage;
+      return this.canLocalStorage;
     }
 
     try {
       window.localStorage.setItem('test', 'test');
       window.localStorage.removeItem('test');
-      this.localStorage = true;
+      this.canLocalStorage = true;
     }
     catch (e) {
-      this.localStorage = false;
+      this.canLocalStorage = false;
     }
 
-    return this.localStorage;
+    return this.canLocalStorage;
   }
 
   // Check for geolocation
   hasGeolocate() {
-    return window.navigator && 'geolocation' in window.navigator;
+    if (_.isUndefined(this.canGeolocate)) {
+      this.canGeolocate = window.navigator && 'geolocation' in window.navigator;
+      // Unfortunately HTTPS is needed, but in some browsers,
+      // the API is still available.  We could run the API, but then the user
+      // gets a dialog.  :(
+    }
+
+    return this.canGeolocate;
   }
 
   // Basic geolocation function
-  geolocate(done) {
-    if (this.hasGeolocate()) {
-      window.navigator.geolocation.getCurrentPosition(
-        position => {
-          done(null, {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          });
-        },
-        () => {
-          done('Unable to find your position.');
-        }
-      );
-    }
-    else {
-      done('Geolocation not available');
+  geolocate(done, watch = false) {
+    return new Promise((resolve, reject) => {
+      if (this.hasGeolocate()) {
+        // iphone acts weird sometimes about this.  This is some hacky way
+        // to ensure it works ok, but who knows.
+        // https://stackoverflow.com/questions/3397585/navigator-geolocation-getcurrentposition-sometimes-works-sometimes-doesnt
+        window.navigator.geolocation.getCurrentPosition(
+          function() {},
+          function() {},
+          {}
+        );
+
+        this.geolocateWatchID = window.navigator.geolocation[
+          watch ? 'watchPosition' : 'getCurrentPosition'
+        ](
+          position => {
+            resolve({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            });
+          },
+          error => {
+            this.hasGeolocate = false;
+            reject(error ? error : 'Unable to find your position.');
+          },
+          { maximumAge: 5000, timeout: 50000, enableHighAccuracy: true }
+        );
+      }
+      else {
+        reject('Geolocation not available');
+      }
+    });
+  }
+
+  // Stop geolocation
+  stopGeolocate() {
+    if (this.geolocateWatchID && this.hasGeolocate()) {
+      window.navigator.geolocation.clearWatch(this.geolocateWatchID);
     }
   }
 
-  // Scroll to id
-  goTo(id) {
+  // Scroll to id.  By default, we use the native scrollIntoView,
+  // but it is not widely supported and not good polyfills exists,
+  // specifically ones that can offset.  So, if jQuery and the
+  // scrollTo function is available we use that.
+  // https://github.com/flesler/jquery.scrollTo
+  goTo(id, parent, options = {}) {
     const el = _.isElement(id)
       ? id
       : id[0] && _.isElement(id[0]) ? id[0] : document.getElementById(id);
+    let $parent = window.$
+      ? _.isUndefined(parent) ? window.$(window) : window.$(parent)
+      : undefined;
+    options.duration = options.duration || 1250;
 
     if (!el) {
       return;
@@ -157,9 +188,60 @@ class Util {
     if (this.isEmbedded() && this.pym) {
       this.pym.scrollParentToChildEl(el);
     }
+    else if ($parent && window.$ && window.$.fn.scrollTo) {
+      $parent.scrollTo(window.$(el), options);
+    }
     else {
       el.scrollIntoView({ behavior: 'smooth' });
     }
+  }
+
+  // Round number
+  round(value, decimals = 2) {
+    return _.isNumber(value)
+      ? Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals)
+      : value;
+  }
+
+  // Test for android phone
+  isAndroid() {
+    if (!_.isBoolean(this.agentAndroid)) {
+      this.agentAndroid =
+        window.navigator &&
+        window.navigator.userAgent &&
+        window.navigator.userAgent.match(/android/i);
+    }
+
+    return this.agentAndroid;
+  }
+
+  // Test for ios
+  isIOS() {
+    if (!_.isBoolean(this.agentIOS)) {
+      this.agentIOS =
+        window.navigator &&
+        window.navigator.userAgent &&
+        window.navigator.userAgent.match(/iphone|ipad/i);
+    }
+
+    return this.agentIOS;
+  }
+
+  // Test for windows phone
+  isWindowsPhone() {
+    if (!_.isBoolean(this.agentWindowsPhone)) {
+      this.agentWindowsPhone =
+        window.navigator &&
+        window.navigator.userAgent &&
+        window.navigator.userAgent.match(/windows\sphone/i);
+    }
+
+    return this.agentWindowsPhone;
+  }
+
+  // Check basic mobile (assume ios or android)
+  isMobile() {
+    return this.isAndroid() || this.isIOS() || this.isWindowsPhone();
   }
 
   // Google analytics page update
