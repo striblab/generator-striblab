@@ -15,7 +15,10 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /app\/.*\.js$/,
+        // Note that this works different on Windows, assumingly
+        // because of the different path separator.  Beware.
+        test: /app.*\.js$/,
+        exclude: /node_modules/,
         loader: 'babel-loader',
         options: {
           cacheDirectory: true
