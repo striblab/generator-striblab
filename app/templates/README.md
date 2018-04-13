@@ -49,14 +49,14 @@ To manually include specific includes that will work locally and in production, 
 
 The following are global prerequisites and may already be installed.
 
-1. (on Mac) Install [homebrew](http://brew.sh/).
-1. Install [Node.js](https://nodejs.org/en/).
-   * (on Mac) `brew install node`
-1. Install [Gulp](http://gulpjs.com/): `npm install gulp -g`
+1.  (on Mac) Install [homebrew](http://brew.sh/).
+1.  Install [Node.js](https://nodejs.org/en/).
+    * (on Mac) `brew install node`
+1.  Install [Gulp](http://gulpjs.com/): `npm install gulp -g`
 
 The following should be performed for initial and each code update:
 
-1. Install Node dependencies: `npm install`
+1.  Install Node dependencies: `npm install`
 
 ### Local
 
@@ -66,7 +66,7 @@ There are some arguments that can alter the server behavior; you can run these i
 
 * For the mobile version of the site, use `gulp develop --mobile`.
 * If your project has multiple pages, you can target a specific article ID with `gulp develop --cms-id=123456`.
-* In a pinch, you can do `gulp develop --no-cms` which will not run the project through the CMS and thus not be fully tested.
+* If you don't have the `news-platform` running locally, you can do `gulp develop --no-cms` which will not run the project through the CMS and thus not be fully tested.
   <% } %>
 
 ### Directories and files
@@ -104,7 +104,7 @@ Since getting this content may not be very speedy, this is not done during `gulp
 
 ##### Setting up
 
-If you went through the [Striblab Generator](), then this is probably already set up for you, but in case it is not.
+If you went through the [Striblab Generator](https://www.npmjs.com/package/generator-striblab), then this is probably already set up for you, but in case it is not.
 
 Getting content from a Google Spreadsheet depends on a few configurations. You need need a Google Account (such as a Gmail account) and a Google Developer API Service Account that has read and write access to Google Sheets and Google Drive. You should then set the following environment variables. You can store these values in a [`.env`](https://www.npmjs.com/package/dotenv) file.
 
@@ -193,9 +193,9 @@ _TODO_: Some basic automated, cross-browser testing would be very beneficial. Un
 
 A manual test page is provided for looking at the piece embeded in another page.
 
-1. Assumes you are running the development server with `gulp develop`
-1. Run a local server for the test directory, such as `cd tests && python -m SimpleHTTPServer` or `http-server ./tests/`
-1. In a browser, go to [http://localhost:8080/manual/embed.html](http://localhost:8080/manual/embed.html).
+1.  Assumes you are running the development server with `gulp develop`
+1.  Run a local server for the test directory, such as `cd tests && python -m SimpleHTTPServer` or `http-server ./tests/`
+1.  In a browser, go to [http://localhost:8080/manual/embed.html](http://localhost:8080/manual/embed.html).
 
 ### Build
 
