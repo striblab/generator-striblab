@@ -64,7 +64,7 @@ gulp.task('html', () => {
       prefix: '@@',
       basepath: '@file'
     }))
-    .pipe(ejs({ config: config, content: content, package: pkg, _: _ }).on('error', gutil.log))
+    .pipe(ejs({ config: config, content: content, package: pkg, _: _, argv: argv }).on('error', gutil.log))
     .pipe(rename(function(path) {
       path.basename = path.basename.replace('.ejs', '');
     }))

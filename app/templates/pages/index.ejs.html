@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <%% let thisPage = 'index'; %>
+    <% if (answers.projectType === 'cms') { %>@@include('./_cms-assets.ejs.html')<% } %>
     @@include('./_head.ejs.html')
   </head>
 
