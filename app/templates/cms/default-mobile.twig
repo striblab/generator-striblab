@@ -20,7 +20,7 @@
  # Allow LCD to override the hero
  #}
 {% block article_hero %}
-	{% if story.getLinkedContent('Hero') || story.getLinkedContent('Mobile hero') %}
+	{% if story.getLinkedContent('Hero') or story.getLinkedContent('Mobile hero') %}
     {% if story.getLinkedContent('Hero') %}
 		  {{ story.getLinkedContent('Hero')|replace({'<!-- share -->': sharing})|raw }}
   	{% endif %}
