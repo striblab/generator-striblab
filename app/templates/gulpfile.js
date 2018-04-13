@@ -45,7 +45,21 @@ require('dotenv').load({ silent: true });
 gulp.task('html', () => {
   const content = exists('content.json') ? require('./content.json') : {};
 
-  return gulp.src(['pages/**/*.ejs.html', '!pages/**/_*.ejs.html'])
+  return gulp.src(
+      _.filter(
+        _.flatten([
+          'pages/**/!(_)*.ejs.html',
+          // Get list of templates we might want rendered besides pages.
+          // See rewriting in server section.
+          config.cms && config.cms.rewriteMapping
+            ? _.map(
+              _.values(config.cms.rewriteMapping),
+              v => `pages/${v.replace(/\.html/, '.ejs.html')}`
+            )
+            : undefined
+        ])
+      )
+    )
     .pipe(include({
       prefix: '@@',
       basepath: '@file'
@@ -176,11 +190,66 @@ gulp.task('server', ['build'], () => {<% if (answers.projectType === 'cms' ) { %
   //
   // serve_static function for reference:
   // https://github.com/MinneapolisStarTribune/news-platform/blob/1a56bd11892f79e5d48a9263bed2db7c5539fc60/app/Extensions/helpers/url.php#L272
+  //
+  // Rewriting:
+  // We also utilise the config.json to tell use about any rewriting.  This
+  // is so that we can see in a real environment how the content will look
+  // on the page.  For instance, a key of "article-lcd-body-content" will
+  // look for the following to replace:
+  //
+  // <div class="article-lcd-body-content">
+  //   ...
+  // </div><!-- end article-lcd-body-content -->
+  //
+  // The value of the key is the file in the build directory.
+  //
+  // "cms": {
+  //   "id": "...",
+  //   "rewriteMapping": {
+  //     "article-lcd-body-content": "_index-content.html"
+  //   }
+  // },
+  let rewriteRules = undefined;
+  if (config.cms && config.cms.rewriteMapping) {
+    rewriteRules = [];
+
+    _.each(config.cms.rewriteMapping, (component, id) => {
+      rewriteRules.push({
+        match: new RegExp(
+          `<div class="${id}">([\\s\\S]*)<\\/div>\\s*<!-- end ${id} -->`,
+          'im'
+        ),
+        fn: function(request) {
+          // Make sure its only for the CMS pages and we have something
+          // to replace it with
+          if (
+            request.originalUrl.indexOf('preview=1&cache=trash') &&
+            exists(`build/${component}`)
+          ) {
+            let inject = fs.readFileSync(`build/${component}`, 'utf-8');
+
+            // Handle rewriting any production path urls for build
+            inject = inject.replace(
+              new RegExp(config.publish.production.url, 'ig'),
+              '/'
+            );
+
+            return `<div class="${id}">${inject}</div>`;
+          }
+
+          return `<div class="${id}">$1</div>`;
+        }
+      });
+    });
+  }
+
+  // No CMS, just static server
   if (argv.cms === false) {
     return browserSync.init({
       port: 3000,
       server: './build/',
-      files: './build/**/*'
+      files: './build/**/*',
+      logLevel: argv.debug ? 'debug' : 'info'
     });
   }
 
@@ -195,12 +264,15 @@ gulp.task('server', ['build'], () => {<% if (answers.projectType === 'cms' ) { %
       route: '/' + config.publish.production.path,
       dir: './build'
     }],
-    files: './build/**/*'
+    files: './build/**/*',
+    rewriteRules: rewriteRules,
+    logLevel: argv.debug ? 'debug' : 'info'
   });<% } else { %>
   return browserSync.init({
     port: 3000,
     server: './build/',
-    files: './build/**/*'
+    files: './build/**/*',
+    logLevel: argv.debug ? 'debug' : 'info'
   });<% } %>
 });
 
