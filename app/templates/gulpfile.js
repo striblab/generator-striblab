@@ -10,6 +10,7 @@
 
 // Dependencies
 const fs = require('fs');
+const _ = require('lodash');
 const path = require('path');
 const gulp = require('gulp');
 const ejs = require('gulp-ejs');
@@ -33,19 +34,27 @@ const webpackConfig = require('./webpack.config.js');
 const del = require('del');
 const gulpContent = require('./lib/gulp-content.js');
 const gulpPublish = require('./lib/gulp-publish.js');
-const _ = require('lodash');
 const jest = require('./lib/gulp-jest.js');
-const pkg = require('./package.json');
+const buildData = require('./lib/build-data.js');
 const config = exists('config.custom.json') ? require('./config.custom.json') : require('./config.json');
-
 const argv = require('yargs').argv;
 require('dotenv').load({ silent: true });
 
-// Process base html templates/pages (not templates used in front-end JS)
-gulp.task('html', () => {
-  const content = exists('content.json') ? require('./content.json') : {};
+// Process base html templates/pages (not templates used in front-end JS),
+// Add more data local or remotely like:
+//   events: 'http://example.com/events.json',
+//   things: 'source/things.csv'
+gulp.task('html', async () => {
+  let data = await buildData({
+    content: 'content.json',
+    pkg: 'package.json',
+    config: { data: config },
+    argv: { data: argv },
+    _: { data: _ }
+  });
 
-  return gulp.src(
+  return gulp
+    .src(
       _.filter(
         _.flatten([
           'pages/**/!(_)*.ejs.html',
@@ -64,7 +73,7 @@ gulp.task('html', () => {
       prefix: '@@',
       basepath: '@file'
     }))
-    .pipe(ejs({ config: config, content: content, package: pkg, _: _, argv: argv }).on('error', gutil.log))
+    .pipe(ejs(data).on('error', gutil.log))
     .pipe(rename(function(path) {
       path.basename = path.basename.replace('.ejs', '');
     }))
