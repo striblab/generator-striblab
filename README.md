@@ -27,7 +27,7 @@
 
 ## Development
 
-1.  Get this codebase: `git clone https://github.com/datanews/generator-striblab.git && generator-striblab`
+1.  Get this codebase: `git clone https://github.com/datanews/generator-striblab.git && cd  generator-striblab`
 1.  Install dependencies and link: `npm install && npm link`
 
 Each directory is a template, while files in `common/` are used across templates.
@@ -42,3 +42,13 @@ Manual testing can be done with these helpful commands.
 ### Favicons
 
 Favicons for front-end template generated manually with (Real Favicon Generator)[https://realfavicongenerator.net/].
+
+## Publishing
+
+Publish to [npm]().
+
+1. Update version, `X.X.X`, in `package.json` and then run `npm install`
+1. Commit changes, i.e. `git commit -m "Updated version."`
+1. Tag with the same version number: `git tag X.X.X`
+1. Push up to Github: `git push origin --tags`
+1. Publish to npm: `npm publish --access public`

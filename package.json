@@ -1,10 +1,15 @@
 {
-  "name": "generator-striblab",
-  "version": "0.1.2",
+  "name": "@striblab/generator-striblab",
+  "version": "0.1.3",
   "description": "Project generators for the Star Tribune newsroom projects",
-  "keywords": ["yeoman-generator"],
+  "keywords": [
+    "yeoman-generator"
+  ],
   "main": "app/index.js",
-  "files": ["app", "data"],
+  "files": [
+    "app",
+    "data"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
