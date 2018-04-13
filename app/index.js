@@ -16,6 +16,7 @@ const common = {
   output: require('../common/lib/output.js'),
   package: require('../common/lib/package.js')
 };
+require('../common/lib/update.js');
 
 // Common locations
 common.parts = path.join(__dirname, '../', 'common', 'template-parts');
