@@ -104,15 +104,21 @@ const App = class extends Generator {
         globOptions: {
           dot: true,
           // Ignore assets (and data if needed)
-          ignore: _.filter([
-            this.templatePath('./assets/**/*'),
-            this.answers.dataTemplate
-              ? undefined
-              : this.templatePath('./tests/data/**/*'),
-            this.answers.projectType === 'cms'
-              ? undefined
-              : this.templatePath('./cms/**/*')
-          ])
+          ignore: _.flatten(
+            _.filter([
+              this.templatePath('./assets/**/*'),
+              this.answers.dataTemplate
+                ? undefined
+                : this.templatePath('./tests/data/**/*'),
+              this.answers.projectType === 'cms'
+                ? // For the CMS version, we dont' use a full page structure
+                [
+                  this.templatePath('./pages/_footer*.html'),
+                  this.templatePath('./pages/_header*.html')
+                ]
+                : this.templatePath('./cms/**/*')
+            ])
+          )
         }
       }
     );
