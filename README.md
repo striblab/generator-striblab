@@ -7,7 +7,7 @@
 1.  Install [NodeJS](https://nodejs.org/en/).
     * On a Mac, install Homebrew and do: `brew install node`
 1.  Install [Yeoman](http://yeoman.io/), and [Gulp](https://gulpjs.com/): `npm install -g yo gulp`
-1.  Install generator: `npm install -g generator-striblab`
+1.  Install generator: `npm install -g @striblab/generator-striblab`
 
 ## Usage
 
@@ -45,7 +45,7 @@ Favicons for front-end template generated manually with (Real Favicon Generator)
 
 ## Publishing
 
-Publish to [npm]().
+Publish to [npm](https://www.npmjs.com/package/@striblab/generator-striblab).
 
 1. Update version, `X.X.X`, in `package.json` and then run `npm install`
 1. Commit changes, i.e. `git commit -m "Updated version."`
