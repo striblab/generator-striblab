@@ -41,7 +41,7 @@ Manual testing can be done with these helpful commands.
 
 ### Favicons
 
-Favicons for front-end template generated manually with (Real Favicon Generator)[https://realfavicongenerator.net/].
+Favicons for front-end template generated manually with [Real Favicon Generator](https://realfavicongenerator.net/).
 
 ## Publishing
 
