@@ -1,6 +1,6 @@
 {
   "name": "@striblab/generator-striblab",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "Project generators for the Star Tribune newsroom projects",
   "keywords": [
     "yeoman-generator"
