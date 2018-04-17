@@ -10,5 +10,6 @@ updateNotifier({
   // We want to see this every time
   updateCheckInterval: 1000 * 5
 }).notify({
+  defer: false,
   isGlobal: true
 });
