@@ -6,7 +6,9 @@ const updateNotifier = require('update-notifier');
 const pkg = require('../../package.json');
 
 updateNotifier({
-  pkg
+  pkg,
+  // We want to see this every time
+  updateCheckInterval: 1000 * 5
 }).notify({
   isGlobal: true
 });

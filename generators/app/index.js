@@ -92,10 +92,14 @@ const App = class extends Generator {
       this.destinationPath('./'),
       tContext,
       null,
-      { globOptions: { dot: true } }
+      {
+        globOptions: {
+          dot: true
+        }
+      }
     );
 
-    // Copy files to pass through template
+    // Copy app template files to pass through template
     this.fs.copyTpl(
       this.templatePath('./**/*'),
       this.destinationPath('./'),
@@ -105,9 +109,10 @@ const App = class extends Generator {
         globOptions: {
           dot: true,
           // Ignore assets (and data if needed)
-          ignore: _.flatten(
-            _.filter([
+          ignore: _.filter(
+            _.flatten([
               this.templatePath('./assets/**/*'),
+              this.templatePath('./.gitignore.tpl'),
               this.answers.dataTemplate
                 ? undefined
                 : this.templatePath('./tests/data/**/*'),
