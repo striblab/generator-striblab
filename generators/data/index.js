@@ -7,19 +7,20 @@
 const path = require('path');
 const _ = require('lodash');
 const ejs = require('ejs');
+const chalk = require('chalk');
 const Generator = require('yeoman-generator');
 const inputs = require('./input.js');
 const dependencies = require('./dependencies.json');
 const common = {
-  inputs: require('../shared/lib/input.js'),
-  output: require('../shared/lib/output.js'),
-  package: require('../shared/lib/package.js')
+  inputs: require('../../shared/lib/input.js'),
+  output: require('../../shared/lib/output.js'),
+  package: require('../../shared/lib/package.js')
 };
-require('../shared/lib/update.js');
+require('../../shared/lib/update.js');
 
 // Common locations
-common.parts = path.join(__dirname, '../', 'shared', 'template-parts');
-common.files = path.join(__dirname, '../', 'shared', 'template-files');
+common.parts = path.join(__dirname, '..', '..', 'shared', 'template-parts');
+common.files = path.join(__dirname, '..', '..', 'shared', 'template-files');
 
 // App generator
 const App = class extends Generator {
@@ -144,12 +145,13 @@ const App = class extends Generator {
   }
 
   // Install
-  installing() {
-    this.npmInstall();
+  install() {
+    this.log(chalk.cyan('Installing npm packages...'));
+    this.npmInstall(undefined, { silent: true, loglevel: 'error' });
   }
 
   // All done
-  done() {
+  end() {
     if (!this.options.composedWith) {
       this.log(common.output.done());
     }

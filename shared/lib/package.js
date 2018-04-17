@@ -29,10 +29,12 @@ module.exports = function(context, dependencies) {
       name: context.authorName,
       email: context.authorEmail
     },
-    repository: gitInfo['remote "origin"'] ? {
-      type: 'git',
-      url: gitInfo['remote "origin"'].url
-    } : undefined,
+    repository: gitInfo['remote "origin"']
+      ? {
+        type: 'git',
+        url: gitInfo['remote "origin"'].url
+      }
+      : undefined,
     main: context.main || 'app/index.js',
     scripts: {
       test: 'jest'

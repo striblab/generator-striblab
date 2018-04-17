@@ -12,15 +12,15 @@ const Generator = require('yeoman-generator');
 const inputs = require('./input.js');
 const dependencies = require('./dependencies.json');
 const common = {
-  inputs: require('../shared/lib/input.js'),
-  output: require('../shared/lib/output.js'),
-  package: require('../shared/lib/package.js')
+  inputs: require('../../shared/lib/input.js'),
+  output: require('../../shared/lib/output.js'),
+  package: require('../../shared/lib/package.js')
 };
-require('../shared/lib/update.js');
+require('../../shared/lib/update.js');
 
 // Common locations
-common.parts = path.join(__dirname, '../', 'shared', 'template-parts');
-common.files = path.join(__dirname, '../', 'shared', 'template-files');
+common.parts = path.join(__dirname, '..', '..', 'shared', 'template-parts');
+common.files = path.join(__dirname, '..', '..', 'shared', 'template-files');
 
 // Data location
 const dataTemplate = path.join(__dirname, '../', 'data', 'templates');
@@ -175,7 +175,8 @@ const App = class extends Generator {
 
   // Install
   install() {
-    this.npmInstall(undefined, undefined, () => {
+    this.log(chalk.cyan('\nInstalling npm packages...\n'));
+    this.npmInstall(undefined, { silent: true, loglevel: 'error' }).then(() => {
       // Do Google Spreadsheet steps here
       if (this.answers.googleSpreadsheet) {
         this._createSpreadsheet();

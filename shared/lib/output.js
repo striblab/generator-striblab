@@ -54,7 +54,9 @@ module.exports = {
       '    ' + chalk.bgGreen.black('       ★ We did it! ★         '),
       '    ' + chalk.bgGreen.black('                              '),
       '',
-      chalk.cyan('Please read the ') + chalk.yellow('README.md') + chalk.cyan(' that was generated in your'),
+      chalk.cyan('Please read the ') +
+        chalk.yellow('README.md') +
+        chalk.cyan(' that was generated in your'),
       chalk.cyan('new project for details on how the project is setup.'),
       ''
     ].join('\n');
