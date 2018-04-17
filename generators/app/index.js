@@ -143,11 +143,11 @@ const App = class extends Generator {
       this.destinationPath('.gitignore'),
       ejs.render(
         [
-          this.fs.read(this.templatePath('.gitignore')),
+          this.fs.read(this.templatePath('.gitignore.tpl')),
           this.answers.dataTemplate
-            ? this.fs.read(path.join(dataTemplate, '.gitignore'))
+            ? this.fs.read(path.join(dataTemplate, '.gitignore.tpl'))
             : '',
-          this.fs.read(path.join(common.parts, '.gitignore'))
+          this.fs.read(path.join(common.parts, '.gitignore.tpl'))
         ].join('\n\n'),
         tContext
       )

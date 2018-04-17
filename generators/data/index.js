@@ -101,7 +101,7 @@ const App = class extends Generator {
     // Copy data files to pass through template (standalone)
     if (!this.options.composedWith) {
       this.fs.copyTpl(
-        this.templatePath('.gitignore'),
+        this.templatePath('.gitignore.tpl'),
         this.destinationPath('.gitignore'),
         tContext,
         null,
@@ -123,8 +123,8 @@ const App = class extends Generator {
         this.destinationPath('.gitignore'),
         ejs.render(
           [
-            this.fs.read(this.templatePath('.gitignore')),
-            this.fs.read(path.join(common.parts, '.gitignore'))
+            this.fs.read(this.templatePath('.gitignore.tpl')),
+            this.fs.read(path.join(common.parts, '.gitignore.tpl'))
           ].join('\n\n'),
           tContext
         )
