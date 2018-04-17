@@ -4,7 +4,7 @@
 'use strict';
 
 // Dependencies
-const common = require('../common/lib/input.js');
+const common = require('../shared/lib/input.js');
 
 // Input config
 module.exports = function(generator, noCommon = false) {

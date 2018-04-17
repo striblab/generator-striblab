@@ -11,15 +11,15 @@ const Generator = require('yeoman-generator');
 const inputs = require('./input.js');
 const dependencies = require('./dependencies.json');
 const common = {
-  inputs: require('../common/lib/input.js'),
-  output: require('../common/lib/output.js'),
-  package: require('../common/lib/package.js')
+  inputs: require('../shared/lib/input.js'),
+  output: require('../shared/lib/output.js'),
+  package: require('../shared/lib/package.js')
 };
-require('../common/lib/update.js');
+require('../shared/lib/update.js');
 
 // Common locations
-common.parts = path.join(__dirname, '../', 'common', 'template-parts');
-common.files = path.join(__dirname, '../', 'common', 'template-files');
+common.parts = path.join(__dirname, '../', 'shared', 'template-parts');
+common.files = path.join(__dirname, '../', 'shared', 'template-files');
 
 // App generator
 const App = class extends Generator {

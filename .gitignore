@@ -1,6 +1,6 @@
-!common
-!common/*
-!common/**/*
+!shared
+!shared/*
+!shared/**/*
 
 npm-debug.log
 node_modules
