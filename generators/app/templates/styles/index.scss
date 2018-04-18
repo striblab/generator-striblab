@@ -4,6 +4,10 @@
  * http://sass-lang.com/
  */
 
+// Strib icons
+//$strib-fonts-location: '//static.startribune.com/assets/libs/strib-icons/0.0.9/';
+//@import '@striblab/node_modules/@striblab/strib-icons/build/strib-icons.scss';
+
 // Strib styles
 // https://github.com/striblab/strib-styles/blob/master/source/styles/_variables.scss
 <% if (answers.projectType === 'cms') { %>
@@ -11,9 +15,9 @@
 // wrapper that is very specific and wrap our other styles in it, so
 // that we don't affect other styles on the page.
 $selector-wrapper: '.strib.strib-styles.strib-styles-specifically';
-@import '../node_modules/strib-styles/source/styles/default-wrapper.scss';
+@import '@striblab/strib-styles/source/styles/default-wrapper.scss';
 <% } else { %>
-@import '../node_modules/strib-styles/source/styles/default.scss';
+@import '@striblab/strib-styles/source/styles/default.scss';
 <% } %>
 
 // Project specific styles.  Split styles into files per component
