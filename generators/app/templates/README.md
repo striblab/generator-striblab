@@ -2,10 +2,10 @@
 
 ## Embed
 
-This project is best used as a full, standalone page, or an embed. The best way to embed the piece is with the following code:
+This project is best used as a full, standalone page, or an iframe embed. The best way to embed the piece is with a `strib-tag`, or with the following code:
 
 ```html
-<div data-pym-src="http://static.startribune.com/projects/<%= package.name %>">Loading...</div>
+<div data-pym-src="https://static.startribune.com/news/projects/all/<%= package.name %>">Loading...</div>
 <script src="https://static.startribune.com/assets/libs/pym.js/1.3.2/pym.v1.min.js" type="text/javascript"></script>
 ```
 
@@ -13,7 +13,7 @@ This project is best used as a full, standalone page, or an embed. The best way 
 
 ## CMS
 
-This project is meant to live within the [Star Tribune CMS](https://cms.clickability.com/cms). Overall, this means that the markup and content are stored within the CMS, while the styling and javascript is created and managed here.
+This project is meant to live within the [Star Tribune CMS](https://cms.clickability.com/cms). Overall, this means that the markup and content are stored within the CMS, while the styling and javascript is managed externally, probably on S3.
 
 It is necessary to have [news-platform](https://github.com/MinneapolisStarTribune/news-platform/) running locally as this will create a connection to the CMS data. It is also important to have `news-platform` configured with the `ASSETS_STATIC_URL` environment variable set to `http://localhost:3000/` so that [news-platform](https://github.com/MinneapolisStarTribune/news-platform/) can find the files in this project.
 
@@ -49,9 +49,8 @@ To manually include specific includes that will work locally and in production, 
 
 The following are global prerequisites and may already be installed.
 
-1.  (on Mac) Install [homebrew](http://brew.sh/).
 1.  Install [Node.js](https://nodejs.org/en/).
-    * (on Mac) `brew install node`
+    * (on Mac) Install [homebrew](http://brew.sh/) then run: `brew install node`
 1.  Install [Gulp](http://gulpjs.com/): `npm install gulp -g`
 
 The following should be performed for initial and each code update:
@@ -62,15 +61,16 @@ The following should be performed for initial and each code update:
 
 To run a local web server that will auto-reload with [Browsersync](https://browsersync.io/), watch for file changes and re-build: `gulp develop`
 <% if (answers.projectType === 'cms') { %>
-There are some arguments that can alter the server behavior; you can run these in multiple Terminal tabs for different development needs:
+There are some arguments that can alter the local server behavior; you can run these in multiple Terminal tabs for different development needs:
 
-* For the mobile version of the site, use `gulp develop --mobile`.
-* If your project has multiple pages, you can target a specific article ID with `gulp develop --cms-id=123456`.
-* If you don't have the `news-platform` running locally, you can do `gulp develop --no-cms` which will not run the project through the CMS and thus not be fully tested.
-  <% } %>
+* Proxy through a local `news-platform` instance; if you don't know what that is, it is likely you don't have it setup. `gulp develop --cms`
+  * For the mobile version of the site, use `gulp develop --cms --mobile`.
+  * If your project has multiple pages, you can target a specific article ID with `gulp develop --cms --cms-id=123456`.
+    <% } %>
 
 ### Directories and files
 
+* `build/`: All the supporting files get compiled into this directory and this is what gets published.
 * `config.json`: Non-content config for application.
   * Use this to add non-local JS or CSS assets, such as from a CDN.
   * This can be overridden with a `config.custom.json` if there is a need to add configuration that should not be put into revision history.
@@ -84,8 +84,8 @@ There are some arguments that can alter the server behavior; you can run these i
   * `styles/_*.scss`: Any includes should be prefixed with an underscore.
 * `app/`: Where JS logic goes. This supports ES6+ JS syntax with [Babel](https://babeljs.io/) and gets compiled with [Webpack](https://webpack.js.org/).
   * `app/index.js`: Main entry point of application.
-* `assets/`: Various media files. This gets copied directly to build.
-* `sources/`: Directory is for all non-data source material, such as wireframes or original images. Note that if there are materials that should not be made public, consider using Dropbox and make a note in this file about how to access.
+* `assets/`: Various media files. This gets copied directly to the build.
+* `sources/`: Directory is for all non-data source material, such as wireframes or original images. Note that if there are materials that should not be made public, consider using Dropbox and make a note in this file about how to access, and make sure to update the `.gitignore` file.
 * `lib/`: Modules used in building or other non-data tasks.
 * `tests/`: Tests for app; see Testing section below.
 * The rest of the files are for building or meta-information about the project.
@@ -135,7 +135,7 @@ Depending on what libraries or dependencies you need to include there are a few 
     * For instance: `npm install --save awesome-lib`
     * This can then be included in the application, with something like:
       ```js
-      import awesome from 'awesome-lib';
+      import awesome from "awesome-lib";
       awesome.radical();
       ```
   * <% if (answers.projectType !== 'cms') { %>For dependencies that are very common and are available through a trusted CDN, you can include it in `config.json`.<% } else { %>In the template, you can include libraries from a CDN.<% } %> Consider using the [StribLab static libs CDN](https://github.com/striblab/static-libs).<% if (answers.projectType !== 'cms') { %>
@@ -143,7 +143,7 @@ Depending on what libraries or dependencies you need to include there are a few 
       ````js
       "js": {
         "globals": [
-          "https://cdnjs.cloudflare.com/ajax/libs/pym/1.1.2/pym.v1.min.js"
+          "https://static.startribune.com/assets/libs/pym.js/1.3.2/pym.v1.min.js"
         ]
       }
       ```<% } %>
@@ -157,7 +157,7 @@ Depending on what libraries or dependencies you need to include there are a few 
   * For local modules that you have written yourself, you can use the ES6 module syntax.
     * For instance, say you have created a `utils.js` module file, just use a relative path to include it:
       ```js
-      import utilsFn from './utils.js';
+      import utilsFn from "./utils.js";
       let utils = utilsFn({});
       ```
 * **CSS**
@@ -165,7 +165,7 @@ Depending on what libraries or dependencies you need to include there are a few 
     * For instance: `npm install --save normalize-scss`
     * This can then be included in the application, with something like:
       ```css
-      @import 'normalize-scss/sass/_normalize.scss';
+      @import "normalize-scss/sass/_normalize.scss";
       ```
   * <% if (answers.projectType !== 'cms') { %>For dependencies that are very common and are available through a trusted CDN, you can include it in `config.json`.<% } else { %>In the template, you can include libraries from a CDN.<% } %> Consider using the [StribLab static libs CDN](https://github.com/striblab/static-libs).<% if (answers.projectType !== 'cms') { %>
     * For instance:

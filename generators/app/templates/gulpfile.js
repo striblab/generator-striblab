@@ -84,14 +84,14 @@ gulp.task('html', async () => {
 // Lint HTML (happens after HTML build process).  The "stylish" version
 // is more succinct but its less helpful to find issues.
 gulp.task('html:lint', ['html'], () => {
-  return gulp.src('build/*.html')
+  return gulp.src('build/**/!(_)*.html')
     .pipe(htmlhint('.htmlhintrc'))
     .pipe(htmlhint.reporter('htmlhint-stylish'))
     .pipe(a11y())
     .pipe(a11y.reporter());
 });
 gulp.task('html:lint:details', ['html'], () => {
-  return gulp.src('build/*.html')
+  return gulp.src('build/**/!(_)*.html')
     .pipe(htmlhint('.htmlhintrc'))
     .pipe(htmlhint.reporter())
     .pipe(a11y())
@@ -252,8 +252,8 @@ gulp.task('server', ['build'], () => {<% if (answers.projectType === 'cms' ) { %
     });
   }
 
-  // No CMS, just static server
-  if (argv.cms === false) {
+  // No CMS, just static server, this is the default
+  if (!argv.cms) {
     return browserSync.init({
       port: 3000,
       server: './build/',
@@ -262,6 +262,7 @@ gulp.task('server', ['build'], () => {<% if (answers.projectType === 'cms' ) { %
     });
   }
 
+  // Use --cms to proxy local news-platform
   return browserSync.init({
     port: 3000,
     proxy: 'http://' +
