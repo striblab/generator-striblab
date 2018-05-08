@@ -1,4 +1,5 @@
 # Common
+.vscode
 .drake
 *yarn.lock
 .tmp
