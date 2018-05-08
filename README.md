@@ -22,7 +22,7 @@
 ### Specific generators
 
 * (default) `yo "@striblab/striblab"`: Front-end application. Some of the key questions asked in this process:
-  * Type of project. A _standalone embed_ is a bundled up project without external dependencies meant to be embedded in an article. The _CMS integration_ version changes the way the application gets hosted to work with the Star Tribune CMS and focuses on creating JS, CSS, and other supporting assets.
+  * Type of project. A _standalone embed_ is a bundled up project without external dependencies meant to be embedded in an article with an iframe. The _CMS integration_ version changes the way the application gets hosted to work with the Star Tribune CMS and focuses on creating JS, CSS, and other supporting assets.
   * Google spreadsheet integration. This is for a _standalone embed_ and sets up using a Google Spreadsheet to hold values that are used in the templates. This requires an API connection to Google and asks for the following:
     * The Google API email address which is something like `XXXXXX@XXXXXX.iam.gserviceaccount.com` and can be found in the authentication JSON you get in the Google API Console. The environment variable `GOOGLE_AUTH_CLIENT_EMAIL` will be the default.
     * The Google API private key address which is something like `--BEGIN PRIVATE--XX\\nXX\\nXX--END PRIVATE KEY--` and can be found in the authentication JSON you get in the Google API Console. The environment variable `GOOGLE_AUTH_PRIVATE_KEY` will be the default.
