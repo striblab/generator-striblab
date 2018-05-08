@@ -4,8 +4,8 @@
     "query-string": "^4.3.2"
   },
   "devDependencies": {
-    "@striblab/strib-styles": "^0.0.8",
-    "@striblab/strib-icons": "^0.0.9",
+    "@striblab/strib-styles": "^0.0.9",
+    "@striblab/strib-icons": "^0.0.10",
     "aws-sdk": "^2.211.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.4",
