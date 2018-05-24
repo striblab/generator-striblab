@@ -1,20 +1,62 @@
 /**
  * Input options
  */
-'use strict';
 
 // Dependencies
-const common = require('../../shared/lib/input.js');
+const _ = require('lodash');
 
 // Tests
 const emailTest = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i;
 
 // Input config
 module.exports = function(generator) {
-  var c = common(generator);
+  let c = [];
 
   // Type of project
-  c.push({
+  c.push(
+    {
+      type: 'input',
+      name: 'name',
+      message: 'Project name/identifier',
+      filter: _.kebabCase,
+      validate: function(str) {
+        return str.length > 0;
+      },
+      default: _.kebabCase(generator.appname)
+    },
+    {
+      type: 'input',
+      name: 'title',
+      message: 'Project title',
+      required: true,
+      validate: function(str) {
+        return str.length > 0;
+      },
+      default: _.startCase(generator.appname)
+    },
+    {
+      type: 'input',
+      name: 'description',
+      message: 'Description',
+      required: true,
+      validate: function(str) {
+        return str.length > 0;
+      }
+    },
+    {
+      name: 'authorName',
+      message: 'Author name',
+      default:
+        generator.user.git.name() ?
+          `${generator.user.git.name()}, Star Tribune` :
+          'Star Tribune visuals and design teams'
+    },
+    {
+      name: 'authorEmail',
+      message: 'Author email',
+      default: generator.user.git.email() || 'datadrop@startribune.com'
+    },
+    {
     type: 'list',
     name: 'projectType',
     message: 'What type of project is this?',
@@ -126,8 +168,8 @@ module.exports = function(generator) {
   // Include data template
   c.push({
     type: 'confirm',
-    name: 'dataTemplate',
-    message: 'Would you like to include the data analysis template?'
+    name: 'dataAnalysis',
+    message: 'Would you like to include the data analysis templates?'
   });
 
   // Add newline at the end of each, as its a bit easier on

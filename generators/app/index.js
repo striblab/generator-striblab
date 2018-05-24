@@ -9,33 +9,24 @@ const _ = require('lodash');
 const ejs = require('ejs');
 const chalk = require('chalk');
 const Generator = require('yeoman-generator');
-const inputs = require('./input.js');
 const dependencies = require('./dependencies.json');
-const common = {
-  inputs: require('../../shared/lib/input.js'),
-  output: require('../../shared/lib/output.js'),
-  package: require('../../shared/lib/package.js')
-};
-require('../../shared/lib/update.js');
+const inputs = require('./lib/input.js');
+const outputs = require('./lib/output.js');
+const writePackage = require('./lib/package.js');
 
-// Common locations
-common.parts = path.join(__dirname, '..', '..', 'shared', 'template-parts');
-common.files = path.join(__dirname, '..', '..', 'shared', 'template-files');
-
-// Data location
-const dataTemplate = path.join(__dirname, '../', 'data', 'templates');
+// Update notifier
+require('./lib/update.js');
 
 // App generator
 const App = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
-
     this.dependencies = dependencies;
   }
 
   // Input prompts
   prompting() {
-    this.log(common.output.welcome());
+    this.log(outputs.welcome());
 
     return this.prompt(inputs(this)).then(answers => {
       // Format some ansers
@@ -52,30 +43,13 @@ const App = class extends Generator {
 
   // Determine parts (sub generators)
   default() {
-    if (this.answers.dataTemplate) {
-      this.composeWithDataOptions = {
-        answers: this.answers,
-        skipInstall: true,
-        composedWith: this,
-        composedFrom: this.composeWithData
-      };
-      this.composeWith(require.resolve('../data'), this.composeWithDataOptions);
-    }
+    // Nothing
   }
 
   // Write files
   writing() {
     // Package.json
-    if (this.answers.dataTemplate) {
-      const d = require(path.join(dataTemplate, '../', 'dependencies.json'));
-      dependencies.devDependencies = _.extend(
-        {},
-        d.devDependencies,
-        d.dependencies,
-        dependencies.devDependencies
-      );
-    }
-    this.pkg = common.package(this.answers, dependencies);
+    this.pkg = writePackage(this.answers, this.dependencies);
     this.fs.writeJSON(this.destinationPath('package.json'), this.pkg);
 
     // Templating context
@@ -86,20 +60,8 @@ const App = class extends Generator {
       env: process.env
     };
 
-    // Copy common files to pass through template
-    this.fs.copyTpl(
-      path.join(common.files, '**/*'),
-      this.destinationPath('./'),
-      tContext,
-      null,
-      {
-        globOptions: {
-          dot: true
-        }
-      }
-    );
-
-    // Copy app template files to pass through template
+    // Copy template files.  Overall, assume files are template-able
+    // files.
     this.fs.copyTpl(
       this.templatePath('./**/*'),
       this.destinationPath('./'),
@@ -108,14 +70,22 @@ const App = class extends Generator {
       {
         globOptions: {
           dot: true,
-          // Ignore assets (and data if needed)
+          // Exceptions
           ignore: _.filter(
             _.flatten([
+              // Has images and binaries
               this.templatePath('./assets/**/*'),
+              // We need to rename this
               this.templatePath('./.gitignore.tpl'),
-              this.answers.dataTemplate
+              // No data analysis
+              this.answers.dataAnalysis
                 ? undefined
-                : this.templatePath('./tests/data/**/*'),
+                : [
+                  this.templatePath('./tests/data/**/*'),
+                  this.templatePath('./data/**/*'),
+                  this.templatePath('./data.workflow')
+                ],
+              // CMS
               this.answers.projectType === 'cms'
                 ? // For the CMS version, we dont' use a full page structure
                 [
@@ -143,38 +113,11 @@ const App = class extends Generator {
       tContext
     );
 
-    // Specifics that should be combined with common elements
-    this.fs.write(
-      this.destinationPath('.gitignore'),
-      ejs.render(
-        [
-          this.fs.read(this.templatePath('.gitignore.tpl')),
-          this.answers.dataTemplate
-            ? this.fs.read(path.join(dataTemplate, '.gitignore.tpl'))
-            : '',
-          this.fs.read(path.join(common.parts, '.gitignore.tpl'))
-        ].join('\n\n'),
-        tContext
-      )
-    );
-
-    // TODO: sub generators are one-way and can get data from parent, but not
-    // send data.  This means we can't know about data answers
-    this.answers.useDrake =
-      this.answers.useDrake === undefined ? true : this.answers.useDrake;
-    this.fs.write(
-      this.destinationPath('README.md'),
-      ejs.render(
-        [
-          this.fs.read(path.join(common.parts, 'README-header.md')),
-          this.answers.dataTemplate
-            ? this.fs.read(path.join(dataTemplate, 'README.md'))
-            : '',
-          this.fs.read(this.templatePath('README.md')),
-          this.fs.read(path.join(common.parts, 'README-footer.md'))
-        ].join('\n\n'),
-        tContext
-      )
+    // Gitignore needs to be renamed
+    this.fs.copyTpl(
+      this.templatePath('.gitignore.tpl'),
+      this.destinationPath('./.gitignore'),
+      tContext
     );
   }
 
@@ -191,7 +134,7 @@ const App = class extends Generator {
 
   // All done
   end() {
-    this.log(common.output.done());
+    this.log(outputs.done());
     this.log(
       chalk.cyan('Run ') +
         chalk.bgYellow.black(' gulp develop ') +

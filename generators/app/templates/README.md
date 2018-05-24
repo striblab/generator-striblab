@@ -1,3 +1,30 @@
+# <%= _.startCase(answers.name) %>
+
+<%= answers.description %>
+
+<% if (answers.dataAnalysis) { %>
+
+## Data
+
+_<Describe where data is from and include URLs.  Think about how you or someone else may come back to this in a year and will need to know what is going on and may need to recreate things. Include things like nuances in the data or why certain sources were used.>_
+
+### Data processing
+
+The following are prerequisite steps that only need to be performed once globally and may already be installed.
+
+1. Install [Drake](https://github.com/Factual/drake), a data processing alternative to `make`. See the `data.workflow` for some notes about Drake.
+   * On a Mac: `brew install drake`
+
+To perform data processing steps, run the following. Drake will tell you what steps are needed and confirm with you.
+
+* Main data processing steps: `drake -w data.workflow`
+* _(example) Cleanup data folders (will delete files): `drake -w data.workflow %cleanup`_
+* _(example) Run analysis steps; does not produce any output files: `drake -w data.workflow %analysis`_
+
+1. _Data processing steps here._
+1. ...
+   <% } %>
+
 <% if (answers.projectType === 'standalone') { %>
 
 ## Embed
@@ -49,13 +76,13 @@ To manually include specific includes that will work locally and in production, 
 
 The following are global prerequisites and may already be installed.
 
-1.  Install [Node.js](https://nodejs.org/en/).
-    * (on Mac) Install [homebrew](http://brew.sh/) then run: `brew install node`
-1.  Install [Gulp](http://gulpjs.com/): `npm install gulp -g`
+1. Install [Node.js](https://nodejs.org/en/).
+   * (on Mac) Install [homebrew](http://brew.sh/) then run: `brew install node`
+1. Install [Gulp](http://gulpjs.com/): `npm install gulp -g`
 
 The following should be performed for initial and each code update:
 
-1.  Install Node dependencies: `npm install`
+1. Install Node dependencies: `npm install`
 
 ### Local
 
@@ -135,7 +162,7 @@ Depending on what libraries or dependencies you need to include there are a few 
     * For instance: `npm install --save awesome-lib`
     * This can then be included in the application, with something like:
       ```js
-      import awesome from "awesome-lib";
+      import awesome from 'awesome-lib';
       awesome.radical();
       ```
   * <% if (answers.projectType !== 'cms') { %>For dependencies that are very common and are available through a trusted CDN, you can include it in `config.json`.<% } else { %>In the template, you can include libraries from a CDN.<% } %> Consider using the [StribLab static libs CDN](https://github.com/striblab/static-libs).<% if (answers.projectType !== 'cms') { %>
@@ -157,7 +184,7 @@ Depending on what libraries or dependencies you need to include there are a few 
   * For local modules that you have written yourself, you can use the ES6 module syntax.
     * For instance, say you have created a `utils.js` module file, just use a relative path to include it:
       ```js
-      import utilsFn from "./utils.js";
+      import utilsFn from './utils.js';
       let utils = utilsFn({});
       ```
 * **CSS**
@@ -165,7 +192,7 @@ Depending on what libraries or dependencies you need to include there are a few 
     * For instance: `npm install --save normalize-scss`
     * This can then be included in the application, with something like:
       ```css
-      @import "normalize-scss/sass/_normalize.scss";
+      @import 'normalize-scss/sass/_normalize.scss';
       ```
   * <% if (answers.projectType !== 'cms') { %>For dependencies that are very common and are available through a trusted CDN, you can include it in `config.json`.<% } else { %>In the template, you can include libraries from a CDN.<% } %> Consider using the [StribLab static libs CDN](https://github.com/striblab/static-libs).<% if (answers.projectType !== 'cms') { %>
     * For instance:
@@ -193,9 +220,9 @@ _TODO_: Some basic automated, cross-browser testing would be very beneficial. Un
 
 A manual test page is provided for looking at the piece embeded in another page.
 
-1.  Assumes you are running the development server with `gulp develop`
-1.  Run a local server for the test directory, such as `cd tests && python -m SimpleHTTPServer` or `http-server ./tests/`
-1.  In a browser, go to [http://localhost:8080/manual/embed.html](http://localhost:8080/manual/embed.html).
+1. Assumes you are running the development server with `gulp develop`
+1. Run a local server for the test directory, such as `cd tests && python -m SimpleHTTPServer` or `http-server ./tests/`
+1. In a browser, go to [http://localhost:8080/manual/embed.html](http://localhost:8080/manual/embed.html).
 
 ### Build
 
@@ -244,3 +271,33 @@ Using the flags `--testing`, `--staging`, or `--production` will switch context 
 The publishing function, uses a token that helps ensure a name collision with another project doesn't overwrite files unwittingly. The `publishToken` in `config.json` is used as an identifier. This gets deployed to S3 and then checked whenever publishing happens again. The `gulp publish` (run via `gulp deploy`) will automatically create this token if it doesn't exist.
 
 If you see an error message that states that the tokens do not match, make sure that the location you are publishing to doesn't have a different project at it, or converse with teammates or administrators about the issue.
+
+### Styles and practices
+
+Having a consistent style for code and similar aspects makes collaboration easier. Though there is nothing that enforces these things, intentionally so, spending some time to adhere to these styles will be beneficial in the long run.
+
+* **JS**: Javascript is linted with [ESLint](http://eslint.org/) and defined in `.eslintrc`.
+  * The defined style extends from [eslint:recommended](https://github.com/eslint/eslint/blob/master/conf/eslint.json) but is more focal about single quotes for strings and using semicolons.
+  * Install the following ESLint plugins for [Atom](https://atom.io/packages/linter-eslint), [Sublime Text](https://github.com/roadhump/SublimeLinter-eslint), or [others](http://eslint.org/docs/user-guide/integrations).
+* **Styles**: SASS (and CSS) is linted with [stylelint](https://stylelint.io/) and defined in `.styleintrc`.
+  * The defined style extends from [stylelint-config-standard](https://github.com/stylelint/stylelint-config-standard) with a couple additions to how colors are defined.
+  * Install the following stylelint plugins for [Atom](https://atom.io/packages/linter-stylelint), [Sublime Text](https://github.com/kungfusheep/SublimeLinter-contrib-stylelint), or [others](https://stylelint.io/user-guide/complementary-tools/).
+
+Other good practices that are not encompassed with linters.
+
+* **General**
+  * Comment as much as possible without being overly redundant.
+* **JS**
+  * Use small modules as much as possible.
+* **Styles**
+  * Use `class`es instead of `id`s for HTML elements, specifically for styling and JS.
+  * Use relative units such as `rem`, `em`, `vh`, `vw`, or `%`, instead of absolute values such as `px`. This helps accessibility as well as designing for different screen sizes.
+    * Overall, use `rem` for "component" level styling, such as a form, and then use `em` for styling inside components.
+
+## License
+
+Code is licensed under the MIT license included here. Content (such as images, video, audio, copy) can only be reused with express permission by Star Tribune.
+
+## Generated
+
+Generated by [Star Tribune StribLab generator](https://github.com/striblab/generator-striblab).

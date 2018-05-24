@@ -4,7 +4,7 @@
 ; workflow using Drake, a Make-like format focused on data.
 ; https://github.com/Factual/drake
 ;
-; Full documentation (suggested to switch to Viewing mode)
+; Full documentation (it is suggested to switch to Viewing mode)
 ; https://docs.google.com/document/d/1bF-OKNLIG10v_lMes_m4yyaJtAaJKtdK0Jizvi_MNsg/
 ;
 ; Suggested groups/tags of tasks:
