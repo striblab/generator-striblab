@@ -5,15 +5,14 @@
 <% if (answers.dataAnalysis) { %>
 
 ## Data
-
 _<Describe where data is from and include URLs.  Think about how you or someone else may come back to this in a year and will need to know what is going on and may need to recreate things. Include things like nuances in the data or why certain sources were used.>_
 
 ### Data processing
 
 The following are prerequisite steps that only need to be performed once globally and may already be installed.
 
-1. Install [Drake](https://github.com/Factual/drake), a data processing alternative to `make`. See the `data.workflow` for some notes about Drake.
-   * On a Mac: `brew install drake`
+1.  Install [Drake](https://github.com/Factual/drake), a data processing alternative to `make`. See the `data.workflow` for some notes about Drake.
+    * On a Mac: `brew install drake`
 
 To perform data processing steps, run the following. Drake will tell you what steps are needed and confirm with you.
 
@@ -21,15 +20,14 @@ To perform data processing steps, run the following. Drake will tell you what st
 * _(example) Cleanup data folders (will delete files): `drake -w data.workflow %cleanup`_
 * _(example) Run analysis steps; does not produce any output files: `drake -w data.workflow %analysis`_
 
-1. _Data processing steps here._
-1. ...
-   <% } %>
+1.  _Data processing steps here._
+1.  ...
+<% } %>
 
 <% if (answers.projectType === 'standalone') { %>
-
 ## Embed
 
-This project is best used as a full, standalone page, or an iframe embed. The best way to embed the piece is with a `strib-tag`, or with the following code:
+This project is best used as a full, standalone page, or an iframe embed. The best way to embed the piece is with a [strib-tag](http://static.startribune.com/news/tools/embed-it/), or with the following code:
 
 ```html
 <div data-pym-src="https://static.startribune.com/news/projects/all/<%= package.name %>">Loading...</div>
@@ -37,37 +35,32 @@ This project is best used as a full, standalone page, or an iframe embed. The be
 ```
 
 <% } else if (answers.projectType === 'cms') { %>
-
 ## CMS
 
 This project is meant to live within the [Star Tribune CMS](https://cms.clickability.com/cms). Overall, this means that the markup and content are stored within the CMS, while the styling and javascript is managed externally, probably on S3.
 
-It is necessary to have [news-platform](https://github.com/MinneapolisStarTribune/news-platform/) running locally as this will create a connection to the CMS data. It is also important to have `news-platform` configured with the `ASSETS_STATIC_URL` environment variable set to `http://localhost:3000/` so that [news-platform](https://github.com/MinneapolisStarTribune/news-platform/) can find the files in this project.
+### Setup
 
-Once a CMS article has been created and the template is set up, make sure to include the article ID in `config.json`.
+To setup an article to take advantage of this workflow:
 
-### Template
+1. Create an article.  Set the `Template overide` that is something like `Full page article vXX`.
+1. Make sure the Article ID is in `config.json` in this project.
+1. Create an LCD that is connected to the Article.
+    * You can update the `config.json` in this project with this ID, as it is helpful to have the reference, but it doesn't affect any development locally.
+    * Common values in the LCD to use:
+        * `content`: Main body of content, this is likely the `build/_index-content.html` file that is rendered.
+        * `styles`: `news/projects/all/<%= package.name %>/styles.bundle.css`
+        * `scripts`: `news/projects/all/<%= package.name %>/app.bundle.js`
+        * `script libraries` or `style libraries`
 
-The `news-platform`/CMS templates are written in [Twig](https://twig.symfony.com/). There are two templates, one for mobile, and one for desktop (though mobile can be ignored with an option in the CMS).
+### Local CMS
 
-In the `./cms/` directory, there are generic templates that can be used for most projects. All content and variable data is managed in an LCD (Linked Content Data). For more details, see [`./cms/README.md`](./cms/README.md).
+To test the content through a local [news-platform](https://github.com/MinneapolisStarTribune/news-platform/), make sure the following is true:
 
-#### Static asset function
-
-To manually include specific includes that will work locally and in production, one must use the `static_asset` function in the `news-platform` template. Basically, the path should be the path to where the assets will be published on `static.startribune.com`. To have the local server to react correctly to this, make sure that the `publish.production.path` is set to the same base path in `config.json`.
-
-```twig
-{% block styles %}
-  {{ parent() }}
-  <link rel="stylesheet" href="{{ static_asset('news/projects/all/<%= package.name %>/styles.bundle.css') }}">
-{% endblock %}
-
-{% block scripts %}
-  {{ parent() }}
-  <script type="text/javascript" src="{{ static_asset('news/projects/all/<%= package.name %>/app.bundle.js') }}"></script>
-{% endblock %}
-```
-
+* Ensure that `ASSETS_STATIC_URL` environment variable set to `http://localhost:3000/` for `news-platform`. This is necessary to use the local version of the assets in this project.
+* `news-platform` is installed and running.
+* In this project, make sure that the `config.json` has the correct values, see above.
+* To serve locally: `gulp develop --cms`
 <% }%>
 
 ## Development
@@ -76,24 +69,27 @@ To manually include specific includes that will work locally and in production, 
 
 The following are global prerequisites and may already be installed.
 
-1. Install [Node.js](https://nodejs.org/en/).
-   * (on Mac) Install [homebrew](http://brew.sh/) then run: `brew install node`
-1. Install [Gulp](http://gulpjs.com/): `npm install gulp -g`
+1.  Install [Node.js](https://nodejs.org/en/).
+    * (on Mac) Install [homebrew](http://brew.sh/) then run: `brew install node`
+1.  Install [Gulp](http://gulpjs.com/): `npm install gulp -g`
 
 The following should be performed for initial and each code update:
 
-1. Install Node dependencies: `npm install`
+1.  Install Node dependencies: `npm install`
 
 ### Local
 
-To run a local web server that will auto-reload with [Browsersync](https://browsersync.io/), watch for file changes and re-build: `gulp develop`
+To run a local web server that will auto-reload with [Browsersync](https://browsersync.io/), watch for file changes and re-build:
+  
+    gulp develop
+
 <% if (answers.projectType === 'cms') { %>
 There are some arguments that can alter the local server behavior; you can run these in multiple Terminal tabs for different development needs:
 
 * Proxy through a local `news-platform` instance; if you don't know what that is, it is likely you don't have it setup. `gulp develop --cms`
   * For the mobile version of the site, use `gulp develop --cms --mobile`.
   * If your project has multiple pages, you can target a specific article ID with `gulp develop --cms --cms-id=123456`.
-    <% } %>
+<% } %>
 
 ### Directories and files
 
@@ -116,8 +112,6 @@ There are some arguments that can alter the local server behavior; you can run t
 * `lib/`: Modules used in building or other non-data tasks.
 * `tests/`: Tests for app; see Testing section below.
 * The rest of the files are for building or meta-information about the project.
-
-<% if (answers.projectType !== 'cms') { %>
 
 ### Content and copy
 
@@ -151,7 +145,6 @@ You can then add collaborators to the spreadsheet with the following command. No
 ##### Spreadsheet format
 
 If you are using Google Spreadsheets for content, the headers should be `Key`, `Value`, `Type`, and `Notes`. It is important that these are there in that exact way. It is suggested to freeze the header row in case someone changes the order of the spreadsheet.
-<% } %>
 
 ### Dependencies and modules
 
@@ -162,19 +155,18 @@ Depending on what libraries or dependencies you need to include there are a few 
     * For instance: `npm install --save awesome-lib`
     * This can then be included in the application, with something like:
       ```js
-      import awesome from 'awesome-lib';
+      import awesome from "awesome-lib";
       awesome.radical();
       ```
-  * <% if (answers.projectType !== 'cms') { %>For dependencies that are very common and are available through a trusted CDN, you can include it in `config.json`.<% } else { %>In the template, you can include libraries from a CDN.<% } %> Consider using the [StribLab static libs CDN](https://github.com/striblab/static-libs).<% if (answers.projectType !== 'cms') { %>
+  * For dependencies that are very common and are available through a trusted CDN, you can include it in `config.json`.  Consider using the [StribLab static libs CDN](https://github.com/striblab/static-libs).<% if (answers.projectType === 'cms') { %>  For CMS integration, these scripts should be included in the `script libraries` in the LCD<% } %>
     * For instance:
-      ````js
+      ```js
       "js": {
         "globals": [
           "https://static.startribune.com/assets/libs/pym.js/1.3.2/pym.v1.min.js"
         ]
       }
-      ```<% } %>
-      ````
+      ```
     * In your application, make sure to add a comment like the following so that linters will know that the dependency is already loaded.
       ```js
       /* global Pym */
@@ -184,7 +176,7 @@ Depending on what libraries or dependencies you need to include there are a few 
   * For local modules that you have written yourself, you can use the ES6 module syntax.
     * For instance, say you have created a `utils.js` module file, just use a relative path to include it:
       ```js
-      import utilsFn from './utils.js';
+      import utilsFn from "./utils.js";
       let utils = utilsFn({});
       ```
 * **CSS**
@@ -192,18 +184,17 @@ Depending on what libraries or dependencies you need to include there are a few 
     * For instance: `npm install --save normalize-scss`
     * This can then be included in the application, with something like:
       ```css
-      @import 'normalize-scss/sass/_normalize.scss';
+      @import "normalize-scss/sass/_normalize.scss";
       ```
-  * <% if (answers.projectType !== 'cms') { %>For dependencies that are very common and are available through a trusted CDN, you can include it in `config.json`.<% } else { %>In the template, you can include libraries from a CDN.<% } %> Consider using the [StribLab static libs CDN](https://github.com/striblab/static-libs).<% if (answers.projectType !== 'cms') { %>
+  * For dependencies that are very common and are available through a trusted CDN, you can include it in `config.json`.  Consider using the [StribLab static libs CDN](https://github.com/striblab/static-libs).<% if (answers.projectType === 'cms') { %>  For CMS integration, these scripts should be included in the `style libraries` in the LCD<% } %>
     * For instance:
-      ````js
+      ```js
       "css": {
         "globals": [
           "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
         ]
       }
-      ```<% } %>
-      ````
+      ```
     * **IMPORTANT** Make sure to always use a specific version from a CDN; do not use _latest_ or something similar.
 
 ### Testing
@@ -220,9 +211,9 @@ _TODO_: Some basic automated, cross-browser testing would be very beneficial. Un
 
 A manual test page is provided for looking at the piece embeded in another page.
 
-1. Assumes you are running the development server with `gulp develop`
-1. Run a local server for the test directory, such as `cd tests && python -m SimpleHTTPServer` or `http-server ./tests/`
-1. In a browser, go to [http://localhost:8080/manual/embed.html](http://localhost:8080/manual/embed.html).
+1.  Assumes you are running the development server with `gulp develop`
+1.  Run a local server for the test directory, such as `cd tests && python -m SimpleHTTPServer` or `http-server ./tests/`
+1.  In a browser, go to [http://localhost:8080/manual/embed.html](http://localhost:8080/manual/embed.html).
 
 ### Build
 
@@ -272,7 +263,7 @@ The publishing function, uses a token that helps ensure a name collision with an
 
 If you see an error message that states that the tokens do not match, make sure that the location you are publishing to doesn't have a different project at it, or converse with teammates or administrators about the issue.
 
-### Styles and practices
+### Code styles
 
 Having a consistent style for code and similar aspects makes collaboration easier. Though there is nothing that enforces these things, intentionally so, spending some time to adhere to these styles will be beneficial in the long run.
 
@@ -282,17 +273,6 @@ Having a consistent style for code and similar aspects makes collaboration easie
 * **Styles**: SASS (and CSS) is linted with [stylelint](https://stylelint.io/) and defined in `.styleintrc`.
   * The defined style extends from [stylelint-config-standard](https://github.com/stylelint/stylelint-config-standard) with a couple additions to how colors are defined.
   * Install the following stylelint plugins for [Atom](https://atom.io/packages/linter-stylelint), [Sublime Text](https://github.com/kungfusheep/SublimeLinter-contrib-stylelint), or [others](https://stylelint.io/user-guide/complementary-tools/).
-
-Other good practices that are not encompassed with linters.
-
-* **General**
-  * Comment as much as possible without being overly redundant.
-* **JS**
-  * Use small modules as much as possible.
-* **Styles**
-  * Use `class`es instead of `id`s for HTML elements, specifically for styling and JS.
-  * Use relative units such as `rem`, `em`, `vh`, `vw`, or `%`, instead of absolute values such as `px`. This helps accessibility as well as designing for different screen sizes.
-    * Overall, use `rem` for "component" level styling, such as a form, and then use `em` for styling inside components.
 
 ## License
 

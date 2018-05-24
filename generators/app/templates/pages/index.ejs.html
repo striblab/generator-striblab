@@ -7,15 +7,20 @@
   </head>
 
   <body class="">
-    <div class="<% if (answers.projectType === 'cms') { %>strib strib-styles strib-styles-specifically<% } %>">
+    <% if (answers.projectType === 'cms') { %>
+    <div class="<%= answers.stribStylesWrapper.replace(/\./g, ' ').trim() %>">
       @@include('./_cms-nav.ejs.html')
     </div>
+    <% } %>
 
-    @@include('./_index-content.ejs.html')`
+    <% if (answers.projectType === 'cms') { %><!-- This is the main content that will go in the LCD --><% } %>
+    @@include('./_index-content.ejs.html')
 
-    <div class="<% if (answers.projectType === 'cms') { %>strib strib-styles strib-styles-specifically<% } %>">
+    <% if (answers.projectType === 'cms') { %>
+    <div class="<%= answers.stribStylesWrapper.replace(/\./g, ' ').trim() %>">
       @@include('./_cms-footer.ejs.html')
     </div>
+    <% } %>
 
     <!-- Global/external scripts -->
     <%% if (config.js && config.js.globals) { config.js.globals.forEach(function(s) { %>

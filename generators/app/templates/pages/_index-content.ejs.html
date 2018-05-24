@@ -1,5 +1,5 @@
 <% if (answers.projectType === 'cms') { %>
-<div class="strib strib-styles strib-styles-specifically">
+<div class="<%= answers.stribStylesWrapper.replace(/\./g, ' ').trim() %>">
   <section class="container-lg">
     <p>Content goes here.</p>
   </section>

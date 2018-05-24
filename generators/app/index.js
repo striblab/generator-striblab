@@ -84,15 +84,7 @@ const App = class extends Generator {
                   this.templatePath('./tests/data/**/*'),
                   this.templatePath('./data/**/*'),
                   this.templatePath('./data.workflow')
-                ],
-              // CMS
-              this.answers.projectType === 'cms'
-                ? // For the CMS version, we dont' use a full page structure
-                [
-                  this.templatePath('./pages/_footer*.html'),
-                  this.templatePath('./pages/_header*.html')
                 ]
-                : this.templatePath('./cms/**/*')
             ])
           )
         }

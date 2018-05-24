@@ -83,6 +83,18 @@ module.exports = function(generator) {
   // CMS questions
   c.push({
     type: 'input',
+    name: 'stribStylesWrapper',
+    required: true,
+    default: '.strib-styles.ssa.ssb.ssc',
+    message:
+      'Strib Styles CSS selector wrapper; this ensures that the\n   Strib Styles are only applied to the project\'s content',
+    when: answers => {
+      return answers.projectType === 'cms';
+    }
+  });
+
+  c.push({
+    type: 'input',
     name: 'cmsIDs',
     required: true,
     message:
@@ -107,11 +119,7 @@ module.exports = function(generator) {
     type: 'confirm',
     name: 'googleSpreadsheet',
     message:
-      'Would you like to use Google Spreadsheets to maintain some content/copy\n   of this project? Note that this will require some extra setup.',
-    when: answers => {
-      // CMS will most likely not use a Google Spreadsheet for content
-      return answers.projectType !== 'cms';
-    }
+      'Would you like to use Google Spreadsheets to maintain some content/copy\n   of this project? Note that this will require some extra setup.'
   });
 
   c.push({
