@@ -46,10 +46,9 @@ module.exports = function(generator) {
     {
       name: 'authorName',
       message: 'Author name',
-      default:
-        generator.user.git.name() ?
-          `${generator.user.git.name()}, Star Tribune` :
-          'Star Tribune visuals and design teams'
+      default: generator.user.git.name()
+        ? `${generator.user.git.name()}, Star Tribune`
+        : 'Star Tribune visuals and design teams'
     },
     {
       name: 'authorEmail',
@@ -57,24 +56,25 @@ module.exports = function(generator) {
       default: generator.user.git.email() || 'datadrop@startribune.com'
     },
     {
-    type: 'list',
-    name: 'projectType',
-    message: 'What type of project is this?',
-    default: 'standalone',
-    choices: [
-      {
-        name: 'Standalone embed -- Will probably be used in an iframe.',
-        value: 'standalone',
-        short: 'Standalone embed'
-      },
-      {
-        name:
-          'CMS integration -- Markup lives in the CMS with assets managed in project.',
-        value: 'cms',
-        short: 'CMS integration'
-      }
-    ]
-  });
+      type: 'list',
+      name: 'projectType',
+      message: 'What type of project is this?',
+      default: 'standalone',
+      choices: [
+        {
+          name: 'Standalone embed -- Will probably be used in an iframe.',
+          value: 'standalone',
+          short: 'Standalone embed'
+        },
+        {
+          name:
+            'CMS integration -- Markup lives in the CMS with assets managed in project.',
+          value: 'cms',
+          short: 'CMS integration'
+        }
+      ]
+    }
+  );
 
   // CMS questions
   c.push({
