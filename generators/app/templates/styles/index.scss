@@ -6,8 +6,8 @@
 
 <% if (package && package.devDependencies['@striblab/strib-icons']) { %>
 // Include strib-icons
-$strib-fonts-location: '//static.startribune.com/assets/libs/strib-icons/<%= package.devDependencies["@striblab/strib-icons"].replace(/[^0-9.]/g, '') %>';
-@import '../../../node_modules/@striblab/strib-icons/build/strib-icons.scss';
+$strib-fonts-location: '//static.startribune.com/assets/libs/strib-icons/<%= package.devDependencies["@striblab/strib-icons"].replace(/[^0-9.]/g, '') %>/';
+@import '@striblab/strib-icons/build/strib-icons.scss';
 <% } %>
 
 // Strib styles
