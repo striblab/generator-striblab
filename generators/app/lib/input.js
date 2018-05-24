@@ -12,69 +12,73 @@ const emailTest = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"
 module.exports = function(generator) {
   let c = [];
 
-  // Type of project
-  c.push(
-    {
-      type: 'input',
-      name: 'name',
-      message: 'Project name/identifier',
-      filter: _.kebabCase,
-      validate: function(str) {
-        return str.length > 0;
-      },
-      default: _.kebabCase(generator.appname)
+  // Basic questions
+  c.push({
+    type: 'input',
+    name: 'name',
+    message: 'Project name/identifier',
+    filter: _.kebabCase,
+    validate: function(str) {
+      return str.length > 0;
     },
-    {
-      type: 'input',
-      name: 'title',
-      message: 'Project title',
-      required: true,
-      validate: function(str) {
-        return str.length > 0;
-      },
-      default: _.startCase(generator.appname)
+    default: _.kebabCase(generator.appname)
+  });
+
+  c.push({
+    type: 'input',
+    name: 'title',
+    message: 'Project title',
+    required: true,
+    validate: function(str) {
+      return str.length > 0;
     },
-    {
-      type: 'input',
-      name: 'description',
-      message: 'Description',
-      required: true,
-      validate: function(str) {
-        return str.length > 0;
-      }
-    },
-    {
-      name: 'authorName',
-      message: 'Author name',
-      default: generator.user.git.name()
-        ? `${generator.user.git.name()}, Star Tribune`
-        : 'Star Tribune visuals and design teams'
-    },
-    {
-      name: 'authorEmail',
-      message: 'Author email',
-      default: generator.user.git.email() || 'datadrop@startribune.com'
-    },
-    {
-      type: 'list',
-      name: 'projectType',
-      message: 'What type of project is this?',
-      default: 'standalone',
-      choices: [
-        {
-          name: 'Standalone embed -- Will probably be used in an iframe.',
-          value: 'standalone',
-          short: 'Standalone embed'
-        },
-        {
-          name:
-            'CMS integration -- Markup lives in the CMS with assets managed in project.',
-          value: 'cms',
-          short: 'CMS integration'
-        }
-      ]
+    default: _.startCase(generator.appname)
+  });
+
+  c.push({
+    type: 'input',
+    name: 'description',
+    message: 'Description',
+    required: true,
+    validate: function(str) {
+      return str.length > 0;
     }
-  );
+  });
+
+  c.push({
+    name: 'authorName',
+    message: 'Author name',
+    default: generator.user.git.name()
+      ? `${generator.user.git.name()}, Star Tribune`
+      : 'Star Tribune visuals and design teams'
+  });
+
+  c.push({
+    name: 'authorEmail',
+    message: 'Author email',
+    default: generator.user.git.email() || 'datadrop@startribune.com'
+  });
+
+  // Project type
+  c.push({
+    type: 'list',
+    name: 'projectType',
+    message: 'What type of project is this?',
+    default: 'standalone',
+    choices: [
+      {
+        name: 'Standalone embed -- Will probably be used in an iframe.',
+        value: 'standalone',
+        short: 'Standalone embed'
+      },
+      {
+        name:
+          'CMS integration -- Markup lives in the CMS with assets managed in project.',
+        value: 'cms',
+        short: 'CMS integration'
+      }
+    ]
+  });
 
   // CMS questions
   c.push({
