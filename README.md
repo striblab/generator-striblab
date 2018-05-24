@@ -27,13 +27,11 @@
     * The Google API email address which is something like `XXXXXX@XXXXXX.iam.gserviceaccount.com` and can be found in the authentication JSON you get in the Google API Console. The environment variable `GOOGLE_AUTH_CLIENT_EMAIL` will be the default.
     * The Google API private key address which is something like `--BEGIN PRIVATE--XX\\nXX\\nXX--END PRIVATE KEY--` and can be found in the authentication JSON you get in the Google API Console. The environment variable `GOOGLE_AUTH_PRIVATE_KEY` will be the default.
     * Your private Google email to assign ownership of the new spreadsheet for. The environment variable `GOOGLE_DEFAULT_SPREADSHEET_OWNER` will be the default.
-  * Whether or not to include the data analysis template (see below).
-* `yo "@striblab/striblab:data"`: Just the data analysis template. The main questions for this template are the following:
-  * Whether to provide an example [Drake](https://github.com/Factual/drake) and some documentation for it
+  * Whether or not to include the data analysis templates, which is a folder for data analysis and an example [Drake](https://github.com/Factual/drake) workflow file.
 
 ## Development
 
-1.  Get this codebase: `git clone https://github.com/datanews/generator-striblab.git && cd generator-striblab`
+1.  Get this codebase: `git clone https://github.com/striblab/generator-striblab.git && cd generator-striblab`
 1.  Install dependencies and link: `npm install && npm link`
 
 Each directory is a template, while files in `common/` are used across templates.
