@@ -4,9 +4,7 @@
 'use strict';
 
 // Dependencies
-const path = require('path');
 const _ = require('lodash');
-const ejs = require('ejs');
 const chalk = require('chalk');
 const Generator = require('yeoman-generator');
 const dependencies = require('./dependencies.json');
@@ -117,10 +115,7 @@ const App = class extends Generator {
   install() {
     this.log(chalk.cyan('\nInstalling npm packages...\n'));
     this.npmInstall(undefined, { silent: true, loglevel: 'error' }).then(() => {
-      // Do Google Spreadsheet steps here
-      if (this.answers.googleSpreadsheet) {
-        this._createSpreadsheet();
-      }
+      // Do post install stuff here
     });
   }
 
@@ -138,60 +133,6 @@ const App = class extends Generator {
         chalk.bgYellow.black(' gulp help ') +
         chalk.cyan(' to see the other available commands.')
     );
-    this.log();
-  }
-
-  // Create google spreadsheet step
-  _createSpreadsheet() {
-    this.log();
-    this.log(chalk.cyan('Setting up the Google Spreadsheet.'));
-    this.log();
-
-    // TODO: Find a way to make these commands not show output.
-    let create = this.spawnCommandSync('gulp', [
-      'content:create',
-      '--quiet',
-      '--email',
-      this.answers.googleSpreadsheetOwner
-    ]);
-    if (create && create.error) {
-      this.log(chalk.red('Error creating spreadsheet.'));
-      throw create.error;
-    }
-
-    let owner = this.spawnCommandSync('gulp', [
-      'content:owner',
-      '--email',
-      this.answers.googleSpreadsheetOwner
-    ]);
-    if (owner && owner.error) {
-      this.log(
-        chalk.red(
-          'Error changing owner to: ' + this.answers.googleSpreadsheetOwner
-        )
-      );
-      throw owner.error;
-    }
-
-    this.log();
-    this.log(
-      chalk.cyan(
-        'Spreadsheet setup successfully. We changed the owner to this \nemail address:\n\n'
-      ) +
-        '  ' +
-        chalk.green(this.answers.googleSpreadsheetOwner) +
-        '\n\n' +
-        chalk.cyan(
-          'If you want to share this speadsheet with other \nGoogle accounts, you can run something like:\n\n'
-        ) +
-        '  ' +
-        chalk.bgYellow.black('gulp content:share --email XXXXXX@XXXXX.COM') +
-        '\n\n' +
-        chalk.cyan('To open the spreadsheet in your browser, use:\n\n') +
-        '  ' +
-        chalk.bgYellow.black('gulp content:open')
-    );
-    this.log();
     this.log();
   }
 };

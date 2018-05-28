@@ -36,7 +36,6 @@ const BuildData = require('./lib/build-data.js');
 //const gulpContent = require('./lib/gulp-content.js');
 const gulpPublish = require('./lib/gulp-publish.js');
 const jest = require('./lib/gulp-jest.js');
-const buildData = require('./lib/build-data.js');
 const config = exists('config.custom.json') ? require('./config.custom.json') : require('./config.json');
 const argv = require('yargs').argv;
 require('dotenv').load({ silent: true });
@@ -337,7 +336,7 @@ gulp.task('help', taskListing);
 function getConfig() {
   return exists('config.custom.json')
     ? require('./config.custom.json')
-      : require('./config.json');
+    : require('./config.json');
 }
 
 // Check file/fir exists

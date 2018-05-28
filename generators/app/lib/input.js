@@ -114,69 +114,6 @@ module.exports = function(generator) {
     }
   });
 
-  // Use google for content
-  c.push({
-    type: 'confirm',
-    name: 'googleSpreadsheet',
-    message:
-      'Would you like to use Google Spreadsheets to maintain some content/copy\n   of this project? Note that this will require some extra setup.'
-  });
-
-  c.push({
-    type: 'input',
-    name: 'googleSpreadsheetEmail',
-    message:
-      'Enter your Google API client email.\n   This is something like: XXXXXX@XXXXXX.iam.gserviceaccount.com',
-    required: true,
-    validate: function(str) {
-      return str.length > 0 && emailTest.test(str);
-    },
-    default: () => {
-      return process.env.GOOGLE_AUTH_CLIENT_EMAIL || undefined;
-    },
-    when: answers => {
-      return answers.googleSpreadsheet === true;
-    }
-  });
-
-  c.push({
-    type: 'input',
-    name: 'googleSpreadsheetKey',
-    message:
-      'Enter your Google API private key.\n   This is something like: --BEGIN PRIVATE--XX\\nXX\\nXX--END PRIVATE KEY--',
-    required: true,
-    validate: function(str) {
-      return str.length > 0;
-    },
-    default: () => {
-      return process.env.GOOGLE_AUTH_PRIVATE_KEY || undefined;
-    },
-    when: answers => {
-      return answers.googleSpreadsheet === true;
-    }
-  });
-
-  c.push({
-    type: 'input',
-    name: 'googleSpreadsheetOwner',
-    message:
-      'Enter your personal Google Email to set the owner of the spreadsheet.\n   This may be something like name@gmail.com and will be different than the email above.',
-    required: true,
-    validate: function(str) {
-      return str.length > 0 && emailTest.test(str);
-    },
-    default: () => {
-      return (
-        process.env.GOOGLE_DEFAULT_SPREADSHEET_OWNER ||
-        generator.user.git.email() ||
-        undefined
-      );
-    },
-    when: answers => {
-      return answers.googleSpreadsheet === true;
-    }
-  });
-
   // Include data template
   c.push({
     type: 'confirm',
