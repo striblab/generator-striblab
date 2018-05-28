@@ -4,7 +4,7 @@
 
 <% if (answers.dataAnalysis) { %>
 
-## Data
+## Data analysis
 _<Describe where data is from and include URLs.  Think about how you or someone else may come back to this in a year and will need to know what is going on and may need to recreate things. Include things like nuances in the data or why certain sources were used.>_
 
 ### Data processing
@@ -63,6 +63,61 @@ To test the content through a local [news-platform](https://github.com/Minneapol
 * To serve locally: `gulp develop --cms`
 <% }%>
 
+## Application data
+
+Data to pull into the application for HTML rendering or to put into `assets/` for the client can be handled in the `config.json` or for control, directly in the `gulpfile.js`.  Different local and remote sources can be easily brought into the application this way.  Any remote sources will be cached locally.
+
+* Add entries in the `data` key in `config.json`.
+* Or within the `html` task fo the `gulpfile.js`.
+
+Data sources can be described in a number of ways.
+
+* Just use a local path, like `sources/data.json`, so your config might looks something like:   
+    ```
+    {
+      ...
+      "data": {
+        templateData: 'sources/custom-data.json'
+      },
+      ...
+    }
+    ```
+* You can also do the same with a remote source, like `http://example.com/some-data.csv`
+* If you have a "Published to the web" CSV of a Google Sheet, you can use that as well; such as `https://docs.google.com/spreadsheets/d/e/XXXXXX/pub?output=csv`
+* Or a "Published to the web" Google Document in [ArchieML](http://archieml.org/) format; such as `https://docs.google.com/document/d/e/XXXXX/pub`.
+* For more control, you can use more options.  You can force a specific type of data with the type paramter:  
+    ```
+    {
+      source: 'sources/example.jsonext',
+      type: 'json'
+    }
+    ```
+* We can also connect to Airtable.  Make sure to have the `AIRTABLE_API_KEY` environment variable set:  
+    ```
+    {
+      type: 'airtable',
+      base: 'XXXXX',
+      table: 'Table name',
+      ttl: 600000
+    }
+    ```
+* For private Google Docs or Spreadsheets, make sure to have an API config file, and set the path in the `GOOGLE_APPLICATION_CREDENTIALS` environment variables.  From there, we can use just the file ID as the source.  
+    ```
+    {
+      type: 'google-doc',
+      id: 'XXXXXXX'
+    }
+    ```
+* For a Google Spreadsheet that you want to transform into an object, the spreadsheet needs to have the `Key`, `Value`, and `Type` columns set up, then you can just add the `keyColumn`.  
+    ```
+    {
+      type: 'google-doc',
+      id: 'XXXXXXX',
+      sheet: 'XXXXXX',
+      keyColumn: true
+    }
+    ```
+
 ## Development
 
 ### Install
@@ -97,8 +152,8 @@ There are some arguments that can alter the local server behavior; you can run t
 * `config.json`: Non-content config for application.
   * Use this to add non-local JS or CSS assets, such as from a CDN.
   * This can be overridden with a `config.custom.json` if there is a need to add configuration that should not be put into revision history.
-* `content.json`: See _Content and copy_. This file is used to hold content values. If the project is hooked up to a Google Spreadsheet, you should not manually edit this file.
-* `pages/`: Holds HTML-like templates. Any files in here will get run through [EJS](http://www.embeddedjs.com/) templating and passed values from `config.json`, `content.json`, and `package.json`.
+* `content.json`: This is the default way to manage content values.  See the *Application data* section above for more ways to hook up other data sources.
+* `pages/`: Holds HTML-like templates. Any files in here will get run through [EJS](http://www.embeddedjs.com/) templating and passed values from the *Application data*, such as `config.json`, `content.json`, and `package.json` will be available.
   * `pages/index.ejs.html`: The default page for the application.
   * `pages/_*.ejs.html`: Includes for other templates.
   * `pages/*.ejs.html`: Any templates without a `_` prefix will be rendered into an full HTML page.
@@ -112,39 +167,6 @@ There are some arguments that can alter the local server behavior; you can run t
 * `lib/`: Modules used in building or other non-data tasks.
 * `tests/`: Tests for app; see Testing section below.
 * The rest of the files are for building or meta-information about the project.
-
-### Content and copy
-
-By default, content items can be managed in `content.json`. The values put in here will be available in the templates in the `pages/` directory as the `content` object. This can be a helpful way to separate out content from code.
-
-#### Google Spreadsheets
-
-If `config.json` has a `content.spreadsheetId` value specified, `content.json` can be updated with information from a Google Spreadsheet.
-
-Since getting this content may not be very speedy, this is not done during `gulp develop`, so it requires a manual call: `gulp content`
-
-##### Setting up
-
-If you went through the [Striblab Generator](https://www.npmjs.com/package/generator-striblab), then this is probably already set up for you, but in case it is not.
-
-Getting content from a Google Spreadsheet depends on a few configurations. You need need a Google Account (such as a Gmail account) and a Google Developer API Service Account that has read and write access to Google Sheets and Google Drive. You should then set the following environment variables. You can store these values in a [`.env`](https://www.npmjs.com/package/dotenv) file.
-
-* `GOOGLE_AUTH_CLIENT_EMAIL`: This will be something like _XXXXXX@XXXXXX.iam.gserviceaccount.com_.
-* `GOOGLE_AUTH_PRIVATE_KEY`: This will be something pretty long, like _--BEGIN PRIVATE--XXXXX--END PRIVATE KEY--_
-
-_TODO_ (Find some good instructions for using the Google Developer Console; unfortunately its complex and changes often.)
-
-You can then set up a new spreadsheet with the following command, updating the email to use your Google Email. The Google Email you use will become the owner of the document. Note that a Google Email is not always a `@gmail.com` account.
-
-    gulp content:create --email XXXXX@gmail.com
-
-You can then add collaborators to the spreadsheet with the following command. Note that you can do this in the Google Spreadsheet as well.
-
-    gulp content:share --email XXXXX@gmail.com
-
-##### Spreadsheet format
-
-If you are using Google Spreadsheets for content, the headers should be `Key`, `Value`, `Type`, and `Notes`. It is important that these are there in that exact way. It is suggested to freeze the header row in case someone changes the order of the spreadsheet.
 
 ### Dependencies and modules
 

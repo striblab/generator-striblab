@@ -32,7 +32,8 @@ const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
 const webpackConfig = require('./webpack.config.js');
 const del = require('del');
-const gulpContent = require('./lib/gulp-content.js');
+const BuildData = require('./lib/build-data.js');
+//const gulpContent = require('./lib/gulp-content.js');
 const gulpPublish = require('./lib/gulp-publish.js');
 const jest = require('./lib/gulp-jest.js');
 const buildData = require('./lib/build-data.js');
@@ -45,13 +46,27 @@ require('dotenv').load({ silent: true });
 //   events: 'http://example.com/events.json',
 //   things: 'source/things.csv'
 gulp.task('html', async () => {
-  let data = await buildData({
-    content: 'content.json',
-    pkg: 'package.json',
-    config: { data: config },
-    argv: { data: argv },
-    _: { data: _ }
-  });
+  let config = getConfig();
+  let buildData = new BuildData(
+    _.extend(
+      {},
+      {
+        config: { data: config },
+        argv: { data: argv },
+        _: { data: _ }
+      },
+      config.data ? config.data : {}
+    ),
+    {
+      logger: m => {
+        gutil.log(`[${gutil.colors.cyan('html')}] [build-data] ${m}`);
+      },
+      ignoreInitialCache: argv.cache === false,
+      cache: './.cache-remote-data',
+      localOutput: './assets/data'
+    }
+  );
+  let data = await buildData.fetch();
 
   return gulp
     .src(
@@ -99,11 +114,11 @@ gulp.task('html:lint:details', ['html'], () => {
 });
 
 // Content tasks
-gulp.task('content', gulpContent.getContent(gulp, config));
-gulp.task('content:create', gulpContent.createSheet(gulp, config));
-gulp.task('content:open', gulpContent.openContent(gulp, config));
-gulp.task('content:owner', gulpContent.share(gulp, config, 'owner'));
-gulp.task('content:share', gulpContent.share(gulp, config, 'writer'));
+// gulp.task('content', gulpContent.getContent(gulp, config));
+// gulp.task('content:create', gulpContent.createSheet(gulp, config));
+// gulp.task('content:open', gulpContent.openContent(gulp, config));
+// gulp.task('content:owner', gulpContent.share(gulp, config, 'owner'));
+// gulp.task('content:share', gulpContent.share(gulp, config, 'writer'));
 
 // Lint JS
 gulp.task('js:lint', () => {
@@ -317,6 +332,13 @@ gulp.task('develop', ['server', 'watch']);
 
 // Help
 gulp.task('help', taskListing);
+
+// Get config
+function getConfig() {
+  return exists('config.custom.json')
+    ? require('./config.custom.json')
+      : require('./config.json');
+}
 
 // Check file/fir exists
 function exists(file) {
