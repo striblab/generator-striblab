@@ -35,6 +35,7 @@ const del = require('del');
 const BuildData = require('./lib/build-data.js');
 const gulpGoogleDrive = require('./lib/gulp-google-drive.js');
 const gulpPublish = require('./lib/gulp-publish.js');
+const gulpCMS = require('./lib/gulp-cms.js');
 const jest = require('./lib/gulp-jest.js');
 const config = exists('config.custom.json') ? require('./config.custom.json') : require('./config.json');
 const argv = require('yargs').argv;
@@ -323,6 +324,10 @@ gulp.task('watch', () => {
   gulp.watch(['assets/**/*'], ['assets']);
   gulp.watch(['config.*json'], ['publish:config']);
 });
+
+// CMS tasks
+gulp.task('cms:info', async () => await gulpCMS.cmsConfig());
+gulp.task('cms:lcd', async () => await gulpCMS.cmsLCD());
 
 // Publishing
 gulp.task('publish', ['publish:token', 'publish:confirm'], gulpPublish.publish(gulp));
