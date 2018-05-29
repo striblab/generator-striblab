@@ -97,7 +97,7 @@ async function newContentSheet() {
 }
 
 // Determine email address of API user
-async function apiEmail() {
+async function apiInfo() {
   let config = getAPIConfig();
   await asyncCopy(config.client_email);
 
@@ -169,6 +169,6 @@ module.exports = {
   newDoc,
   newSheet,
   newContentSheet,
-  apiEmail,
+  apiInfo,
   getAPIConfig
 };

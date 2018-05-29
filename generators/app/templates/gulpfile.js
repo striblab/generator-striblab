@@ -96,16 +96,17 @@ gulp.task('html', async () => {
 });
 
 // Lint HTML (happens after HTML build process).  The "stylish" version
-// is more succinct but its less helpful to find issues.
+// is more succinct but its less helpful to find issues.  The a11y
+// is good, but it's expensive, so don't use by default
 gulp.task('html:lint', ['html'], () => {
-  return gulp.src('build/**/!(_)*.html')
+  return gulp
+    .src('build/**/!(_)*.html')
     .pipe(htmlhint('.htmlhintrc'))
-    .pipe(htmlhint.reporter('htmlhint-stylish'))
-    .pipe(a11y())
-    .pipe(a11y.reporter());
+    .pipe(htmlhint.reporter('htmlhint-stylish'));
 });
 gulp.task('html:lint:details', ['html'], () => {
-  return gulp.src('build/**/!(_)*.html')
+  return gulp
+    .src('build/**/!(_)*.html')
     .pipe(htmlhint('.htmlhintrc'))
     .pipe(htmlhint.reporter())
     .pipe(a11y())
@@ -131,7 +132,7 @@ gulp.task(
   async () => await gulpGoogleDrive.newContentSheet()
 );
 // No args
-gulp.task('google:api', async () => await gulpGoogleDrive.apiEmail());
+gulp.task('google:api', async () => await gulpGoogleDrive.apiInfo());
 
 // Lint JS
 gulp.task('js:lint', () => {
