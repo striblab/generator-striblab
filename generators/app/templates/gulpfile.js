@@ -33,7 +33,7 @@ const webpackStream = require('webpack-stream');
 const webpackConfig = require('./webpack.config.js');
 const del = require('del');
 const BuildData = require('./lib/build-data.js');
-//const gulpContent = require('./lib/gulp-content.js');
+const gulpGoogleDrive = require('./lib/gulp-google-drive.js');
 const gulpPublish = require('./lib/gulp-publish.js');
 const jest = require('./lib/gulp-jest.js');
 const config = exists('config.custom.json') ? require('./config.custom.json') : require('./config.json');
@@ -112,12 +112,26 @@ gulp.task('html:lint:details', ['html'], () => {
     .pipe(a11y.reporter());
 });
 
-// Content tasks
-// gulp.task('content', gulpContent.getContent(gulp, config));
-// gulp.task('content:create', gulpContent.createSheet(gulp, config));
-// gulp.task('content:open', gulpContent.openContent(gulp, config));
-// gulp.task('content:owner', gulpContent.share(gulp, config, 'owner'));
-// gulp.task('content:share', gulpContent.share(gulp, config, 'writer'));
+// Google tasks
+// Args --id="XXXXX" --email="something@gmail.com" --role"optional writer or ?"
+gulp.task('google:share', async () => await gulpGoogleDrive.share());
+// Args --id="XXXXX" --email="something@gmail.com"
+gulp.task('google:owner', async () => await gulpGoogleDrive.owner());
+// Args --email="something@gmail.com" (optional makes owner) --title="Title" (optional)
+gulp.task('google:new-doc', async () => await gulpGoogleDrive.newDoc());
+// Args --email="something@gmail.com" (optional makes owner)
+// --title="Title" (optional)
+// --sheet-title="Title" (optional)
+gulp.task('google:new-sheet', async () => await gulpGoogleDrive.newSheet());
+// Args --email="something@gmail.com" (optional makes owner)
+// --title="Title" (optional)
+// --sheet-title="Title" (optional)
+gulp.task(
+  'google:new-content-sheet',
+  async () => await gulpGoogleDrive.newContentSheet()
+);
+// No args
+gulp.task('google:api', async () => await gulpGoogleDrive.apiEmail());
 
 // Lint JS
 gulp.task('js:lint', () => {
