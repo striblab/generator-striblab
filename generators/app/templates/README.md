@@ -146,6 +146,10 @@ There are some arguments that can alter the local server behavior; you can run t
   * If your project has multiple pages, you can target a specific article ID with `gulp develop --cms --cms-id=123456`.
 <% } %>
 
+There are number of commands via Gulp that can be helpful.  Use the following to get a list of the available commands:
+
+    gulp tasks
+
 ### Directories and files
 
 * `build/`: All the supporting files get compiled into this directory and this is what gets published.

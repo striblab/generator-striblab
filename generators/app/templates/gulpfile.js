@@ -329,8 +329,8 @@ gulp.task('deploy:open', ['publish:open']);
 // Server and watching (development)
 gulp.task('develop', ['server', 'watch']);
 
-// Help
-gulp.task('help', taskListing);
+// Help ("help" is now a thing in gulp)
+gulp.task('tasks', taskListing);
 
 // Get config
 function getConfig() {
