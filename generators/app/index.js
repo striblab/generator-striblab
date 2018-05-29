@@ -122,18 +122,6 @@ const App = class extends Generator {
   // All done
   end() {
     this.log(outputs.done());
-    this.log(
-      chalk.cyan('Run ') +
-        chalk.bgYellow.black(' gulp develop ') +
-        chalk.cyan(' to start developing.')
-    );
-    this.log();
-    this.log(
-      chalk.cyan('Run ') +
-        chalk.bgYellow.black(' gulp help ') +
-        chalk.cyan(' to see the other available commands.')
-    );
-    this.log();
   }
 };
 
