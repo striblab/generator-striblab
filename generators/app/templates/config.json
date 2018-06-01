@@ -11,7 +11,7 @@
   "cms": {
     "id": "<%= answers.cmsIDs ? answers.cmsIDs[0] : 'NEEDS-CMS-ID-IN-CONFIG.JSON' %>",
     "pages": <%- answers.cmsIDs ? JSON.stringify(answers.cmsIDs) : '["other", "cms-ids"]' %>,
-    "lcds": <%- answers.lcdIDs ? JSON.stringify(answers.lcdIDs) : '["other", "cms-ids"]' %>,
+    "lcds": <%- answers.lcdIDs ? JSON.stringify(answers.lcdIDs) : '["lcd-id-for-first", "lcd-id-for-second"]' %>,
     "rewriteMapping": {
       "article-lcd-body-content": "_index-content.html"
     }
