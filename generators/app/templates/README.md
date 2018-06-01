@@ -3,302 +3,31 @@
 <%= answers.description %>
 
 <% if (answers.dataAnalysis) { %>
-
 ## Data analysis
-_<Describe where data is from and include URLs.  Think about how you or someone else may come back to this in a year and will need to know what is going on and may need to recreate things. Include things like nuances in the data or why certain sources were used.>_
+_<Quickyly describe data needed for project.>_
 
-### Data processing
-
-The following are prerequisite steps that only need to be performed once globally and may already be installed.
-
-1.  Install [Drake](https://github.com/Factual/drake), a data processing alternative to `make`. See the `data.workflow` for some notes about Drake.
-    * On a Mac: `brew install drake`
-
-To perform data processing steps, run the following. Drake will tell you what steps are needed and confirm with you.
-
-* Main data processing steps: `drake -w data.workflow`
-* _(example) Cleanup data folders (will delete files): `drake -w data.workflow %cleanup`_
-* _(example) Run analysis steps; does not produce any output files: `drake -w data.workflow %analysis`_
-
-1.  _Data processing steps here._
-1.  ...
+See [docs/data-analysis.md](./docs/data-analysis.md).
 <% } %>
 
-<% if (answers.projectType === 'standalone') { %>
-## Embed
+## Publishing
 
-This project is best used as a full, standalone page, or an iframe embed. The best way to embed the piece is with a [strib-tag](http://static.startribune.com/news/tools/embed-it/), or with the following code:
-
-```html
-<div data-pym-src="https://static.startribune.com/news/projects/all/<%= package.name %>">Loading...</div>
-<script src="https://static.startribune.com/assets/libs/pym.js/1.3.2/pym.v1.min.js" type="text/javascript"></script>
-```
-
-<% } else if (answers.projectType === 'cms') { %>
-## CMS
-
-This project is meant to live within the [Star Tribune CMS](https://cms.clickability.com/cms). Overall, this means that the markup and content are stored within the CMS, while the styling and javascript is managed externally, probably on S3.
-
-### Setup
-
-To setup an article to take advantage of this workflow:
-
-1. Create an article.  Set the `Template overide` that is something like `Full page article vXX`.
-1. Make sure the Article ID is in `config.json` in this project.
-1. Create an LCD that is connected to the Article.
-    * You can update the `config.json` in this project with this ID, as it is helpful to have the reference, but it doesn't affect any development locally.
-    * Common values in the LCD to use:
-        * `content`: Main body of content, this is likely the `build/_index-content.html` file that is rendered.
-        * `styles`: `news/projects/all/<%= package.name %>/styles.bundle.css`
-        * `scripts`: `news/projects/all/<%= package.name %>/app.bundle.js`
-        * `script libraries` or `style libraries`
-
-### Local CMS
-
-To test the content through a local [news-platform](https://github.com/MinneapolisStarTribune/news-platform/), make sure the following is true:
-
-* Ensure that `ASSETS_STATIC_URL` environment variable set to `http://localhost:3000/` for `news-platform`. This is necessary to use the local version of the assets in this project.
-* `news-platform` is installed and running.
-* In this project, make sure that the `config.json` has the correct values, see above.
-* To serve locally: `gulp develop --cms`
-<% }%>
+See [docs/publishing.md](./docs/publishing.md).
 
 ## Application data
 
-Data to pull into the application for HTML rendering or to put into `assets/` for the client can be handled in the `config.json` or for control, directly in the `gulpfile.js`.  Different local and remote sources can be easily brought into the application this way.  Any remote sources will be cached locally.
-
-* Add entries in the `data` key in `config.json`.
-* Or within the `html` task fo the `gulpfile.js`.
-
-Data sources can be described in a number of ways.
-
-* Just use a local path, like `sources/data.json`, so your config might looks something like:   
-    ```
-    {
-      ...
-      "data": {
-        templateData: 'sources/custom-data.json'
-      },
-      ...
-    }
-    ```
-* You can also do the same with a remote source, like `http://example.com/some-data.csv`
-* If you have a "Published to the web" CSV of a Google Sheet, you can use that as well; such as `https://docs.google.com/spreadsheets/d/e/XXXXXX/pub?output=csv`
-* Or a "Published to the web" Google Document in [ArchieML](http://archieml.org/) format; such as `https://docs.google.com/document/d/e/XXXXX/pub`.
-* For more control, you can use more options.  You can force a specific type of data with the type paramter:  
-    ```
-    {
-      source: 'sources/example.jsonext',
-      type: 'json'
-    }
-    ```
-* We can also connect to Airtable.  Make sure to have the `AIRTABLE_API_KEY` environment variable set:  
-    ```
-    {
-      type: 'airtable',
-      base: 'XXXXX',
-      table: 'Table name',
-      ttl: 600000
-    }
-    ```
-* For private Google Docs or Spreadsheets, make sure to have an API config file, and set the path in the `GOOGLE_APPLICATION_CREDENTIALS` environment variables.  From there, we can use just the file ID as the source.  
-    ```
-    {
-      type: 'google-doc',
-      id: 'XXXXXXX'
-    }
-    ```
-* For a Google Spreadsheet that you want to transform into an object, the spreadsheet needs to have the `Key`, `Value`, and `Type` columns set up, then you can just add the `keyColumn`.  
-    ```
-    {
-      type: 'google-doc',
-      id: 'XXXXXXX',
-      sheet: 'XXXXXX',
-      keyColumn: true
-    }
-    ```
+See [docs/application-data.md](./docs/application-data.md).
 
 ## Development
 
-### Install
-
-The following are global prerequisites and may already be installed.
-
-1.  Install [Node.js](https://nodejs.org/en/).
-    * (on Mac) Install [homebrew](http://brew.sh/) then run: `brew install node`
-1.  Install [Gulp](http://gulpjs.com/): `npm install gulp -g`
-
-The following should be performed for initial and each code update:
-
-1.  Install Node dependencies: `npm install`
-
-### Local
-
-To run a local web server that will auto-reload with [Browsersync](https://browsersync.io/), watch for file changes and re-build:
-  
-    gulp develop
-
-<% if (answers.projectType === 'cms') { %>
-There are some arguments that can alter the local server behavior; you can run these in multiple Terminal tabs for different development needs:
-
-* Proxy through a local `news-platform` instance; if you don't know what that is, it is likely you don't have it setup. `gulp develop --cms`
-  * For the mobile version of the site, use `gulp develop --cms --mobile`.
-  * If your project has multiple pages, you can target a specific article ID with `gulp develop --cms --cms-id=123456`.
-<% } %>
-
-There are number of commands via Gulp that can be helpful.  Use the following to get a list of the available commands:
-
-    gulp tasks
-
-### Directories and files
-
-* `build/`: All the supporting files get compiled into this directory and this is what gets published.
-* `config.json`: Non-content config for application.
-  * Use this to add non-local JS or CSS assets, such as from a CDN.
-  * This can be overridden with a `config.custom.json` if there is a need to add configuration that should not be put into revision history.
-* `content.json`: This is the default way to manage content values.  See the *Application data* section above for more ways to hook up other data sources.
-* `pages/`: Holds HTML-like templates. Any files in here will get run through [EJS](http://www.embeddedjs.com/) templating and passed values from the *Application data*, such as `config.json`, `content.json`, and `package.json` will be available.
-  * `pages/index.ejs.html`: The default page for the application.
-  * `pages/_*.ejs.html`: Includes for other templates.
-  * `pages/*.ejs.html`: Any templates without a `_` prefix will be rendered into an full HTML page.
-* `styles/`: Styles in [SASS](http://sass-lang.com/) syntax.
-  * `styles/index.scss`: Main point of entry for styles.
-  * `styles/_*.scss`: Any includes should be prefixed with an underscore.
-* `app/`: Where JS logic goes. This supports ES6+ JS syntax with [Babel](https://babeljs.io/) and gets compiled with [Webpack](https://webpack.js.org/).
-  * `app/index.js`: Main entry point of application.
-* `assets/`: Various media files. This gets copied directly to the build.
-* `sources/`: Directory is for all non-data source material, such as wireframes or original images. Note that if there are materials that should not be made public, consider using Dropbox and make a note in this file about how to access, and make sure to update the `.gitignore` file.
-* `lib/`: Modules used in building or other non-data tasks.
-* `tests/`: Tests for app; see Testing section below.
-* The rest of the files are for building or meta-information about the project.
-
-### Dependencies and modules
-
-Depending on what libraries or dependencies you need to include there are a few different ways to get those into the project.
-
-* **JS**
-  * Include it with `npm`.
-    * For instance: `npm install --save awesome-lib`
-    * This can then be included in the application, with something like:
-      ```js
-      import awesome from "awesome-lib";
-      awesome.radical();
-      ```
-  * For dependencies that are very common and are available through a trusted CDN, you can include it in `config.json`.  Consider using the [StribLab static libs CDN](https://github.com/striblab/static-libs).<% if (answers.projectType === 'cms') { %>  For CMS integration, these scripts should be included in the `script libraries` in the LCD<% } %>
-    * For instance:
-      ```js
-      "js": {
-        "globals": [
-          "https://static.startribune.com/assets/libs/pym.js/1.3.2/pym.v1.min.js"
-        ]
-      }
-      ```
-    * In your application, make sure to add a comment like the following so that linters will know that the dependency is already loaded.
-      ```js
-      /* global Pym */
-      ```
-    * **IMPORTANT** Make sure to always use a specific version from a CDN; do not use _latest_ or something similar.
-    * For testing, these need to be available and should be added to `tests/global.js`
-  * For local modules that you have written yourself, you can use the ES6 module syntax.
-    * For instance, say you have created a `utils.js` module file, just use a relative path to include it:
-      ```js
-      import utilsFn from "./utils.js";
-      let utils = utilsFn({});
-      ```
-* **CSS**
-  * Include it with `npm`.
-    * For instance: `npm install --save normalize-scss`
-    * This can then be included in the application, with something like:
-      ```css
-      @import "normalize-scss/sass/_normalize.scss";
-      ```
-  * For dependencies that are very common and are available through a trusted CDN, you can include it in `config.json`.  Consider using the [StribLab static libs CDN](https://github.com/striblab/static-libs).<% if (answers.projectType === 'cms') { %>  For CMS integration, these scripts should be included in the `style libraries` in the LCD<% } %>
-    * For instance:
-      ```js
-      "css": {
-        "globals": [
-          "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-        ]
-      }
-      ```
-    * **IMPORTANT** Make sure to always use a specific version from a CDN; do not use _latest_ or something similar.
+See [docs/development.md](./docs/development.md).
 
 ### Testing
 
-Testing is run via [Jest](https://facebook.github.io/jest/). Fast, unit and higher level testing will happen on build. You can run these test manually with `gulp js:test` or `npm test`.
-
-Acceptance testing (i.e. high level quality assurance) is done separately as running headless Chrome takes more than a couple seconds. You will need a new version of Chrome or Chrome Canary installed, then run `js:test:acceptance`.
-
-_NOTE_: Acceptance test will fail until [this fix](https://github.com/GoogleChrome/lighthouse/issues/2618) is published.
-
-_TODO_: Some basic automated, cross-browser testing would be very beneficial. Unfortunately things like Browserstack are very expensive, and managing our own servers to do this would be very expensive time-wise as well.
-
-#### Embed testing
-
-A manual test page is provided for looking at the piece embeded in another page.
-
-1.  Assumes you are running the development server with `gulp develop`
-1.  Run a local server for the test directory, such as `cd tests && python -m SimpleHTTPServer` or `http-server ./tests/`
-1.  In a browser, go to [http://localhost:8080/manual/embed.html](http://localhost:8080/manual/embed.html).
-
-### Build
-
-All parts are compiled into the `build/` folder. The default complete build can be done with `gulp` or `gulp build`
-
-## Publish and deploy
-
-Deployment is setup for AWS S3. Set the following environment variables; they can be set in a [.env](https://www.npmjs.com/package/dotenv) file as well. For further reading on setting up access, see [Configureing the JS-SDK](http://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/configuring-the-jssdk.html).
-
-* `AWS_ACCESS_KEY_ID`
-* `AWS_SECRET_ACCESS_KEY`
-* OR `AWS_DEFAULT_PROFILE`
-* OR `AWS_CONFIG_FILE`
-
-To deploy, run `gulp deploy`. This will build and publish to the location configured as `default` (see _Configuration_ below).
-
-To deploy to the `production` location, for instance, simply use that flag like: `gulp deploy --production`
-
-A handy command is to use `gulp publish:open` to open the URL to that project.
-
-### Configuration
-
-Publishing is configured in the `config.json` file. The `publish` property can have the following keys: `default`, `testing`, `staging`, and `production`. It is suggested to use default in place of the `staging` as the default gets used when no flag is specified (see below). Each key should correspond to an object with `bucket`, `path`, and `url`. **IMPORTANT**: The `url` should be a fully qualified URL that ends with a `/`. This URL will get inserted into some meta tags on the page by default. For example:
-
-```js
-{
-  "publish": {
-    "default": {
-      "bucket": "static.startribune.com",
-      "path": "news/projects-staging/all/<%= package.name %>/",
-      "url": "http://static.startribune.com/news/projects-staging/all/<%= package.name %>/"
-    },
-    "production": {
-      "bucket": "static.startribune.com",
-      "path": "news/projects/all/<%= package.name %>/",
-      "url": "http://static.startribune.com/news/projects/all/<%= package.name %>/"
-    }
-  }
-}
-```
-
-Using the flags `--testing`, `--staging`, or `--production` will switch context for any relevant `publish` or `deploy` commands. Note that if the flag is not configured, the `default` will be used.
-
-### Publishing token
-
-The publishing function, uses a token that helps ensure a name collision with another project doesn't overwrite files unwittingly. The `publishToken` in `config.json` is used as an identifier. This gets deployed to S3 and then checked whenever publishing happens again. The `gulp publish` (run via `gulp deploy`) will automatically create this token if it doesn't exist.
-
-If you see an error message that states that the tokens do not match, make sure that the location you are publishing to doesn't have a different project at it, or converse with teammates or administrators about the issue.
+See [docs/testing.md](./docs/testing.md).
 
 ### Code styles
 
-Having a consistent style for code and similar aspects makes collaboration easier. Though there is nothing that enforces these things, intentionally so, spending some time to adhere to these styles will be beneficial in the long run.
-
-* **JS**: Javascript is linted with [ESLint](http://eslint.org/) and defined in `.eslintrc`.
-  * The defined style extends from [eslint:recommended](https://github.com/eslint/eslint/blob/master/conf/eslint.json) but is more focal about single quotes for strings and using semicolons.
-  * Install the following ESLint plugins for [Atom](https://atom.io/packages/linter-eslint), [Sublime Text](https://github.com/roadhump/SublimeLinter-eslint), or [others](http://eslint.org/docs/user-guide/integrations).
-* **Styles**: SASS (and CSS) is linted with [stylelint](https://stylelint.io/) and defined in `.styleintrc`.
-  * The defined style extends from [stylelint-config-standard](https://github.com/stylelint/stylelint-config-standard) with a couple additions to how colors are defined.
-  * Install the following stylelint plugins for [Atom](https://atom.io/packages/linter-stylelint), [Sublime Text](https://github.com/kungfusheep/SublimeLinter-contrib-stylelint), or [others](https://stylelint.io/user-guide/complementary-tools/).
+See [docs/code-styles-linting.md](./docs/code-styles-linting.md).
 
 ## License
 
@@ -306,4 +35,4 @@ Code is licensed under the MIT license included here. Content (such as images, v
 
 ## Generated
 
-Generated by [Star Tribune StribLab generator](https://github.com/striblab/generator-striblab).
+Generated by [Star Tribune StribLab generator](https://github.com/striblab/generator-striblab) on <%= (new Date()).toISOString() %>.
