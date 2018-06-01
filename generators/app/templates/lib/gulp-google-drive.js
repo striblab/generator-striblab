@@ -25,6 +25,14 @@ URL (copied to clipboard):
     ${gutil.colors.cyan(url)}
 `);
 }
+share.description =
+  'Share a Google file with a specific Google account email.  Requires having the GOOGLE_APPLICATION_CREDENTIALS environment variable set.';
+share.flags = {
+  '--id=<FILE_ID>': 'The file ID.',
+  '--email=<EMAIL>': 'The Google account email to share.',
+  '--role=<ROLE>':
+    '(Optional) The role of the shared account.  Defaults to "writer"; can be "writer", ??.'
+};
 
 // Share a file and make owner with an email address
 async function owner() {
@@ -38,6 +46,12 @@ Owner transfered to "${argv.email}".  URL (copied to clipboard):
     ${gutil.colors.cyan(url)}
 `);
 }
+owner.description =
+  'Make a specific Google account email an owner of a Google file.  Requires having the GOOGLE_APPLICATION_CREDENTIALS environment variable set.';
+owner.flags = {
+  '--id=<FILE_ID>': 'The file ID.',
+  '--email=<EMAIL>': 'The Google account email to share.'
+};
 
 // Output for new file is the same
 async function newFileOutput(response, g) {
@@ -77,6 +91,13 @@ async function newDoc() {
   let response = await g.newDoc({ title });
   await newFileOutput(response, g);
 }
+newDoc.description =
+  'Create a new Google Doc.  Requires having the GOOGLE_APPLICATION_CREDENTIALS environment variable set.';
+newDoc.flags = {
+  '--email=<EMAIL>':
+    '(Optional, though recommended) Provide a Google account email that will become the new owner of the document.',
+  '--title=<TITLE>': '(Optional) Title of the document'
+};
 
 // Create new sheet
 async function newSheet() {
@@ -86,6 +107,14 @@ async function newSheet() {
   let response = await g.newBlankSheet({ title, sheetTitle });
   await newFileOutput(response, g);
 }
+newSheet.description =
+  'Create a new Google Sheet file.  Requires having the GOOGLE_APPLICATION_CREDENTIALS environment variable set.';
+newSheet.flags = {
+  '--email=<EMAIL>':
+    '(Optional, though recommended) Provide a Google account email that will become the new owner of the document.',
+  '--title=<TITLE>': '(Optional) Title of the spreadsheet/file',
+  '--sheet-title=<TITLE>': '(Optional) Title of the sheet'
+};
 
 // Create new content sheet
 async function newContentSheet() {
@@ -95,6 +124,14 @@ async function newContentSheet() {
   let response = await g.newSheet({ title, sheetTitle });
   await newFileOutput(response, g);
 }
+newContentSheet.description =
+  'Create a new Google Sheet file with a specific key/value structure.  Requires having the GOOGLE_APPLICATION_CREDENTIALS environment variable set.';
+newContentSheet.flags = {
+  '--email=<EMAIL>':
+    '(Optional, though recommended) Provide a Google account email that will become the new owner of the document.',
+  '--title=<TITLE>': '(Optional) Title of the spreadsheet/file',
+  '--sheet-title=<TITLE>': '(Optional) Title of the sheet'
+};
 
 // Determine email address of API user
 async function apiInfo() {
@@ -111,6 +148,7 @@ API client email that is needed fot API access (copied to clipboard):
   ${gutil.colors.cyan(config.client_email)}
 `);
 }
+apiInfo.description = 'Get basic info about the Google API crendentials setup.';
 
 // Determine if API is setup correctly
 function getAPIConfig() {

@@ -12,7 +12,7 @@ const configUtil = require('./config.js');
 const webpackConfig = require('../webpack.config.js');
 
 // Some basics check of CMS config
-function cmsConfig() {
+async function cmsConfig() {
   let { config, error, location } = configUtil.getConfig();
   if (error) {
     throw new gutil.PluginError('cms', error);
@@ -51,9 +51,11 @@ Unable to locate the "cms" key in the config; this should be something like:
     );
   }
 }
+cmsConfig.description =
+  'Output information about the CMS config in config.json.';
 
 // Get the values for common LCD.
-async function cmsLCD() {
+async function lcd() {
   let { config, error } = configUtil.getConfig();
   if (error) {
     throw new gutil.PluginError('cms', error);
@@ -186,10 +188,17 @@ Use the --get="property" option to copy a value to the clipboard.
   }
   else {
     gutil.log(`
-${gutil.colors.yellow('Unable to find the propery "' + argv.get + '" to copy.')}
+${gutil.colors.yellow(
+    'Unable to find the property "' + argv.get + '" to copy.'
+  )}
     `);
   }
 }
+lcd.description = 'Output LCD values for this project.  This is a best guess.';
+lcd.flags = {
+  '--get=<LCD_FIELD>':
+    '(Optional) Provide the LCD field, such as "content" to copy that value to your clipboard if possible.'
+};
 
 // Async copy
 async function asyncCopy(v) {
@@ -207,6 +216,6 @@ async function asyncCopy(v) {
 
 // Exports
 module.exports = {
-  cmsConfig,
-  cmsLCD
+  config: cmsConfig,
+  lcd
 };
