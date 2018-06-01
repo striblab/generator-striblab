@@ -4,6 +4,7 @@
 'use strict';
 
 // Dependencies
+const crypto = require('crypto');
 const _ = require('lodash');
 const chalk = require('chalk');
 const Generator = require('yeoman-generator');
@@ -55,7 +56,8 @@ const App = class extends Generator {
       _: _,
       answers: this.answers,
       package: this.pkg,
-      env: process.env
+      env: process.env,
+      token: randomToken()
     };
 
     // Copy template files.  Overall, assume files are template-able
@@ -124,6 +126,11 @@ const App = class extends Generator {
     this.log(outputs.done());
   }
 };
+
+// Random token
+function randomToken() {
+  return crypto.randomBytes(16).toString('hex');
+}
 
 // Export
 module.exports = App;
