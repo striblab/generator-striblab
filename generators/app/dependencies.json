@@ -5,7 +5,7 @@
   },
   "devDependencies": {
     "@striblab/strib-icons": "^0.0.10",
-    "@striblab/strib-styles": "^0.0.9",
+    "@striblab/strib-styles": "^0.10.0",
     "airtable": "^0.5.6",
     "archieml": "^0.4.2",
     "aws-sdk": "^2.211.0",
