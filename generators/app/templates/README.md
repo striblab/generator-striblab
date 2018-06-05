@@ -21,6 +21,10 @@ See [docs/application-data.md](./docs/application-data.md).
 
 See [docs/development.md](./docs/development.md).
 
+### Files and directories
+
+See [docs/development.md](./docs/files-directories.md).
+
 ### Testing
 
 See [docs/testing.md](./docs/testing.md).

@@ -7,7 +7,7 @@ The following describes the files and directories used in the project.
   * Use this to add non-local JS or CSS assets, such as from a CDN.
   * This can be overridden with a `config.custom.json` if there is a need to add configuration that should not be put into revision history.
 * `content.json`: This is the default way to manage content values. See the _Application data_ section for more ways to hook up other data sources.
-* `pages/`: Holds HTML-like templates. Any files in here will get run through [EJS](http://www.embeddedjs.com/) templating and passed values from the _Application data_, such as `config.json`, `content.json`, and `package.json` will be available.
+* `templates/`: Holds HTML-like [Svelte](https://svelte.technology/) templates. Any files in here will get run through Svelte templating and passed values from the _Application data_, such as `config.json`, `content.json`, and `package.json` will be available.
   * `pages/index.ejs.html`: The default page for the application.
   * `pages/_*.ejs.html`: Includes for other templates.
   * `pages/*.ejs.html`: Any templates without a `_` prefix will be rendered into an full HTML page.
