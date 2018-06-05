@@ -45,7 +45,7 @@ gulp.task('cms:lcd', cms.lcd);
 // HTML
 gulp.task('html:lint-simple', html.lintSimple);
 gulp.task('html:lint', html.lint);
-gulp.task('html:build', html.html);
+gulp.task('html:build', html.htmlSvelte);
 
 // JS
 gulp.task('js:lint', js.lint);

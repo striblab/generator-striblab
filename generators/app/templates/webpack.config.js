@@ -6,6 +6,7 @@ const path = require('path');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
+  mode: process.env.NODE_ENV || 'production',
   devtool: 'source-map',
   entry: './app/index.js',
   output: {
@@ -22,6 +23,17 @@ module.exports = {
         loader: 'babel-loader',
         options: {
           cacheDirectory: true
+        }
+      },
+      {
+        test: /\.(svelte\.html|svelte)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'svelte-loader',
+          options: {
+            hydratable: true,
+            store: true
+          }
         }
       }
     ]
