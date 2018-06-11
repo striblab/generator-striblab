@@ -105,7 +105,7 @@ gulp.task('build', allBuild);
 async function allWatch() {
   gulp.watch(['styles/**/*.scss'], gulp.series('styles'));
   gulp.watch(
-    ['pages/**/*', 'config.*json', 'package.json', 'content.json'],
+    ['templates/**/*', 'config.*json', 'package.json', 'content.json'],
     gulp.series('html:simple')
   );
   gulp.watch(['app/**/*', 'config.json'], gulp.series('js'));
