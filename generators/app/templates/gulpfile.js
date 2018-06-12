@@ -108,7 +108,7 @@ async function allWatch() {
     ['templates/**/*', 'config.*json', 'package.json', 'content.json'],
     gulp.series('html:simple')
   );
-  gulp.watch(['app/**/*', 'config.json'], gulp.series('js'));
+  gulp.watch(['templates/**/*', 'app/**/*', 'config.json'], gulp.series('js'));
   gulp.watch(['assets/**/*'], gulp.series('assets'));
 }
 allWatch.description =
