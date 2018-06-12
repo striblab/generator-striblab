@@ -151,12 +151,12 @@ class BuildData {
     this.logger(`No cache, fetching ${id}`);
 
     // Determine how we do this.  Google docs
-    if (set.type === 'google-docs') {
+    if (set.type === 'google-docs' || set.type === 'google-doc') {
       let g = new GoogleDocs(set.options);
       data = await g.getStructuredContents(set.source || set.id || set.url);
     }
     // Google sheets
-    else if (set.type === 'google-sheets') {
+    else if (set.type === 'google-sheets' || set.type === 'google-sheet') {
       let g = new GoogleSheets(set.options);
       // Allow for key value store
       if (set.keyColumn) {
