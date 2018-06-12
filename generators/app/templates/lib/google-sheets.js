@@ -195,20 +195,22 @@ class GoogleSheets extends GoogleDrive {
 
     // Get data into simple format
     let data = [];
-    s.data[0].rowData.forEach(r => {
-      let row = [];
-      r.values.forEach(c => {
-        row.push(
-          field === 'formattedValue'
-            ? c[field]
-            : c[field]
-              ? c[field].stringValue
-              : null
-        );
-      });
+    if (s.data && s.data[0] && s.data[0].rowData) {
+      s.data[0].rowData.forEach(r => {
+        let row = [];
+        r.values.forEach(c => {
+          row.push(
+            field === 'formattedValue'
+              ? c[field]
+              : c[field]
+                ? c[field].stringValue
+                : null
+          );
+        });
 
-      data.push(row);
-    });
+        data.push(row);
+      });
+    }
 
     return data;
   }
@@ -242,7 +244,8 @@ class GoogleSheets extends GoogleDrive {
   // Format raw content
   formatRawGrid(data) {
     if (!_.isArray(data) || !data.length) {
-      throw new Error('Data provided not array with any rows.');
+      //throw new Error('Data provided not array with any rows.');
+      return [];
     }
 
     // Assume first row is headers
@@ -318,10 +321,5 @@ class GoogleSheets extends GoogleDrive {
     );
   }
 }
-
-// d = new GoogleSheets()
-//   .getContent('1JNC0OMtjcODlYekwscbHdU-2fGzxLVJhYW7Ny6bakxQ')
-//   .then(console.log)
-//   .catch(console.error);
 
 module.exports = GoogleSheets;

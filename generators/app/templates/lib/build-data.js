@@ -300,10 +300,18 @@ class BuildData {
 
     // Determine if this is a remote source or not
     if (_.isUndefined(data.remote)) {
-      if (data.type === 'airtable') {
+      if (
+        ~[
+          'airtable',
+          'google-doc',
+          'google-docs',
+          'google-sheet',
+          'google-sheets'
+        ].indexOf(data.type)
+      ) {
         data.remote = true;
       }
-      else if (data.source.match(/^http/i)) {
+      else if (data.source && data.source.match(/^http/i)) {
         data.remote = true;
       }
       else {
