@@ -97,7 +97,7 @@ allStyles.description = 'Lint, and build CSS from SASS.';
 gulp.task('styles', allStyles);
 
 // Main development task
-const allBuild = gulp.parallel('html:simple', 'styles', 'js');
+const allBuild = gulp.parallel('html:simple', 'styles', 'js', 'assets');
 allBuild.description = 'Full project build.';
 gulp.task('build', allBuild);
 
