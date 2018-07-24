@@ -1,4 +1,10 @@
 {
   "plugins": ["lodash"],
-  "presets": ["env"]
+  "presets": ["@babel/preset-env"],
+  "plugins": [
+    ["@babel/plugin-transform-runtime", {
+      "polyfill": false,
+      "regenerator": true
+    }]
+  ]
 }

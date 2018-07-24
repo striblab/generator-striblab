@@ -18,8 +18,7 @@ module.exports = {
       {
         // Note that this works different on Windows, assumingly
         // because of the different path separator.  Beware.
-        test: /app.*\.js$/,
-        exclude: /node_modules/,
+        test: /\.(svelte\.html|svelte)|app.*\.js$/,
         loader: 'babel-loader',
         options: {
           cacheDirectory: true
@@ -27,7 +26,6 @@ module.exports = {
       },
       {
         test: /\.(svelte\.html|svelte)$/,
-        exclude: /node_modules/,
         use: {
           loader: 'svelte-loader',
           options: {
@@ -38,9 +36,19 @@ module.exports = {
       }
     ]
   },
-  plugins: [
-    new UglifyJSPlugin({
-      sourceMap: true
-    })
-  ]
+  optimization: {
+    minimizer: [
+      new UglifyJSPlugin({
+        sourceMap: true,
+        uglifyOptions: {
+          ecma: 5,
+          compress: true,
+          safari10: true,
+          mangle: {
+            safari10: true
+          }
+        }
+      })
+    ]
+  }
 };
