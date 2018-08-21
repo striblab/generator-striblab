@@ -1,6 +1,7 @@
 # Browsers that we aim to support
 
-> 0.25% in US
+last 2 versions
+> 1% in US
 ie >= 10
 iOS >= 10
 not ie <= 9

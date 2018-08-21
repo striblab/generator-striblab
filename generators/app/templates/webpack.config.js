@@ -2,8 +2,58 @@
  * Webpack config for building project
  * https://webpack.js.org/
  */
+const fs = require('fs');
 const path = require('path');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+
+// For whatever reason babel doesn't seem to work with the Svelte
+// loaders unless the config is here
+const browsersList = path.join(process.cwd(), 'browserslist');
+let browserTargets;
+if (fs.existsSync(browsersList)) {
+  browserTargets = fs
+    .readFileSync(browsersList, 'utf-8')
+    .split('\n')
+    .filter(l => {
+      return l && l[0] !== '#' && l[0] !== '/';
+    })
+    .join(', ');
+}
+
+// Loader configs
+const loaders = {
+  svelte: {
+    loader: 'svelte-loader',
+    options: {
+      hydratable: true,
+      store: true
+    }
+  },
+  babel: {
+    loader: 'babel-loader',
+    options: {
+      cacheDirectory:
+        process.env.NODE_ENV === 'development' || process.env.DEBUG
+          ? false
+          : true,
+      presets: [
+        [
+          '@babel/preset-env',
+          {
+            debug:
+              process.env.NODE_ENV === 'development' || process.env.DEBUG
+                ? true
+                : false,
+            targets: {
+              browsers: browserTargets ? browserTargets : 'ie >= 10'
+            }
+          }
+        ]
+      ],
+      plugins: ['lodash']
+    }
+  }
+};
 
 module.exports = {
   mode: process.env.NODE_ENV || 'production',
@@ -16,23 +66,12 @@ module.exports = {
   module: {
     rules: [
       {
-        // Note that this works different on Windows, assumingly
-        // because of the different path separator.  Beware.
-        test: /\.(svelte\.html|svelte)|app.*\.js$/,
-        loader: 'babel-loader',
-        options: {
-          cacheDirectory: true
-        }
+        test: /\.(js)$/,
+        use: [loaders.babel]
       },
       {
         test: /\.(svelte\.html|svelte)$/,
-        use: {
-          loader: 'svelte-loader',
-          options: {
-            hydratable: true,
-            store: true
-          }
-        }
+        use: [loaders.babel, loaders.svelte]
       }
     ]
   },

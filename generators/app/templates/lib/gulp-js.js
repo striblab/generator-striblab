@@ -40,10 +40,14 @@ function js() {
       // src is arbitrary?
       .src('app/index.js')
       .pipe(webpackStream(webpackConfig, webpack))
+      .on('error', function(error) {
+        gutil.log(gutil.colors.red(error.message));
+        this.emit('end');
+      })
       .pipe(gulp.dest('build'))
   );
 }
-test.description =
+js.description =
   'Main build for JS; uses webpack.  See webpack.config.js for configuration.';
 
 // Run jest
