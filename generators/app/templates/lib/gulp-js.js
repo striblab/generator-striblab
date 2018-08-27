@@ -3,14 +3,13 @@
  */
 
 // Dependencies
-const path = require('path');
 const gulp = require('gulp');
 const eslint = require('gulp-eslint');
-const jest = require('jest-cli');
 const gutil = require('gulp-util');
 const webpack = require('webpack');
 const webpackStream = require('webpack-stream');
 const webpackConfig = require('../webpack.config.js');
+const runCommand = require('./gulp-run-command.js');
 
 // JS linter
 function lint() {
@@ -22,14 +21,9 @@ function lint() {
 lint.description =
   'Runs ESLint on JS files.  See the .eslintrc file for configuration.';
 
-// Testing ,manully using jest module because
+// Getting Jest to run via cli module or manually is :(
 function test() {
-  return runJest({
-    rootDir: path.join(__dirname, '..'),
-    testMatch: ['**/*.test.js'],
-    testPathIgnorePatterns: ['acceptance'],
-    setupFiles: ['./tests/globals.js']
-  });
+  return runCommand('./node_modules/.bin/jest', ['tests']);
 }
 test.description = 'Runs any *.test.js JS tests via Jest.';
 
@@ -49,23 +43,6 @@ function js() {
 }
 js.description =
   'Main build for JS; uses webpack.  See webpack.config.js for configuration.';
-
-// Run jest
-function runJest(options = {}) {
-  return jest
-    .runCLI(options, [options.rootDir || process.cwd()])
-    .then(results => {
-      if (results.numFailedTests) {
-        throw new gutil.PluginError(
-          'js',
-          results.numFailedTests + ' tests failed.'
-        );
-      }
-    })
-    .catch(() => {
-      throw new gutil.PluginError('js', 'Test did not pass.');
-    });
-}
 
 // Exports
 module.exports = {

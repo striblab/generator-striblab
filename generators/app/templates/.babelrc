@@ -1,14 +1,11 @@
 {
-  "presets": [
-    // Use debug: true to see what transforms are happening
-    // and what browsers needed them
-    ["@babel/preset-env", {}]
-  ],
-  "plugins": [
-    "lodash",
-    ["@babel/plugin-transform-runtime", {
-      "polyfill": false,
-      "regenerator": true
-    }]
-  ]
+  "env": {
+    // Note that this file is psecifically used for testing, and see
+    // webpack.config.js for production configuration, and why it is
+    // there.
+    "test": {
+      "presets": [["@babel/preset-env", {}]],
+      "plugins": ["lodash"]
+    }
+  }
 }
