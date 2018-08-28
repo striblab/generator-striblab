@@ -38,22 +38,29 @@ Each directory is a template, while files in `common/` are used across templates
 
 ### Testing
 
+Automated testing can be run with the following command. Note that it will take a minute, since it runs and builds the whole project.
+
+    npm run test
+
 Manual testing can be done with these helpful commands.
 
-1.  Make directory and install: `mkdir generator-test && cd generator-test && yo "@striblab/striblab"`;
-1.  Re-install (assumes the previous step was done and in that directory): `cd ..; rm -rv generator-test && mkdir generator-test && cd generator-test && yo "@striblab/striblab"`
+1.  Make directory and install: `mkdir -p generator-test && cd generator-test && yo "@striblab/striblab"`;
+1.  Re-install (assumes the previous step was done and you are in that directory): `cd ..; rm -rv generator-test && mkdir -p generator-test && cd generator-test && yo "@striblab/striblab"`
     - Debug: `cd ..; rm -rv generator-test && mkdir generator-test && cd generator-test && DEBUG=yeoman:* yo "@striblab/striblab"`
-
-### Favicons
-
-Favicons for front-end template generated manually with [Real Favicon Generator](https://realfavicongenerator.net/).
 
 ## Publishing
 
 Publish to [npm](https://www.npmjs.com/package/@striblab/generator-striblab).
 
+1.  Run tests, and do manual testing as the automated tests are very basic.
 1.  Update version, `X.X.X`, in `package.json` and then run `npm install`
 1.  Commit changes, i.e. `git commit -m "Updated version."`
 1.  Tag with the same version number: `git tag X.X.X`
 1.  Push up to Github: `git push origin --tags`
 1.  Publish to npm: `npm publish --access public`
+
+## Credits
+
+### Favicons
+
+Favicons for front-end template generated manually with [Real Favicon Generator](https://realfavicongenerator.net/).
