@@ -56,7 +56,9 @@ const loaders = {
 };
 
 module.exports = {
-  mode: process.env.NODE_ENV || 'production',
+  mode:
+    ~['development', 'production', 'none'].indexOf(process.env.NODE_ENV) ||
+    'production',
   devtool: 'source-map',
   entry: './app/index.js',
   output: {
