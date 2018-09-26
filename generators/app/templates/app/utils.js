@@ -9,15 +9,104 @@
 import queryString from 'query-string';
 import _ from 'lodash';
 
+/**
+ * Enable pym.
+ *
+ * @param  {object} options Object with the following keys:
+ *           - pym: Enable pym.js, defaults to true
+ *           - pymOptions: Options to pass to pym, defaults to:
+ *             { polling: 500 }
+ * @return {object} Pym child object
+ */
+function enablePym(options = {}) {
+  let pym = options.pym || window.pym;
+  if (!pym) {
+    throw new Error('Pym object could not be found.');
+  }
+
+  let pymOptions = options.pymOptions || { polling: 500 };
+
+  return pym.Child(pymOptions);
+}
+
+/**
+ * Determine environment.
+ *
+ * @param  {object} environments Object describing how to parse the location
+ *           determine the environment.  Something like:
+ *           { develop: {
+ *              match: /develop/,
+ *              note: 'Note...'
+ *           }}
+ * @param  {object} location Location to test against, uses
+ *           window.location.href by default
+ * @return {object} Environment
+ */
+function environment(environments, location) {
+  environments = environments || {
+    develop: {
+      match: /localhost.*|127\.0\.0\.1.*/i,
+      note: 'Local development version.'
+    },
+    staging: {
+      match: /\/staging\//i,
+      note:
+        'Staging version; this is not meant for publishing or sharing and may not be accurate '
+    },
+    production: { default: true }
+  };
+
+  // Determine default
+  let defaultEnvironment = _.findKey(environments, e => e.default);
+
+  // Allow to pass location manually
+  location = location || window.location.href;
+
+  // Find environment
+  let environment = _.findKey(environments, (e, ei) => {
+    return _.isRegExp(e.match) && !e.default ? location.match(e.match) : false;
+  });
+
+  let found = environments[environment || defaultEnvironment];
+  found.id = environment || defaultEnvironment;
+  return found;
+}
+
+/**
+ * Environment noting.  Renders HTML on to the page with any notes.
+ *
+ * @param  {object} environments Object describing how to parse the location
+ *           determine the environment, @see environment()
+ * @param  {object} location Location to test against, @see environment()
+ * @return {object} Environment
+ */
+function environmentNoting(environments, location) {
+  let e = environment(environments, location);
+
+  // If default, nothing to do.
+  if (e.default) {
+    return;
+  }
+
+  // Create content
+  let div = document.createElement('div');
+  let body = document.getElementsByTagName('body')[0];
+  div.className = `environment-note environment-note-${e.id}`;
+  div.innerHTML = `
+    <div class="environment-note-title">${e.id}</div>
+    <div class="environment-note-note">${e.note}</div>
+  `;
+  body.insertBefore(div, body.childNodes[0]);
+}
+
 // Util class
 class Util {
   /**
    * Constructor
    * @param  {object} options Object with the following keys:
-   *                          - pym: Enable pym.js, defaults to true
-   *                          - views: Object describing views
-   *                          - useView: Boolean whether to show view, defaults
-   *                            to true.
+   *           - pym: Enable pym.js, defaults to true
+   *           - pymOptions: Options to pass to pym, defaults to
+   *           -
    * @return {undefined}
    */
   constructor(options) {
@@ -175,9 +264,13 @@ class Util {
   goTo(id, parent, options = {}) {
     const el = _.isElement(id)
       ? id
-      : id[0] && _.isElement(id[0]) ? id[0] : document.getElementById(id);
+      : id[0] && _.isElement(id[0])
+        ? id[0]
+        : document.getElementById(id);
     let $parent = window.$
-      ? _.isUndefined(parent) ? window.$(window) : window.$(parent)
+      ? _.isUndefined(parent)
+        ? window.$(window)
+        : window.$(parent)
       : undefined;
     options.duration = options.duration || 1250;
 
@@ -261,6 +354,9 @@ class Util {
 }
 
 // Export a generator for the class.
-export default options => {
-  return new Util(options);
+export default {
+  Util,
+  enablePym,
+  environment,
+  environmentNoting
 };

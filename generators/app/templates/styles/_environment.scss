@@ -1,0 +1,23 @@
+/**
+ * Environment noting.
+ */
+
+.environment-note {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  padding: 0.5em 1em;
+  background-color: #222222;
+  color: #ffffff;
+  display: flex;
+
+  .environment-note-title {
+    padding-right: 1em;
+  }
+
+  .environment-note-note {
+    font-size: 0.5em;
+    line-height: 1.1em;
+    max-width: 15em;
+  }
+}

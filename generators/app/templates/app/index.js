@@ -3,33 +3,49 @@
  */
 
 // Define globals that are added through the js.globals in
-// the config.json file, here like this:
+// the config.json file, here, mostly so linting won't get triggered
+// and its a good queue of what is available:
 // /* global _ */
 
-// Utility functions, such as Pym integration, number formatting,
-// and device checking
+// Dependencies
+import utils from './utils.js';
+
+// Mark page with note about development or staging
+utils.environmentNoting();
+
 <% if (answers.projectType !== 'cms') { %>
-import utilsFn from './utils.js';
-utilsFn({ });
-<% } else { %>
-//import utilsFn from './utils.js';
-//utilsFn({ });
+// Enable Pym for embedding
+utils.enablePym();
 <% } %>
 
-// Import local ES6 modules like this:
-//import utilsFn from './utils.js';
-
+// Adding dependencies
+// ---------------------------------
+// Import local ES6 or CommonJS modules like this:
+// import utilsFn from './utils.js';
+//
 // Or import libraries installed with npm like this:
 // import module from 'module';
 
-// Utilize templates on the client.  Get the main content template.
-//import Content from '../templates/_index-content.svelte.html';
+// Adding Svelte templates in the client
+// ---------------------------------
+// We can bring in the same Svelte templates that we use
+// to render the HTML into the client for interactivity.  The key
+// part is that we need to have similar data.
 //
-// Get the data parts that are needed.  For larger data points,
-// utilize window.fetch.  Add the build = true option in the buildData
-// options.
-//import content from '../content.json';
-// OR: let content = await (await window.fetch('./assets/data/content.json')).json();
+// First, import the template.  This is the main one, and will
+// include any other templates used in the project.
+// import Content from '../templates/_index-content.svelte.html';
+//
+// Get the data parts that are needed.  There are two ways to do this.
+// If you are using the buildData function to get data, then ?
+//
+// 1. For smaller datasets, just import them like other files.
+// import content from './assets/data/content.json';
+//
+// 2. For larger data points, utilize window.fetch.
+// let content = await (await window.fetch('./assets/data/content.json')).json();
+//
+// Once you have your data, use it like a Svelte component:
 //
 // const app = new Content({
 //   target: document.querySelector('.main-app-container'),
