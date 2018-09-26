@@ -47,23 +47,50 @@ describe('environment', () => {
       'develop'
     );
     expect(
-      utils.environment(undefined, 'http://localhost:3000/?thing=1').id
+      utils.environment(undefined, 'http://localhost:3000/?preview=1').id
     ).toBe('develop');
     expect(
       utils.environment(undefined, 'https://localhost:3000/path/?thing=1').id
     ).toBe('develop');
     expect(utils.environment(undefined, 'localhost:3000').id).toBe('develop');
+    expect(
+      utils.environment(
+        undefined,
+        'ttps://s3.amazonaws.com/stribtest-bucket/news/projects/project'
+      ).id
+    ).toBe('develop');
   });
 
   it('should handle staging', () => {
-    expect(utils.environment(undefined, 'http://example.com/staging/').id).toBe(
-      'staging'
+    expect(
+      utils.environment(
+        undefined,
+        'http://static.startribune/news/staging/project/index.html?thing=2'
+      ).id
+    ).toBe('staging');
+    expect(
+      utils.environment(
+        undefined,
+        'http://static.startribune.com/news/projects-staging/all/project/'
+      ).id
+    ).toBe('staging');
+  });
+
+  it('should handle preview', () => {
+    expect(utils.environment(undefined, 'startribune/?preview=1').id).toBe(
+      'preview'
     );
     expect(
       utils.environment(
         undefined,
-        'http://startribune/news/staging/project/index.html?thing=2'
+        'http://vm-www.startribune/x/123456/?preview=1'
       ).id
-    ).toBe('staging');
+    ).toBe('preview');
+    expect(
+      utils.environment(
+        undefined,
+        'http://vm-www.startribune/x/123456/?other=thing&preview=23232'
+      ).id
+    ).toBe('preview');
   });
 });

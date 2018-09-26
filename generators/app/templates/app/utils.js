@@ -45,13 +45,17 @@ function enablePym(options = {}) {
 function environment(environments, location) {
   environments = environments || {
     develop: {
-      match: /localhost.*|127\.0\.0\.1.*/i,
-      note: 'Local development version.'
+      match: /localhost.*|127\.0\.0\.1.*|stribtest.*/i,
+      note: 'Development version; this is a work in progress.'
+    },
+    preview: {
+      match: /startribune.*\/.*preview=/i,
+      note: 'Preview version; this is not meant for publishing or sharing.'
     },
     staging: {
-      match: /\/staging\//i,
+      match: /static\..*\/.*staging.*\//i,
       note:
-        'Staging version; this is not meant for publishing or sharing and may not be accurate '
+        'Staging version; this is a work in progress and not meant for publishing or sharing and may not be accurate '
     },
     production: { default: true }
   };
@@ -60,10 +64,10 @@ function environment(environments, location) {
   let defaultEnvironment = _.findKey(environments, e => e.default);
 
   // Allow to pass location manually
-  location = location || window.location.href;
+  location = _.isUndefined(location) ? window.location.href : location;
 
   // Find environment
-  let environment = _.findKey(environments, (e, ei) => {
+  let environment = _.findKey(environments, e => {
     return _.isRegExp(e.match) && !e.default ? location.match(e.match) : false;
   });
 
