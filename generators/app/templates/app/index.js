@@ -32,7 +32,7 @@ utilsFn({ });
 // OR: let content = await (await window.fetch('./assets/data/content.json')).json();
 //
 // const app = new Content({
-//   target: document.querySelector('.main-app-container'),
+//   target: document.querySelector('.article-lcd-body-content'),
 //   data: {
 //     content
 //   }
