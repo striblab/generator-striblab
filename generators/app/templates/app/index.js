@@ -14,8 +14,9 @@ import utils from './utils.js';
 utils.environmentNoting();
 
 <% if (answers.projectType !== 'cms') { %>
-// Enable Pym for embedding
-utils.enablePym();
+// Auto enable Pym for embedding.  This will enable a Pym Child if
+// the url contains ?pym=true
+utils.autoEnablePym();
 <% } %>
 
 // Adding dependencies

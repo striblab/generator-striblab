@@ -2,8 +2,7 @@
  * Utility functions.
  */
 
-/* global window, document, pym */
-'use strict';
+/* global window, document */
 
 // Dependencies
 import queryString from 'query-string';
@@ -27,6 +26,32 @@ function enablePym(options = {}) {
   let pymOptions = options.pymOptions || { polling: 500 };
 
   return pym.Child(pymOptions);
+}
+
+/**
+ * Parse query.
+ *
+ * @param  {string} search The string to search, defaults to:
+ *           document.location.search
+ * @return {object} Parsed query as object.
+ */
+function parseQuery(search) {
+  search = _.isUndefined(search) ? document.location.search : search;
+  return queryString.parse(search);
+}
+
+/**
+ * Auto-enable pym.  Looks for pym=* option in query string.
+ *
+ * @param  {object} enableOptions Options for @see enablePym()
+ * @param  {string} search Search string for @see parseQuery()
+ * @return {object|undefined} Pym child object if enabled, undefined if not.
+ */
+function autoEnablePym(enableOptions = {}, search) {
+  let query = parseQuery(search);
+  if (query.pym) {
+    return enablePym(enableOptions);
+  }
 }
 
 /**
@@ -103,264 +128,366 @@ function environmentNoting(environments, location) {
   body.insertBefore(div, body.childNodes[0]);
 }
 
-// Util class
-class Util {
-  /**
-   * Constructor
-   * @param  {object} options Object with the following keys:
-   *           - pym: Enable pym.js, defaults to true
-   *           - pymOptions: Options to pass to pym, defaults to
-   *           -
-   * @return {undefined}
-   */
-  constructor(options) {
-    this.options = options || {};
+/**
+ * Super basic deep clone that will only work with primitive objects.
+ *
+ * @param  {object|array} input Any array or object to clone.
+ * @return {object|array} Cloned object
+ */
+function deepClone(input) {
+  return JSON.parse(JSON.stringify(input));
+}
 
-    // Defaults
-    this.options.pym = this.options.pym === undefined ? true : this.options.pym;
-    this.options.useView =
-      this.options.useView === undefined ? true : this.options.useView;
-    this.options.views = this.options.views || {
-      develop: /localhost.*|127\.0\.0\.1.*/i,
-      staging: /staging/i
-    };
-
-    // Read in query params
-    this.parseQuery();
-
-    // Set the view
-    //this.setView();
-
-    // Enable pym
-    if (this.options.pym) {
-      this.pym = !_.isUndefined(window.pym)
-        ? new pym.Child({ polling: 500 })
-        : undefined;
-    }
-  }
-
-  // Set view (make note)
-  setView() {
-    if (this.options.useView) {
-      let view;
-      _.find(this.options.views, (match, v) => {
-        view = v;
-        return window.location.href.match(match) ? v : undefined;
-      });
-
-      if (view) {
-        let div = document.createElement('div');
-        let body = document.getElementsByTagName('body')[0];
-        div.className = 'site-view site-view-' + view;
-        body.insertBefore(div, body.childNodes[0]);
-      }
-    }
-  }
-
-  // Get query params and adjust as needed
-  parseQuery() {
-    this.query = queryString.parse(document.location.search);
-
-    // Adjust options
-    if (this.query.pym && this.query.pym === 'true') {
-      this.options.pym = true;
-    }
-  }
-
-  // Super basic deep clone
-  deepClone(data) {
-    return JSON.parse(JSON.stringify(data));
-  }
-
-  // Simple check to see if embedded in iframe
-  isEmbedded() {
-    if (!_.isUndefined(this.embedded)) {
-      return this.embedded;
-    }
-
+let staticEmbedded;
+/**
+ * Basic check to see if page is embedded in another.
+ *
+ * @param  {boolean} cache Whether to use the cache, defaults to true.
+ * @return {boolean} Whether embedded
+ */
+function isEmbedded(cache = true) {
+  if (!cache || (cache && _.isUndefined(staticEmbedded))) {
     try {
-      this.embedded = window.self !== window.top;
+      staticEmbedded = window.self !== window.top;
     }
     catch (e) {
-      this.embedded = true;
+      staticEmbedded = true;
     }
-
-    return this.embedded;
   }
 
-  // Check for local storage
-  hasLocalStorage() {
-    if (!_.isUndefined(this.localStorage)) {
-      return this.canLocalStorage;
-    }
+  return staticEmbedded;
+}
 
+let staticGeolocation;
+/**
+ * Check to see if geolocation is available.
+ *
+ * Unfortunately HTTPS is needed, but in some browsers,
+ * the API is still available.  We could run the API, but then the user
+ * gets a dialog.  :(
+ *
+ * @param  {boolean} cache Whether to use the cache, defaults to true.
+ * @return {boolean} Whether geolocation
+ */
+function hasGeolocation(cache = true) {
+  if (!cache || (cache && _.isUndefined(staticGeolocation))) {
+    staticGeolocation = window.navigator && 'geolocation' in window.navigator;
+  }
+
+  return staticGeolocation;
+}
+
+/**
+ * Geolocation promise wrapper.
+ *
+ * @param  {boolean} watch Whether to watch for changes.
+ * @param  {object} geolocateOptions Options to pass to geolocation function.
+ * @return {Promise} An object with { lat, lng, watchId }, if error
+ *           the watchId will be attached to error.
+ */
+function geolocate(watch = false, geolocateOptions) {
+  geolocateOptions = geolocateOptions || {
+    maximumAge: 5000,
+    timeout: 50000,
+    enableHighAccuracy: true
+  };
+  let watchId;
+
+  return new Promise((resolve, reject) => {
+    if (hasGeolocation()) {
+      // iphone acts weird sometimes about this.  This is some hacky way
+      // to ensure it works ok, but who knows.
+      // https://stackoverflow.com/questions/3397585/navigator-geolocation-getcurrentposition-sometimes-works-sometimes-doesnt
+      window.navigator.geolocation.getCurrentPosition(
+        function() {},
+        function() {},
+        {}
+      );
+
+      // Depending on watch, swtich method
+      watchId = window.navigator.geolocation[
+        watch ? 'watchPosition' : 'getCurrentPosition'
+      ](
+        position => {
+          resolve({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+            watchId,
+            position: position
+          });
+        },
+        error => {
+          staticGeolocation = false;
+          error = error
+            ? error
+            : new Error('Unable to find your position for unknown reason.');
+          error.watchId = watchId;
+          reject(error);
+        },
+        geolocateOptions
+      );
+    }
+    else {
+      reject(new Error('Geolocation not available'));
+    }
+  });
+}
+
+/**
+ * Stop geolocation watching function.
+ *
+ * @param  {object|string} watchId Id from geolocation watching @see geolocate()
+ * @return {undefined}
+ */
+function stopGeolocateWatch(watchId) {
+  if (watchId && hasGeolocation()) {
+    window.navigator.geolocation.clearWatch(watchId);
+  }
+}
+
+let staticLocalStorage;
+/**
+ * Whether browser supports local storage.
+ *
+ * @param  {boolean} cache Whether to use the cache, defaults to true.
+ * @return {boolean} Whether support
+ */
+function hasLocalStorage(cache = true) {
+  if (!cache || (cache && _.isUndefined(staticLocalStorage))) {
     try {
       window.localStorage.setItem('test', 'test');
       window.localStorage.removeItem('test');
-      this.canLocalStorage = true;
+      staticLocalStorage = true;
     }
     catch (e) {
-      this.canLocalStorage = false;
-    }
-
-    return this.canLocalStorage;
-  }
-
-  // Check for geolocation
-  hasGeolocate() {
-    if (_.isUndefined(this.canGeolocate)) {
-      this.canGeolocate = window.navigator && 'geolocation' in window.navigator;
-      // Unfortunately HTTPS is needed, but in some browsers,
-      // the API is still available.  We could run the API, but then the user
-      // gets a dialog.  :(
-    }
-
-    return this.canGeolocate;
-  }
-
-  // Basic geolocation function
-  geolocate(done, watch = false) {
-    return new Promise((resolve, reject) => {
-      if (this.hasGeolocate()) {
-        // iphone acts weird sometimes about this.  This is some hacky way
-        // to ensure it works ok, but who knows.
-        // https://stackoverflow.com/questions/3397585/navigator-geolocation-getcurrentposition-sometimes-works-sometimes-doesnt
-        window.navigator.geolocation.getCurrentPosition(
-          function() {},
-          function() {},
-          {}
-        );
-
-        this.geolocateWatchID = window.navigator.geolocation[
-          watch ? 'watchPosition' : 'getCurrentPosition'
-        ](
-          position => {
-            resolve({
-              lat: position.coords.latitude,
-              lng: position.coords.longitude
-            });
-          },
-          error => {
-            this.hasGeolocate = false;
-            reject(error ? error : 'Unable to find your position.');
-          },
-          { maximumAge: 5000, timeout: 50000, enableHighAccuracy: true }
-        );
-      }
-      else {
-        reject('Geolocation not available');
-      }
-    });
-  }
-
-  // Stop geolocation
-  stopGeolocate() {
-    if (this.geolocateWatchID && this.hasGeolocate()) {
-      window.navigator.geolocation.clearWatch(this.geolocateWatchID);
+      staticLocalStorage = false;
     }
   }
 
-  // Scroll to id.  By default, we use the native scrollIntoView,
-  // but it is not widely supported and not good polyfills exists,
-  // specifically ones that can offset.  So, if jQuery and the
-  // scrollTo function is available we use that.
-  // https://github.com/flesler/jquery.scrollTo
-  goTo(id, parent, options = {}) {
-    const el = _.isElement(id)
-      ? id
-      : id[0] && _.isElement(id[0])
-        ? id[0]
-        : document.getElementById(id);
-    let $parent = window.$
-      ? _.isUndefined(parent)
-        ? window.$(window)
-        : window.$(parent)
-      : undefined;
-    options.duration = options.duration || 1250;
+  return staticLocalStorage;
+}
 
-    if (!el) {
-      return;
-    }
+/**
+ * Scroll to an element.  Uses a few different methods:
+ *
+ *  1) If page is embbeded (@see isEmbedded() ), and pym child
+ *     is passed in options, then use pym.
+ *  2) If the [scrollTo](https://github.com/flesler/jquery.scrollTo)
+ *     function is available with jQuery, use that.
+ *  3) Otherwise, try to use the native scrollIntoView function
+ *
+ * @param  {DOMElement|jQuery|string} id This can be a DOM element, a jQuery
+ *           object, or a string Id to search for.
+ * @param  {DOMElement|jQuery|string} parent The parent to scroll with, if
+ *           left undefined, uses window.
+ * @param  {object} options Various options.
+ *           - pym: Pym Child object if this is embedded in with pym.
+ *           - duration: How long to animate, if the method supports it.
+ * @return {undefined}
+ */
+function goToElement(id, parent, options = {}) {
+  const el = _.isElement(id)
+    ? id
+    : id[0] && _.isElement(id[0])
+      ? id[0]
+      : document.getElementById(id);
+  let $parent = window.$
+    ? _.isUndefined(parent)
+      ? window.$(window)
+      : window.$(parent)
+    : undefined;
+  options.duration = options.duration || 1250;
 
-    if (this.isEmbedded() && this.pym) {
-      this.pym.scrollParentToChildEl(el);
-    }
-    else if ($parent && window.$ && window.$.fn.scrollTo) {
-      $parent.scrollTo(window.$(el), options);
-    }
-    else {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
+  if (!el) {
+    return;
   }
 
-  // Round number
-  round(value, decimals = 2) {
-    return _.isNumber(value)
-      ? Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals)
-      : value;
+  if (isEmbedded() && options.pym) {
+    options.pym.scrollParentToChildEl(el);
+  }
+  else if ($parent && window.$ && window.$.fn.scrollTo) {
+    $parent.scrollTo(window.$(el), options);
+  }
+  else if (el.scrollIntoView) {
+    el.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
+/**
+ * Round a number.
+ *
+ * @param  {number} input The number to round.
+ * @param  {integer} decimals Number of decimals to round to.
+ * @return {number} Rounded number, or if input was not a number, the original
+ *           value
+ */
+function round(input, decimals = 0) {
+  return _.isNumber(input)
+    ? Math.round(input * Math.pow(10, decimals)) / Math.pow(10, decimals)
+    : input;
+}
+
+let staticAndroid;
+/**
+ * Is Android browser.
+ *
+ * @param  {string} input Optional provide user agent search, otherwise
+ *           use navigator.userAgent.
+ * @param  {boolean} cache Whether to use the cache, defaults to true.
+ * @return {boolean} Whether Android browser
+ */
+function isAndroid(userAgent, cache = true) {
+  userAgent =
+    userAgent || (window.navigator ? window.navigator.userAgent : undefined);
+
+  if (!cache || (cache && _.isUndefined(staticAndroid))) {
+    staticAndroid = userAgent ? !!userAgent.match(/android/i) : false;
   }
 
-  // Test for android phone
-  isAndroid() {
-    if (!_.isBoolean(this.agentAndroid)) {
-      this.agentAndroid =
-        window.navigator &&
-        window.navigator.userAgent &&
-        window.navigator.userAgent.match(/android/i);
-    }
+  return staticAndroid;
+}
 
-    return this.agentAndroid;
+let staticIOS;
+/**
+ * Is iOS browser.
+ *
+ * @param  {string} input Optional provide user agent search, otherwise
+ *           use navigator.userAgent.
+ * @param  {boolean} cache Whether to use the cache, defaults to true.
+ * @return {boolean} Whether iOS browser
+ */
+function isIOS(userAgent, cache = true) {
+  userAgent =
+    userAgent || (window.navigator ? window.navigator.userAgent : undefined);
+
+  if (!cache || (cache && _.isUndefined(staticIOS))) {
+    staticIOS = userAgent ? !!userAgent.match(/(iphone|ipad)/i) : false;
   }
 
-  // Test for ios
-  isIOS() {
-    if (!_.isBoolean(this.agentIOS)) {
-      this.agentIOS =
-        window.navigator &&
-        window.navigator.userAgent &&
-        window.navigator.userAgent.match(/iphone|ipad/i);
-    }
+  return staticIOS;
+}
 
-    return this.agentIOS;
+let staticWindowsPhone;
+/**
+ * Is Windows Phone browser.
+ *
+ * @param  {string} input Optional provide user agent search, otherwise
+ *           use navigator.userAgent.
+ * @param  {boolean} cache Whether to use the cache, defaults to true.
+ * @return {boolean} Whether Windows Phone browser
+ */
+function isWindowsPhone(userAgent, cache = true) {
+  userAgent =
+    userAgent || (window.navigator ? window.navigator.userAgent : undefined);
+
+  if (!cache || (cache && _.isUndefined(staticWindowsPhone))) {
+    staticWindowsPhone = userAgent
+      ? !!userAgent.match(/window.?s\s+phone/i)
+      : false;
   }
 
-  // Test for windows phone
-  isWindowsPhone() {
-    if (!_.isBoolean(this.agentWindowsPhone)) {
-      this.agentWindowsPhone =
-        window.navigator &&
-        window.navigator.userAgent &&
-        window.navigator.userAgent.match(/windows\sphone/i);
-    }
+  return staticWindowsPhone;
+}
 
-    return this.agentWindowsPhone;
+let staticIsMobile;
+/**
+ * Is a mobile browser.
+ *
+ * @param  {string} input Optional provide user agent search, otherwise
+ *           use navigator.userAgent.
+ * @param  {boolean} cache Whether to use the cache, defaults to true.
+ * @return {boolean} Whether mobile browser
+ */
+function isMobile(userAgent, cache = true) {
+  userAgent =
+    userAgent || (window.navigator ? window.navigator.userAgent : undefined);
+
+  if (!cache || (cache && _.isUndefined(staticIsMobile))) {
+    staticIsMobile =
+      isAndroid(userAgent, cache) ||
+      isIOS(userAgent, cache) ||
+      isWindowsPhone(userAgent, cache);
   }
 
-  // Check basic mobile (assume ios or android)
-  isMobile() {
-    return this.isAndroid() || this.isIOS() || this.isWindowsPhone();
-  }
+  return staticIsMobile;
+}
 
-  // Google analytics page update
-  // https://developers.google.com/analytics/devguides/collection/analyticsjs/single-page-applications
-  gaPageUpdate(path) {
+/**
+ * Google analytics page update
+ * @see https://developers.google.com/analytics/devguides/collection/analyticsjs/single-page-applications
+ *
+ * @param  {string} path Optional the path to update, otherwise will use
+ *           the document.location values.
+ * @return {undefined}
+ */
+function gaPage(path) {
+  if (window.ga) {
     path = path
       ? path
       : document.location.pathname +
         document.location.search +
         document.location.hash;
 
-    if (window.ga) {
-      window.ga('set', 'page', path);
-      window.ga('send', 'pageview');
+    window.ga('set', 'page', path);
+    window.ga('send', 'pageview');
+  }
+}
+
+/**
+ * Google analytics event wrapper
+ * @see https://developers.google.com/analytics/devguides/collection/analyticsjs/events
+ *
+ * @param  {object} options Options to pass to event, this can include.
+ *           - category (required) Typically the object that was interacted with (e.g. 'Video')
+ *           - action (required) The type of interaction (e.g. 'play')
+ *           - label Useful for categorizing events (e.g. 'Fall Campaign')
+ *           - value A numeric value associated with the event (e.g. 42)
+ * @return {undefined}
+ */
+function gaEvent({ category, action, label, value, nonInteraction }) {
+  if (window.ga) {
+    if (!category) {
+      throw new Error('category option is needed for a gaEvent');
     }
+    if (!action) {
+      throw new Error('action option is needed for a gaEvent');
+    }
+
+    window.ga(
+      'send',
+      'event',
+      category,
+      action,
+      label,
+      value,
+      nonInteraction
+        ? {
+          nonInteraction
+        }
+        : undefined
+    );
   }
 }
 
 // Export a generator for the class.
 export default {
-  Util,
   enablePym,
+  autoEnablePym,
   environment,
-  environmentNoting
+  environmentNoting,
+  parseQuery,
+  deepClone,
+  isEmbedded,
+  hasGeolocation,
+  geolocate,
+  stopGeolocateWatch,
+  hasLocalStorage,
+  goToElement,
+  round,
+  isAndroid,
+  isIOS,
+  isWindowsPhone,
+  isMobile,
+  gaPage,
+  gaEvent
 };
