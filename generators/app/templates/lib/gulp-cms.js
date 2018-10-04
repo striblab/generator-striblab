@@ -5,6 +5,7 @@
 // Dependencies
 const fs = require('fs-extra');
 const path = require('path');
+const _ = require('lodash');
 const gutil = require('gulp-util');
 const { copy } = require('copy-paste');
 const argv = require('yargs').argv;
@@ -32,20 +33,29 @@ ${gutil.colors.cyan(JSON.stringify(config.cms, null, '  '))}
   else {
     gutil.log(
       gutil.colors.yellow(`
-Unable to locate the "cms" key in the config; this should be something like:
+Unable to locate the "cms" key in the config; see ./docs/cms.md; this should be something like:
 `) +
         gutil.colors.cyan(`
-  {
-    ...
-    "cms":
-      "id": "123456",
-      "pages": ["123456"],
-      "lcds": ["456789"],
-      "rewriteMapping": {
-        "article-lcd-body-content": "_index-content.html"
+  "cms": {
+    "defaultArticleContentTemplateRewriteClass": "article-lcd-body-content",
+    "pages": [
+      {
+        "id": "index",
+        "articleId": "222222222",
+        "lcd": "11111111",
+        "default": true
+      },
+      {
+        "id": "page-two",
+        // Shared styles
+        "styles": "index",
+        "articleId": "33333333",
+        "lcd": "4444444",
+        "rewriteRules": {
+          "custom-class": "_template-id-to-replace"
+        }
       }
-    }
-    ...
+    ]
   }
     `)
     );
@@ -62,91 +72,104 @@ async function lcd() {
   }
 
   // Check for cms
-  if (!config || !config.cms) {
+  if (!config || !config.cms || !config.cms.pages) {
     throw new gutil.PluginError(
       'cms',
-      'Unable to find the "cms" section in the config.'
+      'Unable to find the "cms" or "cms.pages" section in the config.'
     );
   }
 
-  // Parts
-  let parts = {};
+  // Gather probably parts
+  let pages = config.cms.pages.map(page => {
+    let parts = {};
+    let prodPath =
+      config.publish &&
+      config.publish.production &&
+      config.publish.production.path
+        ? config.publish.production.path
+        : undefined;
 
-  // Scripts.  Webpack config is hard to discern if used in a dynamic way
-  parts.scripts =
-    config.publish && config.publish.production
-      ? config.publish.production.path + '/' + webpackConfig.output.filename
+    // Scripts.  Webpack config is hard to discern if used in a dynamic way
+    parts.scripts = prodPath
+      ? `${prodPath}/js/${webpackConfig.output.filename.replace(
+        '[name]',
+        page.id
+      )}`
       : undefined;
 
-  // Just hardcoded, since the definition is in the gulp task
-  parts.styles =
-    config.publish && config.publish.production
-      ? config.publish.production.path + '/styles.bundle.css'
+    // Just hardcoded, since the definition is in the gulp task
+    parts.styles = prodPath
+      ? `${prodPath}/styles/${page.id}.bundle.css`
       : undefined;
 
-  // Content
-  let hasContent =
-    config.cms.rewriteMapping &&
-    config.cms.rewriteMapping['article-lcd-body-content'];
-  let contentFullPath = path.join(
-    __dirname,
-    '..',
-    'build',
-    config.cms.rewriteMapping['article-lcd-body-content']
-  );
-  let contentProjectPath = path.join(
-    'build',
-    config.cms.rewriteMapping['article-lcd-body-content']
-  );
-  parts.hasContent =
-    hasContent && fs.existsSync(contentFullPath) ? contentProjectPath : false;
-  parts.content =
-    hasContent && fs.existsSync(contentFullPath)
-      ? fs.readFileSync(contentFullPath, 'utf-8')
+    // Script libraries
+    parts['script libraries'] =
+      config.js && config.js.globals && config.js.globals.length
+        ? `<script src="${config.js.globals.join(
+          '"></script>\n<script src="'
+        )}"></script>`
+        : undefined;
+
+    // Style libraries
+    parts['style libraries'] =
+      config.styles && config.styles.globals && config.styles.globals.length
+        ? `<link rel="stylesheet" type="text/css" href="${config.styles.globals.join(
+          '" />\n<link rel="stylesheet" type="text/css" href="'
+        )}" />`
+        : undefined;
+
+    // Content
+    let contentId = page.articleContentTemplate
+      ? page.articleContentTemplate
+      : `_${page.id}-content`;
+    parts.contentLocation = path.join('build', 'rewrites', `${contentId}.html`);
+    parts.hasContent = fs.existsSync(
+      path.join(__dirname, '..', parts.contentLocation)
+    );
+    parts.content = parts.hasContent
+      ? fs.readFileSync(
+        path.join(__dirname, '..', parts.contentLocation),
+        'utf-8'
+      )
       : undefined;
 
-  // Script libraries
-  parts['script libraries'] =
-    config.js && config.js.globals && config.js.globals.length
-      ? `<script src="${config.js.globals.join(
-        '"></script>\n<script src="'
-      )}"></script>`
-      : undefined;
-
-  // Style libraries
-  parts['style libraries'] =
-    config.styles && config.styles.globals && config.styles.globals.length
-      ? `<link rel="stylesheet" type="text/css" href="${config.styles.globals.join(
-        '" />\n<link rel="stylesheet" type="text/css" href="'
-      )}" />`
-      : undefined;
+    page.parts = parts;
+    return page;
+  });
 
   // Final output
   gutil.log(`
-
 The following are common values used in the LCD for CMS integration
-for this project.  LCD(s) located at:
-${gutil.colors.green(
-    config.cms && config.cms.lcds ? config.cms.lcds.join(', ') : ''
-  )}
+for this project.
 
-${gutil.colors.gray(
+  ${gutil.colors.gray(
     'Note that this is a best guess and may change if\n you have customized the template or project.'
-  )}
+  )}`);
+
+  // Each page
+  pages.forEach(page => {
+    gutil.log(`
+
+ID: ${gutil.colors.green(page.id)}
+=============
+Article ID: ${gutil.colors.green(page.articleId)}
+LCD: ${gutil.colors.green(page.lcd)}
 
 content:
 ${
-  parts.hasContent
-    ? gutil.colors.cyan('Contents of file: <' + parts.hasContent + '>')
+  page.parts.hasContent
+    ? gutil.colors.cyan(
+      'Contents of file: <' + page.parts.contentLocation + '>'
+    )
     : gutil.colors.gray(
-      'Unable to get contents, either the cms.rewriteMapping[\'article-lcd-body-content\'] in the config is not set to a build file, or the build file is not there (run "gulp").'
+      'Unable to get contents, either there is no content template that corresponds to this page ID or the articleContentTemplate is not defined, or the build file is not there (run "gulp").'
     )
 }
 
 scripts:
 ${
-  parts.scripts
-    ? gutil.colors.cyan(parts.scripts)
+  page.parts.scripts
+    ? gutil.colors.cyan(page.parts.scripts)
     : gutil.colors.gray(
       'No scripts found, this is either an issue with the Webpack config, \n or there is not a "publish.production" entry in the config.'
     )
@@ -154,36 +177,47 @@ ${
 
 styles:
 ${
-  parts.styles
-    ? gutil.colors.cyan(parts.styles)
+  page.parts.styles
+    ? gutil.colors.cyan(page.parts.styles)
     : gutil.colors.gray(
-      'No styles foundmake sure there is a "publish.production" entry in the config.'
+      'No styles found, make sure there is a "publish.production" entry in the config.'
     )
 }
 
 script libraries:
-${gutil.colors.cyan(parts['script libraries'])}
+${gutil.colors.cyan(page.parts['script libraries'])}
 
 style libraries:
 ${
-  parts['style libraries']
-    ? gutil.colors.cyan(parts['style libraries'])
+  page.parts['style libraries']
+    ? gutil.colors.cyan(page.parts['style libraries'])
     : gutil.colors.gray(
       'No style libraries, include by putting in "styles.global" in the config.'
     )
 }
 `);
+  });
 
   // Copy
-  if (argv.get && parts[argv.get]) {
-    await copy(parts[argv.get]);
+  let defaultPage = _.find(pages, { default: true });
+  let copyPage =
+    argv.get && argv.get.split('|').length === 2
+      ? _.find(pages, { id: argv.get.split('|')[0] })
+      : defaultPage;
+  let copyPart =
+    argv.get && argv.get.split('|').length === 2
+      ? argv.get.split('|')[1]
+      : argv.get;
+
+  if (argv.get && copyPage && copyPage.parts[copyPart]) {
+    await copy(copyPage.parts[copyPart]);
     gutil.log(`
 Copied "${argv.get}" to the clipboard.
     `);
   }
   else if (!argv.get) {
     gutil.log(`
-Use the --get="property" option to copy a value to the clipboard.
+Use the --get="property" or --get="id|property" option to copy a value to the clipboard.
     `);
   }
   else {
@@ -197,22 +231,8 @@ ${gutil.colors.yellow(
 lcd.description = 'Output LCD values for this project.  This is a best guess.';
 lcd.flags = {
   '--get=<LCD_FIELD>':
-    '(Optional) Provide the LCD field, such as "content" to copy that value to your clipboard if possible.'
+    '(Optional) Provide the LCD field, such as "content" to copy that value to your clipboard if possible.  for multiple pages, use the format "page-id|lcd-field".'
 };
-
-// Async copy
-async function asyncCopy(v) {
-  return new Promise((resolve, reject) => {
-    try {
-      copy(v, o => {
-        resolve(o);
-      });
-    }
-    catch (e) {
-      reject(e);
-    }
-  });
-}
 
 // Exports
 module.exports = {

@@ -32,7 +32,11 @@ describe('strib app generator integration', () => {
 
   it('should be able to run gulp build', () => {
     return cliRunner('gulp', ['build']).then(() => {
-      assert.file(['build/index.html', 'build/app.bundle.js']);
+      assert.file([
+        'build/index.html',
+        'build/js/index.bundle.js',
+        'build/styles/index.bundle.css'
+      ]);
     });
   });
 });

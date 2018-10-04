@@ -8,7 +8,7 @@
 // /* global _ */
 
 // Dependencies
-import utils from './utils.js';
+import utils from './shared/utils.js';
 
 // Mark page with note about development or staging
 utils.environmentNoting();
@@ -22,7 +22,7 @@ utils.autoEnablePym();
 // Adding dependencies
 // ---------------------------------
 // Import local ES6 or CommonJS modules like this:
-// import utilsFn from './utils.js';
+// import utilsFn from './shared/utils.js';
 //
 // Or import libraries installed with npm like this:
 // import module from 'module';
@@ -41,10 +41,10 @@ utils.autoEnablePym();
 // If you are using the buildData function to get data, then ?
 //
 // 1. For smaller datasets, just import them like other files.
-// import content from './assets/data/content.json';
+// import content from '../assets/data/content.json';
 //
 // 2. For larger data points, utilize window.fetch.
-// let content = await (await window.fetch('./assets/data/content.json')).json();
+// let content = await (await window.fetch('../assets/data/content.json')).json();
 //
 // Once you have your data, use it like a Svelte component:
 //

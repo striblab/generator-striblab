@@ -1,9 +1,11 @@
-# <%= _.startCase(answers.name) %>
+# <%= \_.startCase(answers.name) %>
 
 <%= answers.description %>
 
 <% if (answers.dataAnalysis) { %>
+
 ## Data analysis
+
 _<Quickyly describe data needed for project.>_
 
 See [docs/data-analysis.md](./docs/data-analysis.md).
@@ -17,6 +19,10 @@ See [docs/publishing.md](./docs/publishing.md).
 
 See [docs/application-data.md](./docs/application-data.md).
 
+## CMS integration
+
+See [docs/cms.md](./docs/cms.md).
+
 ## Development
 
 See [docs/development.md](./docs/development.md).
@@ -24,6 +30,10 @@ See [docs/development.md](./docs/development.md).
 ### Files and directories
 
 See [docs/development.md](./docs/files-directories.md).
+
+### Managing multiple pages
+
+See [docs/pages.md](./docs/pages.md).
 
 ### Testing
 

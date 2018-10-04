@@ -42,14 +42,11 @@ function styles() {
     )
     .pipe(
       rename(path => {
-        path.basename =
-          path.basename === 'index'
-            ? 'styles.bundle'
-            : path.basename + '.bundle';
+        path.basename = path.basename + '.bundle';
       })
     )
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest('build/'));
+    .pipe(gulp.dest('build/styles/'));
 }
 styles.description =
   'Build the styles from SASS.  Uses autoprefixer to add redundant, cross-browser properties; see browserlist file for configuration.';

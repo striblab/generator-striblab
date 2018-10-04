@@ -24,19 +24,19 @@
     {/each}
   {/if}
 
-  <script src="./app.bundle.js"></script>
+  <script src="./js/{ cms && cms.js ? cms.js : id }.bundle.js"></script>
 </div>
 
 <script>
 // <head> contents
-import HeadContents from './_head.svelte.html';
+import HeadContents from './shared/_head.svelte.html';
 <% if (answers.projectType === 'cms') { %>
 // The CMS assets to help simulate the CMS better
-import CMSAssets from './_cms-assets.svelte.html';
+import CMSAssets from './shared/_cms-assets.svelte.html';
 // The CMS footer via the Strib Styles
-import CMSFooter from './_cms-footer.svelte.html';
+import CMSFooter from './shared/_cms-footer.svelte.html';
 // The CMS header nav via the Strib Styles
-import CMSNav from './_cms-nav.svelte.html';
+import CMSNav from './shared/_cms-nav.svelte.html';
 // Main content.  This is the content that will be copied into the CMS.
 import IndexContent from './_index-content.svelte.html';
 <% } else { %>

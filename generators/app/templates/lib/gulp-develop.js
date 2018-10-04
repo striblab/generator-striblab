@@ -14,6 +14,16 @@ async function server() {
   let browserSync = bs.create();
   let { config } = configUtil.getConfig();
 
+  // No CMS, just static server, this is the default
+  if (!argv.cms) {
+    return browserSync.init({
+      port: 3000,
+      server: './build/',
+      files: './build/**/*',
+      logLevel: argv.debug ? 'debug' : 'info'
+    });
+  }
+
   // Proxy the dev version of news-platform.  (assumes the host file has been set up)
   // https://github.com/MinneapolisStarTribune/news-platform
   //
@@ -45,29 +55,67 @@ async function server() {
   // The value of the key is the file in the build directory.
   //
   // "cms": {
-  //   "id": "...",
-  //   "rewriteMapping": {
-  //     "article-lcd-body-content": "_index-content.html"
-  //   }
+  //   "pages": [{
+  //     "id": "aaaa",
+  //     "rewriteMapping": {
+  //       "article-lcd-body-content": "_index-content"
+  //     }
+  //   }]
   // },
-  let rewriteRules = undefined;
-  if (config.cms && config.cms.rewriteMapping) {
-    rewriteRules = [];
+  //
+  // If no rewrite is provided, it will default to assuming
+  // the class defined under cms.defaultArticleContentTemplateRewriteClass
+  // will use _{ id }-content.svelte.html
 
-    _.each(config.cms.rewriteMapping, (component, id) => {
+  // Check config for cms section
+  if (!config.cms) {
+    throw new Error(
+      'Unable to find a "cms" configuration section in config.json.'
+    );
+  }
+
+  // Determine which page we are using
+  let cmsDefault =
+    _.find(config.cms.pages, { default: true }) ||
+    _.find(config.cms.pages, { id: 'index' });
+  let cmsPage = argv['page-id']
+    ? _.find(config.cms.pages, { id: argv['page-id'] })
+    : argv['article-id']
+      ? argv['article-id']
+      : cmsDefault;
+
+  // Create rewrite rules
+  let rewriteRules = undefined;
+  if (cmsPage) {
+    rewriteRules = [];
+    let rewriteMapping = {};
+
+    // Add defaults rule
+    rewriteMapping[
+      config.cms.defaultArticleContentTemplateRewriteClass ||
+        'article-lcd-body-content'
+    ] = cmsPage.articleContentTemplate
+      ? `${cmsPage.articleContentTemplate}`
+      : `_${cmsPage.id}-content`;
+
+    // Add any custom rules
+    if (cmsPage.rewriteMapping) {
+      rewriteMapping = _.extend(rewriteMapping, cmsPage.rewriteMapping);
+    }
+
+    _.each(rewriteMapping, (component, id) => {
       rewriteRules.push({
         match: new RegExp(
           `<div class="${id}">([\\s\\S]*)<\\/div>\\s*<!-- end ${id} -->`,
           'im'
         ),
-        fn: function(request) {
+        fn: function(request, response, match) {
+          let content = `build/rewrites/${component}.html`;
+
           // Make sure its only for the CMS pages and we have something
           // to replace it with
-          if (
-            request.originalUrl.indexOf('preview=1&cache=trash') &&
-            fs.existsSync(`build/${component}`)
-          ) {
-            let inject = fs.readFileSync(`build/${component}`, 'utf-8');
+          if (fs.existsSync(content)) {
+            let inject = fs.readFileSync(content, 'utf-8');
 
             // Handle rewriting any production path urls for build
             inject = inject.replace(
@@ -78,31 +126,18 @@ async function server() {
             return `<div class="${id}">${inject}</div>`;
           }
 
-          return `<div class="${id}">$1</div>`;
+          return match;
         }
       });
-    });
-  }
-
-  // No CMS, just static server, this is the default
-  if (!argv.cms) {
-    return browserSync.init({
-      port: 3000,
-      server: './build/',
-      files: './build/**/*',
-      logLevel: argv.debug ? 'debug' : 'info'
     });
   }
 
   // Use --cms to proxy local news-platform
   return browserSync.init({
     port: 3000,
-    proxy:
-      'http://' +
-      (argv.mobile ? 'vm-m' : 'vm-www') +
-      '.startribune.com/x/' +
-      (argv['cms-id'] ? argv['cms-id'] : config.cms.id) +
-      '?preview=1&cache=trash',
+    proxy: `http://${argv.mobile ? 'vm-m' : 'vm-www'}.startribune.com/x/${
+      cmsPage.articleId
+    }?preview=1&cache=trash`,
     serveStatic: [
       {
         route: '/' + config.publish.production.path,
@@ -119,8 +154,10 @@ server.description =
 server.flags = {
   '--cms':
     'Turn on the news-platform proxy.  This requires having the cms.id set in the config.json, and having news-platform running locally with ASSETS_STATIC_URL set to http://localhost:3000',
-  '--cms-id=<ID>':
-    'Uses a specific article ID to proxy, other than the cms.id one in config.json.',
+  '--page-id=<ID>':
+    'Uses a specific page ID as defined in the config.json cms pages section; use instead of --article-id; uses { default: true } cms config otherwise.',
+  '--article-id=<ID>':
+    'Uses a specific article ID to proxy; use instead of --page-id; uses { default: true } cms config otherwise.',
   '--mobile':
     'Requires the --cms flag.  Proxies the mobile version of your local news-platform.',
   '--debug': 'Turns on higher log level for BrowserSync'
