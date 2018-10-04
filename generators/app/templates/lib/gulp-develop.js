@@ -120,7 +120,7 @@ async function server() {
             // Handle rewriting any production path urls for build
             inject = inject.replace(
               new RegExp(config.publish.production.url, 'ig'),
-              '/'
+              `/${config.publish.production.path}/`
             );
 
             return `<div class="${id}">${inject}</div>`;

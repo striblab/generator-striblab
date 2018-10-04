@@ -1,4 +1,4 @@
-# <%= \_.startCase(answers.name) %>
+# <%= _.startCase(answers.name) %>
 
 <%= answers.description %>
 

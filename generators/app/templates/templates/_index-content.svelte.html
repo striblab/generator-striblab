@@ -2,6 +2,13 @@
 <div class="<%= answers.stribStylesWrapper.replace(/\./g, ' ').trim() %>">
   <section class="container-lg">
     <p>Content goes here.</p>
+
+    <p>
+      Example image:
+      <!-- Since this markup will live in CMS, the URL needs to be fully to static,
+        but for development we rewrite to local -->
+      <img src="{ production.url }assets/images/strib/strib-logo-transparent-307.png" alt="Test image">
+    </p>
   </section>
 </div>
 <% } %>
@@ -24,6 +31,11 @@
 <main id="main-content" class="content" role="main">
   <div class="container-lg">
     <p>Main content here.</p>
+
+    <p>
+      Example image:
+      <img src="./assets/images/strib/strib-logo-transparent-307.png" alt="Test image">
+    </p>
   </div>
 </main>
 

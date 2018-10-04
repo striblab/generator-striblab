@@ -73,7 +73,7 @@ module.exports = function(generator) {
       },
       {
         name:
-          'CMS integration -- Markup lives in the CMS with assets managed in project.',
+          'CMS integration -- Markup lives in the CMS with assets managed in S3 or similar.',
         value: 'cms',
         short: 'CMS integration'
       }
@@ -98,7 +98,7 @@ module.exports = function(generator) {
     name: 'cmsIDs',
     required: true,
     message:
-      'The Clickability CMS article ID(s).  For multiple ID\'s, separate by\n   a comma, such as "123, 456".  Note that only the first one is used\n   in the build, and the other are for reference.',
+      'The Clickability CMS article ID(s).  For multiple ID\'s, separate by\n   a comma, such as "123, 456", and see docs/cms.md for multiple pages.',
     when: answers => {
       return answers.projectType === 'cms';
     }
@@ -108,7 +108,7 @@ module.exports = function(generator) {
     type: 'input',
     name: 'lcdIDs',
     message:
-      'The Clickability CMS Linked-Content-Data (LCD) ID(s).  For multiple ID\'s, separate by\n   a comma, such as "123, 456".  Note that this\n   currently only used for reference',
+      'The Clickability CMS Linked-Content-Data (LCD) ID(s).  For multiple ID\'s, separate by\n   a comma, such as "123, 456", and see docs/cms.md for multiple pages.',
     when: answers => {
       return answers.projectType === 'cms';
     }

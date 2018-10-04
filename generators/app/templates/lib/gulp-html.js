@@ -35,7 +35,14 @@ async function getData() {
         argv: { data: argv },
         _: { data: _ }
       },
-      config.data ? config.data : {}
+      config.data ? config.data : {},
+      {
+        // Pull out production url so that we can use it in
+        // templates, and then allow browser sync to rewrite it
+        // for local developent.  This is specifically helpful
+        // for cms integration.
+        production: { data: config.publish.production || {} }
+      }
     ),
     {
       logger: m => {
