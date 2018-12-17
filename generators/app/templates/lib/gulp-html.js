@@ -4,6 +4,7 @@
 
 // Dependencies
 const path = require('path');
+const fs = require('fs-extra');
 const gulp = require('gulp');
 const gutil = require('gulp-util');
 const rename = require('gulp-rename');
@@ -26,15 +27,26 @@ require('svelte/ssr/register')({
 
 // Get data
 async function getData() {
+  // Get config
   let { config } = configUtil.getConfig();
+
+  // Look for a data.js file
+  let dataJsConfig = {};
+  if (fs.existsSync(path.join(__dirname, '..', 'data.js'))) {
+    dataJsConfig = require('../data.js');
+  }
+
+  // Compile build data
   let buildData = new BuildData(
     _.extend(
       {},
+      // Always assumed
       {
         config: { data: config },
         argv: { data: argv },
         _: { data: _ }
       },
+      // Data from config.json
       config.data ? config.data : {},
       {
         // Pull out production url so that we can use it in
@@ -42,7 +54,9 @@ async function getData() {
         // for local developent.  This is specifically helpful
         // for cms integration.
         production: { data: config.publish.production || {} }
-      }
+      },
+      // Data from data.js file in project root
+      dataJsConfig ? dataJsConfig : {}
     ),
     {
       logger: m => {

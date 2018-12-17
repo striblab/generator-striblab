@@ -6,18 +6,20 @@
 
 ## Data analysis
 
-_<Quickyly describe data needed for project.>_
+_<Describe data and where it comes from.>_
 
 See [docs/data-analysis.md](./docs/data-analysis.md).
 <% } %>
 
+## Application data
+
+_<Describe data and where it comes from.>_
+
+See [docs/application-data.md](./docs/application-data.md).
+
 ## Publishing
 
 See [docs/publishing.md](./docs/publishing.md).
-
-## Application data
-
-See [docs/application-data.md](./docs/application-data.md).
 
 ## CMS integration
 

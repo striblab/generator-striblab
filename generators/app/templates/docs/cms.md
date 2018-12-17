@@ -32,8 +32,10 @@ To setup an article to take advantage of this workflow, for each page needed:
 
 Configuration to connect the project for development is managed in `config.json`. It should have at least one `pages` entry. For example:
 
-```
+```js
 "cms": {
+  // The default way to rewrite the page locally
+  // when using news-platform
   "defaultArticleContentTemplateRewriteClass": "article-lcd-body-content",
   "pages": [
     {
@@ -48,6 +50,9 @@ Configuration to connect the project for development is managed in `config.json`
       "styles": "index",
       "articleId": "33333333",
       "lcd": "4444444",
+      // This will allow you to rewrite parts of the page,
+      // usually this is tied to the news-platform
+      // override template
       "rewriteRules": {
         "custom-class": "_template-id-to-replace"
       }
@@ -66,6 +71,21 @@ You can also, edit the templates directly if you want.
 
 ## Publishing
 
-`gulp cms:info` TODO
+You can use `gulp cms:info` to output the cms information from the `config.json`.
 
-`gulp cms:lcd` TODO
+The command `gulp cms:lcd` will output the data that should be inserted into the LCD fields.
+
+This command allows you to get a specific field and copy it to the clipboard. For instance:
+
+- `gulp cms:lcd --get="styles"`
+- By default, it uses the default page, but if there are multiple pages, use a prfix like: `gulp cms:lcd --get="page|styles"`
+
+### Example publishing routine
+
+Once you have the article and LCD setup for publishing, here are the common steps to get to publshing:
+
+1. Publish assets: `gulp deploy --production`
+   - Note that `deploy` will delete the build folder and rebuild the project, while `publish` will only push things up to S3.
+1. Go to the LCD
+1. Get the content from the project: `gulp cms:lcd --get="content"`
+1. Paste the content into the LCD and save it.
