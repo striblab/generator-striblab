@@ -41,7 +41,7 @@ module.exports = function(context, dependencies) {
     },
     keywords: context.keywords || [],
     engines: {
-      node: '>=8.9.0'
+      node: '>=10.14.0'
     },
     dependencies: dependencies.dependencies || {},
     devDependencies: dependencies.devDependencies || {},

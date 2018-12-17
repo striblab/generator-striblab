@@ -8,13 +8,15 @@ Development tasks are managed with [Gulp](http://gulpjs.com/). Use the following
 
 The following are global prerequisites and may already be installed.
 
-1.  Install [Node.js](https://nodejs.org/en/).
+1.  Install [NodeJS](https://nodejs.org/en/).
     - (on Mac) Install [homebrew](http://brew.sh/) then run: `brew install node`
+    - You may need to manage multiple versions of NodeJS; there are multiple options, but a good one is [nvm](https://github.com/creationix/nvm#installation) (see [installation instructions](https://github.com/creationix/nvm)).
 1.  Install the [Gulp](http://gulpjs.com/) command line: `npm install gulp-cli -g`
 
 The following should be performed for initial and each code update:
 
-1.  Install Node dependencies: `npm install`
+1. (optional) If using `nvm`, run: `nvm use`
+1. Install Node dependencies: `npm install`
 
 ## Local
 
