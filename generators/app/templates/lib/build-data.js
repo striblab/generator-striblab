@@ -82,11 +82,9 @@ class BuildData {
         // Data pass through
         if (d.data) {
           keyed[di] = d.data;
-          return;
         }
-
         // Allow for a post process
-        if (_.isFunction(d.postprocess)) {
+        else if (_.isFunction(d.postprocess)) {
           keyed[di] = d.postprocess(await this.fetchSet(d, di));
         }
         else {
@@ -238,7 +236,9 @@ class BuildData {
     }
 
     // Determine file name
-    let extension = (set.source || set.url || set.id).split('.').pop();
+    let extension = (set.source || set.url || set.id || '.json')
+      .split('.')
+      .pop();
     extension = ~ioWriteFormats.indexOf(set.type)
       ? set.type
       : ~ioWriteFormats.indexOf(extension)
