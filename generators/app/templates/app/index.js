@@ -10,15 +10,15 @@
 // /* global $, _ */
 
 // Dependencies
-import utils from './shared/utils.js';
+import { environmentNoting, autoEnablePym, detachAndAttachElement, } from './shared/utils.js';
 
 // Mark page with note about development or staging
-utils.environmentNoting();
+environmentNoting();
 
 <% if (answers.projectType !== 'cms') { %>
 // Auto enable Pym for embedding.  This will enable a Pym Child if
 // the url contains ?pym=true
-utils.autoEnablePym();
+autoEnablePym();
 <% } %>
 
 /**
@@ -71,27 +71,17 @@ utils.autoEnablePym();
 //
 // import Content from '../templates/_index-content.svelte.html
 //
-// $(document).ready(() => {
-//   // Hack to get share back
-//   let $share = $('.share-placeholder').size()
-//     ? $('.share-placeholder')
-//       .children()
-//       .detach()
-//     : undefined;
-//   let attachShare = !$share
-//     ? undefined
-//     : () => {
-//       $('.share-placeholder').append($share);
-//     };
-
-//   // Main component
-//   const app = new Content({
-//     target: document.querySelector('.article-lcd-body-content'),
-//     hydrate: true,
-//     data: {
-//       attachShare
-//     }
-//   });
+// // Deal with share place holder (remove the elements, then re-attach
+// // them in the app component)
+// const attachShare = detachAndAttachElement('.share-placeholder');
+//
+// // Main component
+// const app = new Content({
+//   target: document.querySelector('.article-lcd-body-content'),
+//   hydrate: true,
+//   data: {
+//     attachShare
+//   }
 // });
 <% } else { %>
 // Common code to get svelte template loaded on the client.  Probably need data.

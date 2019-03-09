@@ -53,6 +53,11 @@
       // For content that lives in the CMS directly, we hack
       // around the share bits by removing it before we load
       // the component, then re-attach here.
+      //
+      // This looks like
+      // <div class="share-placeholder">
+      //   <!-- share -->
+      // </div>
       if (this.get().attachShare) {
         this.get().attachShare();
       }
