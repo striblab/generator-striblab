@@ -30,6 +30,10 @@ describe('strib app generator integration', () => {
     return cliRunner('gulp', ['tasks']);
   });
 
+  it('should be able to run js tests', () => {
+    return cliRunner('gulp', ['js:test']);
+  });
+
   it('should be able to run gulp build', () => {
     return cliRunner('gulp', ['build']).then(() => {
       assert.file([

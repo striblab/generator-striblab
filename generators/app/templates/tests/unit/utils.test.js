@@ -256,6 +256,13 @@ describe('goToElement', () => {
   });
 });
 
+// Test detachAndAttachElement function
+describe('detachAndAttachElement', () => {
+  it('should exist', () => {
+    expect(utils.detachAndAttachElement).toBeTruthy();
+  });
+});
+
 // Test round function
 describe('round', () => {
   it('should round numbers', () => {

@@ -314,6 +314,30 @@ function goToElement(id, parent, options = {}) {
 }
 
 /**
+ * Given the selector, will detach all the children and then
+ * provide a function that will re-attach those children to
+ * the same element.  Useful for some CMS hackery.
+ *
+ * @param {string} selector The CSS selector
+ * @return {function} Function to re-attach children elements
+ *   to the original element.
+ */
+function detachAndAttachElement(selector) {
+  let shareEls = [];
+  let shareEl = document.querySelector(selector);
+  while (shareEl.firstChild) {
+    shareEls.push(shareEl.firstChild);
+    shareEl.removeChild(shareEl.firstChild);
+  }
+
+  return () => {
+    shareEls.forEach(el => {
+      document.querySelector(selector).appendChild(el);
+    });
+  };
+}
+
+/**
  * Round a number.
  *
  * @param  {number} input The number to round.
@@ -483,6 +507,7 @@ export default {
   stopGeolocateWatch,
   hasLocalStorage,
   goToElement,
+  detachAndAttachElement,
   round,
   isAndroid,
   isIOS,
