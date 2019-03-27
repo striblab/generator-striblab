@@ -4,18 +4,18 @@
 
 <% if (answers.dataAnalysis) { %>
 
+## Data
+
+_<Describe data and where it comes from.>_
+
+Utilizes [Air Supply](https://zzolo.org/air-supply/) to pull in data that is available in the templating.
+
 ## Data analysis
 
 _<Describe data and where it comes from.>_
 
 See [docs/data-analysis.md](./docs/data-analysis.md).
 <% } %>
-
-## Application data
-
-_<Describe data and where it comes from.>_
-
-See [docs/application-data.md](./docs/application-data.md).
 
 ## Publishing
 

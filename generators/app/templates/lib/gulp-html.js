@@ -13,9 +13,9 @@ const htmlhint = require('gulp-htmlhint');
 const a11y = require('gulp-a11y');
 const _ = require('lodash');
 const transform = require('gulp-transform');
-const { argv } = require('yargs');
+const { airSupply } = require('air-supply');
+//const { argv } = require('yargs');
 const configUtil = require('./config.js');
-const BuildData = require('./build-data.js');
 
 // Register svelte includes
 require('svelte/ssr/register')({
@@ -28,46 +28,9 @@ require('svelte/ssr/register')({
 // Get data
 async function getData() {
   // Get config
-  let { config } = configUtil.getConfig();
-
-  // Look for a data.js file
-  let dataJsConfig = {};
-  if (fs.existsSync(path.join(__dirname, '..', 'data.js'))) {
-    dataJsConfig = require('../data.js');
-  }
-
-  // Compile build data
-  let buildData = new BuildData(
-    _.extend(
-      {},
-      // Always assumed
-      {
-        config: { data: config },
-        argv: { data: argv },
-        _: { data: _ }
-      },
-      // Data from config.json
-      config.data ? config.data : {},
-      {
-        // Pull out production url so that we can use it in
-        // templates, and then allow browser sync to rewrite it
-        // for local developent.  This is specifically helpful
-        // for cms integration.
-        production: { data: config.publish.production || {} }
-      },
-      // Data from data.js file in project root
-      dataJsConfig ? dataJsConfig : {}
-    ),
-    {
-      logger: m => {
-        gutil.log(`[${gutil.colors.cyan('html')}] [build-data] ${m}`);
-      },
-      ignoreInitialCache: argv.cache === false,
-      cache: path.join(__dirname, '..', '.cache-build-data'),
-      localOutput: path.join(__dirname, '..', 'assets', 'data')
-    }
-  );
-  return await buildData.fetch();
+  // let { config } = configUtil.getConfig();
+  let a = airSupply();
+  return await a.supply();
 }
 
 // Renders pages with Svelte.

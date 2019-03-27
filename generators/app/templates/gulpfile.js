@@ -105,10 +105,19 @@ gulp.task('build', allBuild);
 async function allWatch() {
   gulp.watch(['styles/**/*.scss'], gulp.series('styles'));
   gulp.watch(
-    ['templates/**/*', 'config.*json', 'package.json', 'content.json'],
+    [
+      'templates/**/*',
+      'config.*json',
+      'package.json',
+      'content.json',
+      '*air-supply*'
+    ],
     gulp.series('html:simple')
   );
-  gulp.watch(['templates/**/*', 'app/**/*', 'config.json'], gulp.series('js'));
+  gulp.watch(
+    ['templates/**/*', 'app/**/*', 'config.json', '*air-supply*'],
+    gulp.series('js')
+  );
   gulp.watch(['assets/**/*'], gulp.series('assets'));
 }
 allWatch.description =
