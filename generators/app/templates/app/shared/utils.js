@@ -325,6 +325,11 @@ function goToElement(id, parent, options = {}) {
 function detachAndAttachElement(selector) {
   let shareEls = [];
   let shareEl = document.querySelector(selector);
+
+  if (!shareEl) {
+    return () => {};
+  }
+
   while (shareEl.firstChild) {
     shareEls.push(shareEl.firstChild);
     shareEl.removeChild(shareEl.firstChild);
@@ -493,6 +498,35 @@ function gaEvent({ category, action, label, value, nonInteraction }) {
   }
 }
 
+/**
+ * Document ready handler, non-JQuery version
+ * @see https://stackoverflow.com/questions/12528049/if-a-dom-element-is-removed-are-its-listeners-also-removed-from-memory
+ *
+ * @param {function} handler Function to register as when document is ready
+ *   of will be fired right-away if document is already ready.
+ * @return {undefined}
+ */
+function documentReady(handler) {
+  handler = typeof handler === 'function' ? handler : () => {};
+
+  // in case the document is already rendered
+  if (document.readyState != 'loading') {
+    handler();
+  }
+  // modern browsers
+  else if (document.addEventListener) {
+    document.addEventListener('DOMContentLoaded', handler);
+  }
+  // IE <= 8
+  else {
+    document.attachEvent('onreadystatechange', () => {
+      if (document.readyState == 'complete') {
+        handler();
+      }
+    });
+  }
+}
+
 // Export a generator for the class.
 export default {
   enablePym,
@@ -514,5 +548,6 @@ export default {
   isWindowsPhone,
   isMobile,
   gaPage,
-  gaEvent
+  gaEvent,
+  documentReady
 };

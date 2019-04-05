@@ -10,15 +10,17 @@
 // /* global $, _ */
 
 // Dependencies
-import { environmentNoting, autoEnablePym, detachAndAttachElement, } from './shared/utils.js';
+import utils from './shared/utils.js';
 
-// Mark page with note about development or staging
-environmentNoting();
+utils.documentReady(() => {
+  // Mark page with note about development or staging
+  utils.environmentNoting();
+});
 
 <% if (answers.projectType !== 'cms') { %>
 // Auto enable Pym for embedding.  This will enable a Pym Child if
 // the url contains ?pym=true
-autoEnablePym();
+utils.autoEnablePym();
 <% } %>
 
 /**
@@ -55,12 +57,14 @@ autoEnablePym();
  *
  * Once you have your data, use it like a Svelte component:
  *
- * const app = new Content({
- *  target: document.querySelector('.article-lcd-body-content'),
- *  hydrate: true,
- *  data: {
- *    content
- *  }
+ * utils.documentReady(() => {
+ *   const app = new Content({
+ *     target: document.querySelector('.article-lcd-body-content'),
+ *     hydrate: true,
+ *     data: {
+ *       content
+ *     }
+ *   });
  * });
  */
 
@@ -69,29 +73,36 @@ autoEnablePym();
 // Common code to get svelte template loaded on the client and hack-ishly
 // handle sharing
 //
-// import Content from '../templates/_index-content.svelte.html
+// import Content from '../templates/_index-content.svelte.html';
 //
-// // Deal with share place holder (remove the elements, then re-attach
-// // them in the app component)
-// const attachShare = detachAndAttachElement('.share-placeholder');
+// utils.documentReady(() => {
+//   // Deal with share place holder (remove the elements, then re-attach
+//   // them in the app component)
+//   const attachShare = utils.detachAndAttachElement('.share-placeholder');
 //
-// // Main component
-// const app = new Content({
-//   target: document.querySelector('.article-lcd-body-content'),
-//   hydrate: true,
-//   data: {
-//     attachShare
-//   }
+//   // Main component
+//   const app = new Content({
+//     target: document.querySelector('.article-lcd-body-content'),
+//     hydrate: true,
+//     data: {
+//       attachShare
+//     }
+//   });
 // });
 <% } else { %>
-// Common code to get svelte template loaded on the client.  Probably need data.
+// Common code to get svelte template loaded on the client.  Note that
+// we need to pull in the data we assume is in the template.
 //
-// import Content from '../templates/_index-content.svelte.html
+// import Content from '../templates/_index-content.svelte.html';
+// import content from '../content.json';
 //
-// const app = new Content({
-//   target: document.querySelector('.article-lcd-body-content'),
-//   hydrate: true,
-//   data: {
-//   }
+// utils.documentReady(() => {
+//   const app = new Content({
+//     target: document.querySelector('.article-lcd-body-content'),
+//     hydrate: true,
+//     data: {
+//       content
+//     }
+//   });
 // });
 <% } %>
