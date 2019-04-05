@@ -1,0 +1,46 @@
+<svelte:head>
+  <meta name="app-env" content="dev">
+  <meta name="app-platform" content="{ argv.mobile ? 'mobile' : 'desktop' }">
+
+  <!-- Setings from site -->
+<script>
+  var twigJsDomain = '{ (argv.mobile) ? "m" : "www" }.startribune.com';
+  var assetDomain = "assets.startribune.com";
+  if (assetDomain != "" && typeof assetDomain == "string") {
+    twigJsDomain = assetDomain;
+  }
+  twigJsDomain = location.protocol + "//" + twigJsDomain;
+</script>
+
+  <!-- Mockup to help catch error -->
+  <script>
+    window.Bugsnag = { use: function() { }};
+    window.FeatureAPI_JS_TipsNavigation = false
+  </script>
+
+  {#if argv.mobile }
+    <!-- Mobile assets -->
+    <link href="http://m.startribune.com/assets/css/main.css?d={ +(new Date()) }" rel="stylesheet" type="text/css">
+    <link href="http://m.startribune.com/assets/css/icons.data.svg.css?d={ +(new Date()) }" rel="stylesheet" type="text/css">
+    <link href="https://comments.startribune.com/static/embed/stream/bundle.c0edda76bca243ded0e9a26d64db9802.css?d={ +(new Date()) }" rel="stylesheet" type="text/css">
+    <link href="https://www.startribune.com/vendor/css/comments.css?d={ +(new Date()) }" rel="stylesheet" type="text/css">
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js?d={ +(new Date()) }"></script>
+    <script src="http://m.startribune.com/assets/js/libs/jquery.cookie.js?d={ +(new Date()) }"></script>
+    <script src="http://m.startribune.com/assets/js/libs/jquery.visible.min.js?d={ +(new Date()) }"></script>
+    <script src="http://m.startribune.com/assets/js/libs/modernizr.js?d={ +(new Date()) }"></script>
+    <script src="http://m.startribune.com/assets/js/libs/jquery.onAppear.min.js?d={ +(new Date()) }"></script>
+    <script src="https://users.startribune.com/embed/mainapp.build.js?d={ +(new Date()) }"></script>
+    <script src="http://m.startribune.com/vendor/js/shims.js?d={ +(new Date()) }"></script>
+  {:else}
+    <!-- Desktop assets -->
+    <link href="http://assets.startribune.com/static/css/screen.css?d={ +(new Date()) }" rel="stylesheet" type="text/css">
+
+    <script src="http://assets.startribune.com/static/vendor/jquery/dist/jquery.min.js?d={ +(new Date()) }"></script>
+    <script src="http://www.startribune.com/vendor/js/shims.js?d={ +(new Date()) }"></script>
+    <script src="http://www.startribune.com/vendor/js/startribune.js?d={ +(new Date()) }"></script>
+    <script src="http://assets.startribune.com/static/min/header.vendor.min.js?d={ +(new Date()) }"></script>
+    <script src="https://users.startribune.com/embed/mainapp.build.js?d={ +(new Date()) }"></script>
+    <script src="http://assets.startribune.com/static/js/st.welcome.js?d={ +(new Date()) }"></script>
+  {/if}
+</svelte:head>

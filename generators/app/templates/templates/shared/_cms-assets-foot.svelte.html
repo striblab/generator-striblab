@@ -1,0 +1,17 @@
+{#if argv.mobile }
+  <!-- Mobile assets -->
+  <script src="http://m.startribune.com/vendor/js/startribune.js?d={ +(new Date()) }"></script>
+  <script src="http://m.startribune.com/assets/min/main.vendor.min.js?d={ +(new Date()) }"></script>
+  <script src="http://m.startribune.com/assets/min/main.min.js?d={ +(new Date()) }"></script>
+  <script src="http://m.startribune.com/static/vendor/pym.js/pym.min.js?d={ +(new Date()) }"></script>
+  <script src="http://m.startribune.com/assets/js/article.js?d={ +(new Date()) }"></script>
+{:else}
+  <!-- Desktop assets -->
+  <script src="http://www.startribune.com/vendor/js/6e426feeac552b6fc052.js?d={ +(new Date()) }"></script>
+  <script src="https://comments.startribune.com/static/embed.js?d={ +(new Date()) }"></script>
+  <script src="http://assets.startribune.com/static/min/footer.vendor.min.js?d={ +(new Date()) }"></script>
+  <script src="http://assets.startribune.com/static/min/footer.min.js?d={ +(new Date()) }"></script>
+  <script src="http://assets.startribune.com/static/vendor/pym.js/pym.min.js?d={ +(new Date()) }"></script>
+  <script src="http://assets.startribune.com/static/min/article.vendor.min.js?d={ +(new Date()) }"></script>
+  <script src="http://assets.startribune.com/static/min/article.min.js?d={ +(new Date()) }"></script>
+{/if}
