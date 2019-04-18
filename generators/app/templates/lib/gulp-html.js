@@ -4,13 +4,14 @@
 
 // Dependencies
 const path = require('path');
-const fs = require('fs-extra');
+//const fs = require('fs-extra');
 const gulp = require('gulp');
 const gutil = require('gulp-util');
 const rename = require('gulp-rename');
 const noopener = require('gulp-noopener');
 const htmlhint = require('gulp-htmlhint');
 const a11y = require('gulp-a11y');
+const notify = require('gulp-notify');
 const _ = require('lodash');
 const transform = require('gulp-transform');
 const { airSupply } = require('air-supply');
@@ -87,6 +88,26 @@ async function htmlSvelte() {
           : sveltePage(r);
       })
     )
+    .on(
+      'error',
+      notify.onError(error => {
+        return 'Error compiling Svelte HTML: ' + error.message;
+      })
+    )
+    .on('error', e => {
+      // Make more helpful output
+      let output = `${e.message}\n`;
+
+      if (e.frame) {
+        output += `\nFile: ${e.filename}\n${e.frame}\n`;
+      }
+
+      if (e.stack) {
+        output += `\n${e.stack}\n`;
+      }
+
+      gutil.log(gutil.colors.red(`\n${output}`));
+    })
     .pipe(
       rename(function(path) {
         path.basename = path.basename

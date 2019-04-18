@@ -6,6 +6,7 @@
 const path = require('path');
 const gulp = require('gulp');
 const stylelint = require('gulp-stylelint');
+const notify = require('gulp-notify');
 const sourcemaps = require('gulp-sourcemaps');
 const sass = require('gulp-sass');
 const autoprefixer = require('gulp-autoprefixer');
@@ -32,7 +33,12 @@ function styles() {
       sass({
         outputStyle: 'compressed',
         includePaths: [path.join(__dirname, '..', 'node_modules')]
-      }).on('error', sass.logError)
+      }).on(
+        'error',
+        notify.onError(error => {
+          return 'SASS error: ' + error.message;
+        })
+      )
     )
     .pipe(
       autoprefixer({

@@ -19,13 +19,17 @@ lint.description =
 
 // Getting Jest to run via cli module or manually is :(
 function test() {
-  return runCommand('./node_modules/.bin/jest', ['tests']);
+  return runCommand('./node_modules/.bin/jest', ['tests'], {
+    notifyMessage: 'Error running JS tests with Jest.'
+  });
 }
 test.description = 'Runs any *.test.js JS tests via Jest.';
 
 // Main JS task, just runs webpack
 function js() {
-  return runCommand('./node_modules/.bin/webpack');
+  return runCommand('./node_modules/.bin/webpack', [], {
+    notifyMessage: 'Error compiling JS with Webpack.'
+  });
 }
 js.description =
   'Main build for JS; uses webpack.  See webpack.config.js for configuration.';

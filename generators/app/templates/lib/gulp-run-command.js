@@ -4,10 +4,13 @@
 
 // Dependencies
 const gutil = require('gulp-util');
+const notify = require('gulp-notify');
 const child = require('child_process');
 
 // Main command
-function gulpRunner(command, args) {
+function gulpRunner(command, args, options = {}) {
+  options.notify = options.notify === undefined ? true : options.notify;
+
   return new Promise((resolve, reject) => {
     const commandLog = command.split('/').pop();
     const proc = child.spawn(command, args);
@@ -24,10 +27,17 @@ function gulpRunner(command, args) {
     // Passes status code
     proc.on('close', status => {
       if (status) {
+        if (options.notify) {
+          notify.onError(
+            () =>
+              options.notifyMessage || `Error running process: ${commandLog}`
+          )(new Error(`Error running: ${commandLog}`));
+        }
+
         return reject(
           new gutil.PluginError(
             command,
-            `Command returned non-zero status of ${status}`
+            `Command returned non-zero status of ${status}; See "${commandLog}" log entries above for details.`
           )
         );
       }
