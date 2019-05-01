@@ -29,7 +29,7 @@ More details: [docs/development.md](./docs/development.md).
 
 ## Publishing
 
-The `gulp deploy` command will clear out the build, re-build the project, and publish it up to `static.startribune.com`.  Use `gulp deploy --production` to put in a production spot.
+The `gulp deploy` command will clear out the build, re-build the project, and publish it up to `static.startribune.com`.  Use `gulp deploy --production` to put in a production spot.  Use `gulp publish:open` to open the publish URL in a browser.
 
 If using CMS integration, run the `gulp cms:lcd --get=content` command to get the values to go into the LCD.
 

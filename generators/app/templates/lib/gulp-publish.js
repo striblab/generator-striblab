@@ -29,7 +29,7 @@ const commonFlags = {
 
 // Main publish function
 async function publish() {
-  checkAWS();
+  await checkAWS();
   let p = getPublishConfig();
   let publisher = awspublish.create({
     params: {
@@ -103,7 +103,7 @@ buildToken.description = 'Write publish-token file to build for publishing.';
 
 // Check publish token
 async function compareToken() {
-  checkAWS();
+  await checkAWS();
   let s3 = new AWS.S3();
   let p = getPublishConfig();
   let { config, error } = configUtil.getConfig();
@@ -185,15 +185,23 @@ compareToken.flags = commonFlags;
 // General info about publishing
 async function info() {
   // Check AWS
-  checkAWS(true);
+  try {
+    await checkAWS(true);
+  }
+  catch (e) {
+    // This should already output any issues
+  }
 
   // Check token
-  let c = checkToken();
-  gutil.log(
-    `\n${gutil.colors.green('✓')} Token check passed.  ` +
-      (c ? 'Tokens matched' : 'Token not on S3 or --force was used.') +
-      '\n'
-  );
+  try {
+    checkToken();
+    gutil.log(`\n${gutil.colors.green('✓')} Token check passed.`);
+  }
+  catch (e) {
+    gutil.log(
+      `\n${gutil.colors.red('x')} Unable to find token in config file.`
+    );
+  }
 
   // Get config
   let { config, error } = configUtil.getConfig();
@@ -244,22 +252,35 @@ checkToken.description = 'Check to see if a publish token exists.';
 
 // Check aws access
 // https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html
-function checkAWS(logInfo = false) {
+async function checkAWS(logInfo = false) {
   let configCredentials = new AWS.SharedIniFileCredentials();
   let envCredentials = new AWS.EnvironmentCredentials('AWS');
   let errors = [];
 
-  // Check environment variables
+  // General info
   if (logInfo) {
-    gutil.log(
-      '\nOne way to set access to AWS/S3 is with the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables.  These can be set in a local .env file for the project.\n'
-    );
+    gutil.log(`
+There are a few ways to get AWS credentials to be able to publish to S3.
+
+    * Using the 'default' credentials as defined in your ~/.aws/credentials file.
+    * A different crenditals profile can be used with the environment variable:
+      AWS_PROFILE
+    * Or you can set your ID and Key explicitly with the environment variables:
+      AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
+
+Any environment variables can be stored in a '.env' file in the project directory.
+
+For more details see:
+https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-credentials-node.html
+    `);
   }
+
+  // Try id and key
   try {
     envCredentials.refresh();
     if (!envCredentials.accessKeyId) {
       throw new Error(
-        'Was able to load credentials via the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables, but the Access Key was not loaded succesfully.'
+        'Was able to load credentials via the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables, but something went wrong and the Access Key was not loaded succesfully.'
       );
     }
     if (logInfo) {
@@ -284,23 +305,18 @@ function checkAWS(logInfo = false) {
   }
 
   // Check config files
-  if (logInfo) {
-    gutil.log(
-      '\nAnother way to set access to AWS/S3 is with the AWS_PROFILE environment variables.  Unless otherwise specified, this will try to use your "default" profile, but this can be set to any valid profile defined in /.aws/credentials.  This can also be set in a local .env file for the project.\n'
-    );
-  }
   try {
-    configCredentials.refresh();
+    await configCredentials.getPromise();
     if (!configCredentials.accessKeyId) {
       throw new Error(
-        'Was able to load credentials via the AWS_PROFILE environment variables, but the Access Key was not loaded succesfully.'
+        'Was able to load credentials via ~/.aws config and maybe AWS_PROFILE environment variables, but something went wrong and the Access Key was not loaded succesfully.'
       );
     }
     if (logInfo) {
       gutil.log(
         `\n${gutil.colors.green(
           '✓'
-        )} Can load credentials via the AWS_PROFILE environment variables.  Using profile: ${gutil.colors.magenta(
+        )} Can load credentials via ~/.aws config (and optionally AWS_PROFILE environment variables).  Using profile: ${gutil.colors.magenta(
           configCredentials.profile
         )}\n`
       );
@@ -314,7 +330,7 @@ function checkAWS(logInfo = false) {
       gutil.log(
         `\n${gutil.colors.red(
           'x'
-        )} Unable load credentials via the AWS_PROFILE environment variables.\n`
+        )} Unable load credentials via ~/.aws config (and optionally AWS_PROFILE environment variables).\n`
       );
     }
   }
