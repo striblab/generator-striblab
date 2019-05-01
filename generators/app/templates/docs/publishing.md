@@ -7,7 +7,14 @@ Overall, the strategy to publish is to host on `static.startribune.com` (S3) and
 The following command-line `gulp` commands will help you along the way. Make sure to use `gulp tasks` to see up to date list of all tasks.
 
 - `gulp deploy`: This is the big one that will rebuild the project and push up to S3. Use flags like `--staging` or `--production` to publish to a specific place, depending on what your `config.json` looks like (see _Configuration_ below).
+  - For staging or testing, you can use the `--publish-version` flag to publish a specific version to S3. For example:
+    - `gulp deploy --staging --publish-version` will publish to a sub-folder using today's date, and then you can open in it your brower with `gulp publish:open --staging --publish-version`
+    - Or you can name the version if you want: `gulp deploy --staging --publish-version=awesome-feature`
 - `gulp cms:lcd`: This will output some common values used for the LCD in the CMS.
+  - You can copy a value to the clipboard, specifically the content field is most helpful: `gulp cms:lcd --get=content`
+- `gulp publish`: This is just publishing what is in the `build/` directory to S3. This should be avoided and `gulp deploy` is preferred so that the build is accurate for publishing.
+- `gulp publish:open`: Will open up the S3 location in a browser.
+- `gulp publish:info`: Will check your AWS configuration and tokens and tell you about it.
 
 ### AWS/S3 integration
 
@@ -15,9 +22,11 @@ The simplest way to publish to S3 is to use the `gulp deploy` command, though yo
 
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
-- OR `AWS_DEFAULT_PROFILE`
+- OR have crednetials configured in `~/.aws/crendentials`; and if you manage multiple credneitals, you can utilize `AWS_DEFAULT_PROFILE`.
 
-For further reading on setting up access, see [Configureing the JS-SDK](http://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/configuring-the-jssdk.html).
+For further reading on setting up access, see [Configuring the JS-SDK](http://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/configuring-the-jssdk.html).
+
+A good way to get things configured and have a powerful tool is to install the [aws-cli](https://aws.amazon.com/cli/) and then run `aws configure`.
 
 ## Embed
 
@@ -34,13 +43,20 @@ Go to [embed-a-writer](http://static.startribune.com/news/tools/embed-it/) and u
 You can also simply use an iframe with some HTML. Specifically, utilize [pym.js](http://blog.apps.npr.org/pym.js/) so that the iframe becomes resopnsive to the content.
 
 ```html
-<div data-pym-src="https://static.startribune.com/news/projects/all/<%= package.name %>">Loading...</div>
-<script src="https://static.startribune.com/assets/libs/pym.js/1.3.2/pym.v1.min.js" type="text/javascript"></script>
+<div
+  data-pym-src="https://static.startribune.com/news/projects/all/<%= package.name %>/?pym=true"
+>
+  Loading...
+</div>
+<script
+  src="https://static.startribune.com/assets/libs/pym.js/1.3.2/pym.v1.min.js"
+  type="text/javascript"
+></script>
 ```
 
 ## CMS
 
-See [CMS page](./cms.md).
+For more specific documentation on CMS integration, see [CMS page](./cms.md).
 
 ## Configuration
 

@@ -1,6 +1,6 @@
 # CMS integration and publishing
 
-If this project is meant to live within the [Star Tribune CMS](https://cms.clickability.com/cms), overall, this means that the markup and content are stored within the CMS, while the styling and javascript is managed externally, probably on S3.
+If this project is meant to live within the [Star Tribune CMS](https://cms.clickability.com/cms), overall, this means that the markup and content are stored within the CMS, while the styling, javascript, and other assets are managed externally, probably on S3.
 
 ## Setup
 
@@ -11,22 +11,24 @@ To test the content through a local [news-platform](https://github.com/Minneapol
 
 ### News-platform
 
-`news-platform` TODO
+For any article that you are publishing to, it should be utilizing the `shared/generic-interactive-v01.twig` template. It is possible that some articles with these overrides are already made.
+
+- For desktop override such as `desktop-theme/templates/override/_id/XXXXX.twig`, all you have to do is add this line: `{% extends "override/shared/generic-interactive-v01.twig" %}`
+- For mobile override such as `mobile-theme/templates/override/_id/XXXXX.twig`, just have `{% extends "override.shared.generic-interactive-v01.twig" %}`
 
 ### CMS pages
 
 To setup an article to take advantage of this workflow, for each page needed:
 
-1.  Create an article.
-    - Set "Web Page View" (unsure?) to "Yes"
-    - (coming soon) Set the `Template overide` that is something like `Full page article vXX`.
-1.  Create a connected LCD
-    - See below for more about fields, but overall, these should be something like:
-      - `content`: Main body of content, this is likely the `build/_index-content.html` file that is rendered.
-      - `styles`: `news/projects/all/generator-test/styles.bundle.css`
-      - `scripts`: `news/projects/all/generator-test/app.bundle.js`
-      - `script libraries` or `style libraries`
-1.  Update `config.json`
+1. Create an article.
+   - Set "Web Page View" (unsure?) to "Yes"
+1. Create a connected LCD
+   - See below for more about fields, but overall, these should be something like:
+     - `content`: Main body of content, this is likely the `build/_index-content.html` file that is rendered.
+     - `styles`: `news/projects/all/generator-test/styles.bundle.css`
+     - `scripts`: `news/projects/all/generator-test/app.bundle.js`
+     - `script libraries` or `style libraries`
+1. Update `config.json` with article and LCD IDs.
 
 ### Configuration
 
@@ -78,7 +80,8 @@ The command `gulp cms:lcd` will output the data that should be inserted into the
 This command allows you to get a specific field and copy it to the clipboard. For instance:
 
 - `gulp cms:lcd --get="styles"`
-- By default, it uses the default page, but if there are multiple pages, use a prfix like: `gulp cms:lcd --get="page|styles"`
+- What's more helpful is getting `content` since this is actually all the markup for the project and lives in a file. `gulp cms:lcd --get="content"`
+- By default, it uses the default page, but if there are multiple pages, use a prefix like: `gulp cms:lcd --get="page|styles"`
 
 ### Example publishing routine
 

@@ -24,12 +24,15 @@ const commonFlags = {
   '--production': 'Uses publish.production section in config.json.',
   '--staging': 'Uses publish.staging section in config.json.',
   '--testing': 'Uses publish.testing section in config.json.',
-  '--force': 'Force the token check to go through.'
+  '--force': 'Force the token check to go through.',
+  '--publish-version':
+    'Publish a specific version; can specify a string, like --publish-version=my-version or will default to today\'s date.'
 };
 
 // Main publish function
 async function publish() {
   await checkAWS();
+  let v = versionPath();
   let p = getPublishConfig();
   let publisher = awspublish.create({
     params: {
@@ -57,8 +60,7 @@ async function publish() {
     .src('build/**/*')
     .pipe(
       rename(path => {
-        path.dirname =
-          (p.path.substr(-1) === '/' ? p.path : p.path + '/') + path.dirname;
+        path.dirname = `${trailingSlash(p.versionPath)}/${path.dirname}`;
       })
     )
     .pipe(awspublish.gzip())
@@ -110,8 +112,7 @@ async function compareToken() {
   if (error) {
     throw new gutil.PluginError('publish', error);
   }
-  let key =
-    (p.path.substr(-1) === '/' ? p.path : p.path + '/') + 'publish-token';
+  let key = `${trailingSlash(p.versionPath)}/publish-token`;
   checkToken();
 
   // If force
@@ -220,6 +221,9 @@ async function info() {
   ${gutil.colors.gray('Path in bucket:')} ${publish.bucket}
   ${gutil.colors.gray('Cache length in seconds:')} ${publish.cacheSeconds}
   ${gutil.colors.gray('URL to project on S3:')} ${publish.url}
+  ${gutil.colors.gray('URL to project on S3 (versioned):')} ${
+  publish.versionUrl
+}
   ${gutil.colors.gray('S3 URL:')} s3://${publish.bucket}/${publish.bucket}\n\n`;
   });
   gutil.log(configOutput);
@@ -348,6 +352,7 @@ https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/setting-creden
 
 // Determine which publish config we want
 function getPublishConfig() {
+  let v = versionPath();
   let { config, error } = configUtil.getConfig();
   if (error) {
     throw new gutil.PluginError('publish', error);
@@ -361,33 +366,63 @@ function getPublishConfig() {
   }
 
   // Allow for production, staging, testing, and default
-  return argv.production && config.publish.production
-    ? _.extend(config.publish.production, { id: 'production' })
-    : argv.staging && config.publish.staging
-      ? _.extend(config.publish.staging, { id: 'staging' })
-      : argv.testing && config.publish.testing
-        ? _.extend(config.publish.testing, { id: 'testing' })
-        : _.extend(config.publish.default, { id: 'default' });
+  let found =
+    argv.production && config.publish.production
+      ? _.extend(config.publish.production, { id: 'production' })
+      : argv.staging && config.publish.staging
+        ? _.extend(config.publish.staging, { id: 'staging' })
+        : argv.testing && config.publish.testing
+          ? _.extend(config.publish.testing, { id: 'testing' })
+          : _.extend(config.publish.default, { id: 'default' });
+
+  // Add versions
+  if (found && found.url) {
+    found.versionUrl = v ? `${trailingSlash(found.url)}/${v}` : found.url;
+  }
+  if (found && found.path) {
+    found.versionPath = v ? `${trailingSlash(found.path)}/${v}` : found.path;
+  }
+
+  return found;
 }
 
 // Open URL
 async function open() {
   let p = getPublishConfig();
-  if (!p.url) {
+  if (!p.versionUrl) {
     throw new gutil.PluginError(
       'publish',
       `Unable to find the url parameter in the ${p.id} publish config.`
     );
   }
-  openurl.open(p.url);
+  openurl.open(p.versionUrl);
 }
 open.description =
   'Open URL for the published project.  This is defined as the "url" parameter in the publish config in config.json.';
 open.flags = commonFlags;
 
+// Get version path from argv
+function versionPath() {
+  let prefix = '_versions';
+
+  if (argv && argv.publishVersion === true) {
+    return `${prefix}/${new Date().toISOString().split('T')[0]}`;
+  }
+  else if (argv && argv.publishVersion) {
+    return `${prefix}/${_.kebabCase(argv.publishVersion)}`;
+  }
+
+  return '';
+}
+
 // Random token
 function randomToken() {
   return crypto.randomBytes(16).toString('hex');
+}
+
+// Remove trailing slach
+function trailingSlash(input) {
+  return _.isString(input) ? input.replace(/\/$/, '') : input;
 }
 
 // Exports
