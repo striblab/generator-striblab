@@ -118,7 +118,8 @@ module.exports = function(generator) {
   c.push({
     type: 'confirm',
     name: 'dataAnalysis',
-    message: 'Would you like to include the data analysis templates?'
+    message: 'Would you like to include the data analysis templates?',
+    default: false
   });
 
   // Add newline at the end of each, as its a bit easier on
