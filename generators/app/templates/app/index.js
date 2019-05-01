@@ -9,20 +9,6 @@
  */
 // /* global $, _ */
 
-// Dependencies
-import utils from './shared/utils.js';
-
-utils.documentReady(() => {
-  // Mark page with note about development or staging
-  utils.environmentNoting();
-});
-
-<% if (answers.projectType !== 'cms') { %>
-// Auto enable Pym for embedding.  This will enable a Pym Child if
-// the url contains ?pym=true
-utils.autoEnablePym();
-<% } %>
-
 /**
  * Adding dependencies
  * ---------------------------------
@@ -32,6 +18,21 @@ utils.autoEnablePym();
  * Or import libraries installed with npm like this:
  * import module from 'module';
  */
+
+// Dependencies
+import utils from './shared/utils.js';
+
+// DOM loaded
+utils.documentReady(() => {
+  // Mark page with note about development or staging
+  utils.environmentNoting();
+});
+
+<% if (answers.projectType === 'standalone') { %>
+// Auto enable Pym for embedding.  This will enable a Pym Child if
+// the url contains ?pym=true
+utils.autoEnablePym();
+<% } %>
 
 
 /**
@@ -94,14 +95,14 @@ utils.autoEnablePym();
 // we need to pull in the data we assume is in the template.
 //
 // import Content from '../templates/_index-content.svelte.html';
-// import content from '../content.json';
+// // import content from '../content.json';
 //
 // utils.documentReady(() => {
 //   const app = new Content({
 //     target: document.querySelector('.article-lcd-body-content'),
 //     hydrate: true,
 //     data: {
-//       content
+//       // content
 //     }
 //   });
 // });

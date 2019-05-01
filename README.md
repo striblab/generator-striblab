@@ -4,20 +4,20 @@
 
 ## Install
 
-1.  Install [NodeJS](https://nodejs.org/en/).
-    - On a Mac, install Homebrew and do: `brew install node`
-    - Make sure you are using the latest version of Node 8 or later.
-1.  Install [Yeoman](http://yeoman.io/), and [Gulp](https://gulpjs.com/) command line tools: `npm install -g yo gulp-cli`
-1.  Install generator: `npm install -g @striblab/generator-striblab`
+1. Install [NodeJS](https://nodejs.org/en/).
+   - On a Mac, install Homebrew and do: `brew install node`
+   - Make sure you are using the latest version of Node 8 or later.
+1. Install [Yeoman](http://yeoman.io/), and [Gulp](https://gulpjs.com/) command line tools: `npm install -g yo gulp-cli`
+1. Install generator: `npm install -g @striblab/generator-striblab`
 
 ## Usage
 
-1.  Make a new directory and enter it: `mkdir new-project && cd new-project`
-    - (Recommended, but not necessary) Create a repo on Github first and check that out.
-1.  Run Yeoman: `yo`
-    - It is suggested to use just `yo`, since it will tell you if a new version of a generator is available.
-1.  Answer questions and wait for install to finish up.
-1.  A `README.md` will be generated describing the project and its parts.
+1. Make a new directory and enter it: `mkdir new-project && cd new-project`
+   - (Recommended, but not necessary) Create a repo on Github first and check that out.
+1. Run Yeoman: `yo`
+   - It is suggested to use just `yo`, since it will tell you if a new version of a generator is available.
+1. Answer questions and wait for install to finish up.
+1. A `README.md` will be generated describing the project and its parts.
 
 ### Questions
 
@@ -41,8 +41,8 @@ When answering the questions, you may see something like the following right aft
 
 ## Development
 
-1.  Get this codebase: `git clone https://github.com/striblab/generator-striblab.git && cd generator-striblab`
-1.  Install dependencies and link: `npm install && npm link`
+1. Get this codebase: `git clone https://github.com/striblab/generator-striblab.git && cd generator-striblab`
+1. Install dependencies and link: `npm install && npm link`
 
 Each directory is a template, while files in `common/` are used across templates.
 
@@ -54,20 +54,20 @@ Automated testing can be run with the following command. Note that it will take 
 
 Manual testing can be done with these helpful commands.
 
-1.  Make directory and install: `mkdir -p generator-test && cd generator-test && yo "@striblab/striblab"`;
-1.  Re-install (assumes the previous step was done and you are in that directory): `cd ..; rm -rv generator-test && mkdir -p generator-test && cd generator-test && yo "@striblab/striblab"`
-    - Debug: `cd ..; rm -rv generator-test && mkdir generator-test && cd generator-test && DEBUG=yeoman:* yo "@striblab/striblab"`
+1. Make directory and install: `mkdir -p generator-test && cd generator-test && yo "@striblab/striblab"`;
+1. Re-install (assumes the previous step was done and you are in that directory): `cd ..; rm -rv generator-test && mkdir -p generator-test && cd generator-test && yo "@striblab/striblab"`
+   - Debug: `cd ..; rm -rv generator-test && mkdir generator-test && cd generator-test && DEBUG=yeoman:* yo "@striblab/striblab"`
 
 ## Publishing
 
 Publish to [npm](https://www.npmjs.com/package/@striblab/generator-striblab).
 
-1.  Run tests, and do manual testing as the automated tests are very basic.
-1.  Update version, `X.X.X`, in `package.json` and then run `npm install`
-1.  Commit changes, i.e. `git commit -m "Updated version."`
-1.  Tag with the same version number: `git tag X.X.X`
-1.  Push up to Github: `git push origin --tags`
-1.  Publish to npm: `npm publish --access public`
+1. Run tests, and do manual testing as the automated tests are very basic.
+1. Update version, `X.X.X`, in `package.json` and then run `npm install`
+1. Commit changes, i.e. `git commit -m "Updated version."`
+1. Tag with the same version number: `git tag X.X.X`
+1. Push up to Github: `git push origin --tags`
+1. Publish to npm: `npm publish --access public`
 
 ## Credits
 
