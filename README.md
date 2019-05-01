@@ -6,28 +6,38 @@
 
 1.  Install [NodeJS](https://nodejs.org/en/).
     - On a Mac, install Homebrew and do: `brew install node`
-1.  Install [Yeoman](http://yeoman.io/), and [Gulp](https://gulpjs.com/) command line tool: `npm install -g yo gulp-cli`
+    - Make sure you are using the latest version of Node 8 or later.
+1.  Install [Yeoman](http://yeoman.io/), and [Gulp](https://gulpjs.com/) command line tools: `npm install -g yo gulp-cli`
 1.  Install generator: `npm install -g @striblab/generator-striblab`
 
 ## Usage
 
 1.  Make a new directory and enter it: `mkdir new-project && cd new-project`
-    - (Recommended) Create a repo on Github first.
+    - (Recommended, but not necessary) Create a repo on Github first and check that out.
 1.  Run Yeoman: `yo`
-    - It is suggest to use just `yo`, since it will tell you if a new version of a generator is available.
-    - Note, you have to use a specific generator to get to sub-generators; see below.
+    - It is suggested to use just `yo`, since it will tell you if a new version of a generator is available.
 1.  Answer questions and wait for install to finish up.
 1.  A `README.md` will be generated describing the project and its parts.
 
-### Specific generators
+### Questions
 
-- (default) `yo "@striblab/striblab"`: Front-end application. Some of the key questions asked in this process:
-  - Type of project. A _standalone embed_ is a bundled up project without external dependencies meant to be embedded in an article with an iframe. The _CMS integration_ version changes the way the application gets hosted to work with the Star Tribune CMS and focuses on creating JS, CSS, and other supporting assets.
-  - Google spreadsheet integration. This is for a _standalone embed_ and sets up using a Google Spreadsheet to hold values that are used in the templates. This requires an API connection to Google and asks for the following:
-    - The Google API email address which is something like `XXXXXX@XXXXXX.iam.gserviceaccount.com` and can be found in the authentication JSON you get in the Google API Console. The environment variable `GOOGLE_AUTH_CLIENT_EMAIL` will be the default.
-    - The Google API private key address which is something like `--BEGIN PRIVATE--XX\\nXX\\nXX--END PRIVATE KEY--` and can be found in the authentication JSON you get in the Google API Console. The environment variable `GOOGLE_AUTH_PRIVATE_KEY` will be the default.
-    - Your private Google email to assign ownership of the new spreadsheet for. The environment variable `GOOGLE_DEFAULT_SPREADSHEET_OWNER` will be the default.
-  - Whether or not to include the data analysis templates, which is a folder for data analysis and an example [Drake](https://github.com/Factual/drake) workflow file.
+When answering the questions, you may see something like the following right after the question: `(my-project)`. This is the default value for the question and if you just hit Enter, then this value will be used.
+
+- **Name**: The identifier for the project. This should be similar to the folder name that project is in, ideally all lowercase and using hyphens, no spaces. This gets used when publishing up to S3.
+- **Title**: The title of the project. This is used as default metadata fora project which is important for standalone projects.
+- **Description**: Description of the project. Same use as _Title_.
+- **Author name**: This is pulled from your Git config by default. This is put into the `package.json` and put into default metadata.
+- **Author email**: This is pulled from your Git config by default. This is put into the `package.json`.
+- **Type of project**:
+  - A _standalone embed_ is a bundled up project without external dependencies meant to be embedded in an article with an iframe.
+  - The _CMS integration_ version changes the way the application gets hosted to work with the Star Tribune CMS and focuses on creating JS, CSS, and other supporting assets.
+- For CMS integration projects:
+
+  - **Strib Styles selector**: The custom selector to use with [Strib Styles](https://striblab.github.io/strib-styles/). This ensures that any Strib Styles or project styles won't affect the site styles.
+  - **CMS IDs**: List of CMS article IDs that the project will publish to. This can be left blank and filled in later.
+  - **CMS LCD IDs**: List of CMS article IDs that the project will publish to. This can be left blank and filled in later.
+
+- **Data analysis templates**: Whether or not to include the data analysis templates, which is a folder for data analysis and an example [Drake](https://github.com/Factual/drake) workflow file.
 
 ## Development
 
