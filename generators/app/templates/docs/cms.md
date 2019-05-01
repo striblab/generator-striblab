@@ -71,6 +71,14 @@ By using the `styles` or `js` properties in the configuration for a page, you ca
 
 You can also, edit the templates directly if you want.
 
+## Development
+
+You can run your project through `news-platform`. This is slow and should mostly be used as a final testing step to make sure nothing on the site will mess with the project. Simply add a flag to `gulp develop`:
+
+```sh
+gulp develop --cms
+```
+
 ## Publishing
 
 You can use `gulp cms:info` to output the cms information from the `config.json`.

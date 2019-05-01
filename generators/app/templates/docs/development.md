@@ -1,38 +1,45 @@
 # Development
 
-Development tasks are managed with [Gulp](http://gulpjs.com/). Use the following to get a full list of all available tasks:
+Development tasks are managed with [Gulp](http://gulpjs.com/). Use `gulp tasks` to get a full list of all available tasks.
 
-    gulp tasks
+- `gulp develop`: The main tasks to run the build and local webserver and watch for changes.
+- The following are unnecessary for development usually, but may be helpful to do some quicker debugging:
+  - `gulp html`: Main task to build the HTML/Svelte. Note that [Svelte v2](https://v2.svelte.dev/) is used.
+  - `gulp styles`: Build SASS
+  - `gulp js`: Build client-side JS
 
 ## Install
 
 The following are global prerequisites and may already be installed.
 
-1.  Install [NodeJS](https://nodejs.org/en/).
-    - (on Mac) Install [homebrew](http://brew.sh/) then run: `brew install node`
-    - You may need to manage multiple versions of NodeJS; there are multiple options, but a good one is [nvm](https://github.com/creationix/nvm#installation) (see [installation instructions](https://github.com/creationix/nvm)).
-1.  Install the [Gulp](http://gulpjs.com/) command line: `npm install gulp-cli -g`
+1. Install [NodeJS](https://nodejs.org/en/).
+
+   - (on Mac) Install [homebrew](http://brew.sh/) then run: `brew install node`
+   - You may need to manage multiple versions of NodeJS; there are multiple options, but a good one is [nvm](https://github.com/creationix/nvm#installation) (see [installation instructions](https://github.com/creationix/nvm)).
+
+1. Install the [Gulp](http://gulpjs.com/) command line: `npm install gulp-cli -g`
 
 The following should be performed for initial and each code update:
 
 1. (optional) If using `nvm`, run: `nvm use`
 1. Install Node dependencies: `npm install`
+   - Troubleshooting: If you get some build errors or similar, you can try removing any the node modules and re-installing: `rm -r node_modules package-lock.json && npm install`
 
 ## Local
 
 To run a local web server that will auto-reload with [Browsersync](https://browsersync.io/), watch for file changes and re-build:
 
-    gulp develop
+```sh
+gulp develop
+```
 
-There are some arguments that can alter the local server behavior, specifically if you are publishing through the CMS; you can run these in multiple Terminal tabs for different development needs:
+There are some arguments that can alter the local server behavior, specifically if you are publishing through the CMS. Note that you can run these in multiple Terminal tabs for different development needs:
 
 - Proxy through a local `news-platform` instance; if you don't know what that is, it is likely you don't have it setup. `gulp develop --cms`
   - For the mobile version of the site, use `gulp develop --cms --mobile`.
-  - If your project has multiple pages, you can target a specific article ID with `gulp develop --cms --article-id=123456`.
+  - If your project has multiple pages, you can target a specific page with `gulp develop --cms --page-id=page-two`.
 
-There are number of commands via Gulp that can be helpful. Use the following to get a list of the available commands:
-
-    gulp tasks
+There are number of commands via Gulp that can be helpful. Use `gulp tasks` to get a list of the available commands.
 
 ## Build
 
@@ -67,7 +74,7 @@ Depending on what libraries or dependencies you need to include there are a few 
       ```js
       /* global Pym */
       ```
-    - **IMPORTANT** Make sure to always use a specific version from a CDN; do not use _latest_ or something similar.
+    - **IMPORTANT** Make sure to always use a specific version from a CDN; do not use _latest_ or something similar, as this may cause unexpected issues in the future.
     - For testing, these need to be available and should be added to `tests/global.js`
   - For local modules that you have written yourself, you can use the ES6 module syntax.
     - For instance, say you have created a `utils.js` module file, just use a relative path to include it:
