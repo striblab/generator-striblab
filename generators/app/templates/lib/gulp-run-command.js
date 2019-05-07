@@ -27,7 +27,7 @@ function gulpRunner(command, args, options = {}) {
     // Passes status code
     proc.on('close', status => {
       if (status) {
-        if (options.notify) {
+        if (options.notify || options.notifyMessage) {
           notify.onError(
             () =>
               options.notifyMessage || `Error running process: ${commandLog}`
