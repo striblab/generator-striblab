@@ -1,12 +1,6 @@
 {
   "about this file": "This document defines configuration for this project that is not content or copy.",
-
   "projectIdentifier": "<%= package.name %>",
-
-  "data": {
-    "content": "./content.json",
-    "pkg": "./package.json"
-  },
 <% if (answers.projectType === 'cms' ) { %>
   "cms": {
     "defaultArticleContentTemplateRewriteClass": "article-lcd-body-content",
