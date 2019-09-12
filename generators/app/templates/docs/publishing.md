@@ -18,11 +18,19 @@ The following command-line `gulp` commands will help you along the way. Make sur
 
 ### AWS/S3 integration
 
-The simplest way to publish to S3 is to use the `gulp deploy` command, though you could manually copy the files up if needed to. To make sure the deploy and publish commands work, you will need to have some AWS credentials setup. These can be set as enivonrment variables, and specifically can be set in the `.env` file.
+The simplest way to publish to S3 is to use the `gulp deploy` command, though you could manually copy the files up if needed to. To make sure the deploy and publish commands work, you will need to have some AWS credentials setup.
 
-- `AWS_ACCESS_KEY_ID`
-- `AWS_SECRET_ACCESS_KEY`
-- OR have crednetials configured in `~/.aws/crendentials`; and if you manage multiple credneitals, you can utilize `AWS_DEFAULT_PROFILE`.
+The easiest way to do this is by setting up `~/.aws/credentials`. This workflow checks this location by default. If you do not have this set up yet, here's how:
+
+- Open up a new Terminal window and create the hidden folder with this command: `mkdir .aws`
+- cd into the `.aws` folder and create a new file called credentials: `touch credentials`
+- Open this file with vim or another text editor. Your credentials file should look like this:
+```sh
+[default]
+aws_access_key_id = your_actual_access_key_here_you_cant_just_copy_paste_this_code
+aws_secret_access_key = your_actual_secret_access_key_here_you_cant_just_copy_paste_this_code
+```
+- Keep in mind that you can have as many AWS profiles as you want in this file (you can delineate a new profile by putting a new name between the brackets), but when running `gulp deploy` it will use your *default* credentials.
 
 For further reading on setting up access, see [Configuring the JS-SDK](http://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/configuring-the-jssdk.html).
 
