@@ -85,6 +85,10 @@ You can use `gulp cms:info` to output the cms information from the `config.json`
 
 The command `gulp cms:lcd` will output the data that should be inserted into the LCD fields.
 
+`gulp cms:lcd` will now also output a file at `./lcd.csv`, which can be used to mass import LCD fields rather than copying and pasting individually. In the LCD view, you'll see an option called "Import" (it's two below "Edit"). Use the file finder to attach `lcd.csv`.
+
+An important note on this functionality: The gulpfile generates the `./lcd.csv` based on **the most current** build directory. `gulp cms:lcd` does not rerun the build command. This means that if you make changes and do not run `gulp deploy`, `gulp publish` or `gulp develop`, the csv will not reflect those changes. 
+
 This command allows you to get a specific field and copy it to the clipboard. For instance:
 
 - `gulp cms:lcd --get="styles"`
