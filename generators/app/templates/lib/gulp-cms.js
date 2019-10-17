@@ -11,6 +11,16 @@ const { copy } = require('copy-paste');
 const argv = require('yargs').argv;
 const configUtil = require('./config.js');
 const webpackConfig = require('../webpack.config.js');
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+
+//initialize csvwriter for lcd import
+const csvWriter = createCsvWriter({
+  path: './lcd.csv',
+  header: [
+    {id: 'label', title: 'label'},
+    {id: 'content', title: 'content'}
+  ]
+});
 
 // Some basics check of CMS config
 async function cmsConfig() {
@@ -134,6 +144,25 @@ async function lcd() {
       : undefined;
 
     page.parts = parts;
+
+    // use file sync to take a best guess for content field in LCD
+    const pageHTML = fs.readFileSync(
+      path.join(__dirname, '..', parts.contentLocation),
+      'utf-8'
+    );
+
+    // object to write csv to populate lcd fields
+    const records = [
+      {label: 'content', content: pageHTML},
+      {label: 'scripts', content: page.parts.scripts},
+      {label: 'styles', content: page.parts.styles},
+      {label: 'script libraries', content: page.parts['script libraries']},
+      {label: 'style libraries', content: page.parts['style libraries']}
+    ];
+
+    // write the records to lcd.csv
+    csvWriter.writeRecords(records);
+
     return page;
   });
 
