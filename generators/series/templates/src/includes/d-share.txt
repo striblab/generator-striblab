@@ -1,0 +1,59 @@
+<aside class="article-share">
+
+<div class="share__comments clickQS" id="share-comments"></div>
+
+<div class="share__facebook clickQS">
+<a class="st-share-link" data-st-share-count-selector=".share-count-facebook"
+data-st-share-service="facebook"
+data-st-share-url="http://strib.mn/2vr65f0" target="_blank"
+data-linkname="Share on Facebook"
+data-linktype="share-facebook"
+data-modulename="Article"
+data-moduletype="-"
+data-position="-1-share"
+data-customevents="share-click">
+<div class="share-icon"></div>
+<div class="share-label">
+<span class="share-txt">share</span><span class="share-count-facebook"></span>
+</div>
+</a>
+</div>
+
+<div class="share__twitter clickQS">
+<a class="st-share-link" data-st-share-count-selector=".share-count-twitter"
+data-st-share-image=""
+data-st-share-title="At-large article seven"
+data-st-share-service="twitter" data-st-share-url="http://strib.mn/2vr65f0"
+data-st-count-url="http://www.startribune.com/at-large-article-seven/509118261/"
+target="_blank"
+data-linkname="Share on Twitter"
+data-linktype="share-twitter"
+data-modulename="Article"
+data-moduletype="-"
+data-position="-1-share"
+data-customevents="share-click">
+<div class="share-icon"></div>
+<div class="share-label">
+<span class="share-txt">tweet</span><span class="share-count-twitter"></span>
+</div>
+</a>
+</div>
+
+<div class="share__email clickQS">
+<a class="st-share-link" data-st-share-service="email" data-st-share-url="https://www.startribune.com/email/share/content/?section=%2Fprotected&amp;story_id=509118261&amp;headline=At-large+article+seven"
+data-id="509118261"
+data-linkname="Email"
+data-linktype="share-email"
+data-modulename="Article"
+data-moduletype="-"
+data-position="-1-share"
+data-customevents="share-click">
+<div class="share-icon"></div>
+<div class="share-label">
+<span>email</span>
+</div>
+</a>
+</div>
+
+
+</aside>

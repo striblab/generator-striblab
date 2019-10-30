@@ -1,0 +1,26 @@
+<style>
+#comment-count-social-btn a:last-child { 
+	display:none;
+}
+</style>
+
+<ul class="article-tools nav story-share design-share body-sharing-top">
+<li class="tool">
+<a id="share-email-link" href="mailto:?subject=From%20Star%20Tribune%3A%20At-large%20article%20seven&amp;body=From%20Star%20Tribune%3A%20%0A%0AAt-large%20article%20seven%0A%0A%0A%0Ahttp%3A%2F%2Fstrib.mn%2F2vr65f0" title="email" data-evar47="1" data-linkname="Email this story - Top" data-evar58="share-email" data-evar95="+1" data-customevents="event10" data-evar56="protected" data-evar45="Page Navigation Top" data-evar73="header-page-nav">
+<span class="icon-email-light social-sharing email"></span>
+</a>
+</li>
+<li class="tool">
+<a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fstrib.mn%2F2vr65f0" title="facebook" data-evar47="2" data-linkname="Share on Facebook - Top" data-evar58="share-facebook" data-evar95="+1" data-customevents="event10" data-evar56="protected" data-evar45="Page Navigation Top" data-evar73="header-page-nav">
+<span class="icon-facebook-light social-sharing facebook"></span>
+</a>
+</li>
+<li class="tool float--right">
+<a href="https://twitter.com/intent/tweet?original_referer=http%3A%2F%2Fstrib.mn%2F2vr65f0&amp;text=At-large%20article%20seven&amp;tw_p=tweetbutton&amp;url=http%3A%2F%2Fstrib.mn%2F2vr65f0" title="twitter" data-evar47="3" data-linkname="Share on Twitter - Top" data-evar58="share-twitter" data-evar95="+1" data-customevents="event10" data-evar56="protected" data-evar45="Page Navigation Top" data-evar73="header-page-nav">
+<span class="icon-twitter-light social-sharing twitter twitterPage"></span>
+</a>
+</li>
+<li class="tool float--right">
+<div id="comment-count-social-btn"><a href="#comment" data-scroll-target-id="comment-count-toggle" id="js-go_to_comments" class="icon-comments-dark social-sharing comments" title="comments"><span class="comment-count" id="comment-count-social">&nbsp;+&nbsp;</span><img alt="" src="http://apps.startribune.com/circulars/images/blank.gif" style="display: none;"></a></div>
+</li>
+</ul>
