@@ -1,0 +1,2 @@
+LCD IDs: <%= answers.lcdIDs %>
+Clickability Article IDs: <%= answers.cmsIDs %> 
