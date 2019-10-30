@@ -1,0 +1,6 @@
+<% if (answers.projectType === 'responsive') { %>
+@import "variables";
+@import "fonts";
+<% } else if (answers.projectType !== 'responsive') { %>
+
+<% } %>

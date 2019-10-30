@@ -16,10 +16,11 @@
    - (Recommended, but not necessary) Create a repo on Github first and check that out.
 1. Run Yeoman: `yo`
    - It is suggested to use just `yo`, since it will tell you if a new version of a generator is available.
+   - If you are creating a new series-article project, use the command `yo @striblab/striblab:series` to generate that scaffolding.
 1. Answer questions and wait for install to finish up.
 1. A `README.md` will be generated describing the project and its parts.
 
-### Questions
+### yo @striblab/striblab Questions
 
 When answering the questions, you may see something like the following right after the question: `(my-project)`. This is the default value for the question and if you just hit Enter, then this value will be used.
 
@@ -38,6 +39,19 @@ When answering the questions, you may see something like the following right aft
   - **CMS LCD IDs**: List of CMS article IDs that the project will publish to. This can be left blank and filled in later.
 
 - **Data analysis templates**: Whether or not to include the data analysis templates, which is a folder for data analysis and an example [Drake](https://github.com/Factual/drake) workflow file.
+
+### yo @striblab/striblab:series Questions
+
+The series-article workflow is now a subgenerator within generator-striblab. This means that you won't be able to access it directly by simply using the command `yo`. Generate scaffolding for a series-article project by using this command: `yo @striblab/striblab:series`. You'll be prompted to answer a few questions:
+
+- **Project Name**: The name of the project. This defaults to the name of the enclosing folder.
+- **Description**: A short description of the project. This will get put in the README.md.  
+- **Article ID(s)**: Clickability Article IDs for the project. This will be put in `./ids.txt` to make it easier to keep track of past projects.
+- **LCD ID(s)**: Clickability LCD IDs for the project. This value will also be put in `./ids.txt`, making it easier to track down old LCDs.
+
+Outside of that, the series-article workflow works exactly the same as before. You'll still need to generate your own LCD fields in Clickability and copy/paste your content manually.
+
+More documentation on the series-article structure lives in the README.md of your project.
 
 ## Development
 
