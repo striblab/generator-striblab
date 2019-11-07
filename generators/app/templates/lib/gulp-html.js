@@ -19,7 +19,7 @@ const { airSupply } = require('air-supply');
 const configUtil = require('./config.js');
 
 // Register svelte includes
-require('svelte/ssr/register')({
+require('svelte/register')({
   extensions: ['.html', '.svelte', '.svelte.html'],
   generate: 'ssr',
   hydratable: true,
@@ -80,7 +80,7 @@ async function htmlSvelte() {
             : {}) || {};
 
         // Render
-        let r = s.render(d);
+        let r = s.default.render(d);
 
         // for the includes, we don't want to add the page wrapper.
         return isInclude(file.path)
