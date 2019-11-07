@@ -1,3 +1,84 @@
+<script>
+
+  let content = $$props.content;
+  let config = $$props.config;
+  let cms = $$props.cms;
+  let id = $$props.id;
+
+  let googleAnalytics = ''
+  if (config.googleAnalytics) {
+    googleAnalytics = `
+      <script type="text/javascript">
+        (function(i, s, o, g, r, a, m) {
+          i["GoogleAnalyticsObject"] = r;
+          (i[r] =
+            i[r] ||
+            function() {
+              (i[r].q = i[r].q || []).push(arguments);
+            }),
+            (i[r].l = 1 * new Date());
+          (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+          a.async = 1;
+          a.src = g;
+          m.parentNode.insertBefore(a, m);
+        })(
+          window,
+          document,
+          "script",
+          "https://www.google-analytics.com/analytics.js",
+          "ga"
+        );
+
+        ga("create", "${config.googleAnalytics}", "auto");
+        ga("send", "pageview");
+      <\/script>
+    `
+  }
+
+  let social_image = ''
+  if (config.social) {
+    social_image = config.publish.production.url + config.social.image;
+  }
+
+  let publisher_logo = "./assets/images/strib/strib-logo-transparent-307.png"
+  if (config.publish) {
+    publisher_logo = config.publish.production.url  + "assets/images/strib/strib-logo-transparent-307.png"
+  }
+
+  export let structuredData = `
+        <script type="application/ld+json">
+          {
+            "@context": "http://schema.org",
+            "@type": "NewsArticle",
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": "${config.publish.production.url}"
+            },
+            "headline": "${content.title}",,
+            "description": "${content.socialDescription}",
+            "image": {
+              "@type": "ImageObject",
+              "url": "${social_image}"
+            },
+            "author": {
+              "@type": "Person",
+              "name": "${content.author || "Star Tribune Visuals"}"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "${content.organization || "Star Tribune"}",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "${publisher_logo}",
+                "width": 307,
+                "height": 292
+              }
+            }
+          }
+        <\/script>
+      `;
+</script>
+
 <svelte:head>
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -53,82 +134,5 @@
 
 <!-- Google Analytics -->
 {@html googleAnalytics }
+
 </svelte:head>
-
-<script>
-  export default {
-    computed: {
-      googleAnalytics: ({ config }) => {
-        // Svelte ignores svelte syntax within a <script> tag
-        return !config.googleAnalytics
-          ? ""
-          : `
-            <script type="text/javascript">
-              (function(i, s, o, g, r, a, m) {
-                i["GoogleAnalyticsObject"] = r;
-                (i[r] =
-                  i[r] ||
-                  function() {
-                    (i[r].q = i[r].q || []).push(arguments);
-                  }),
-                  (i[r].l = 1 * new Date());
-                (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
-                a.async = 1;
-                a.src = g;
-                m.parentNode.insertBefore(a, m);
-              })(
-                window,
-                document,
-                "script",
-                "https://www.google-analytics.com/analytics.js",
-                "ga"
-              );
-
-              ga("create", "${config.googleAnalytics}", "auto");
-              ga("send", "pageview");
-            <\/script>
-          `;
-      },
-
-      structuredData: ({ config, content }) => {
-        // Svelte ignores svelte syntax within a <script> tag
-        return `
-            <script type="application/ld+json">
-              {
-                "@context": "http://schema.org",
-                "@type": "NewsArticle",
-                "mainEntityOfPage": {
-                  "@type": "WebPage",
-                  "@id": "${config.publish.production.url}"
-                },
-                "headline": "${content.title}",,
-                "description": "${content.socialDescription}",
-                "image": {
-                  "@type": "ImageObject",
-                  "url": "${config.publish.production.url}${
-          config.social ? config.social.image : ""
-        }"
-                },
-                "author": {
-                  "@type": "Person",
-                  "name": "${content.author || "Star Tribune Visuals"}"
-                },
-                "publisher": {
-                  "@type": "Organization",
-                  "name": "${content.organization || "Star Tribune"}",
-                  "logo": {
-                    "@type": "ImageObject",
-                    "url": "${
-                      config.publish ? config.publish.production.url : "./"
-                    }assets/images/strib/strib-logo-transparent-307.png",
-                    "width": 307,
-                    "height": 292
-                  }
-                }
-              }
-            <\/script>
-          `;
-      }
-    }
-  };
-</script>

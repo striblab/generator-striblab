@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/striblab/generator-striblab.git"
+    "url": "git+https://github.com/striblab/generator-striblab.git@svelte3"
   },
   "author": {
     "name": "Alan Palazzolo",
@@ -30,6 +30,7 @@
   },
   "homepage": "https://github.com/striblab/generator-striblab#readme",
   "dependencies": {
+    "mixin-deep": ">=1.3.2",
     "chalk": "^2.4.1",
     "ejs": "^2.6.1",
     "git-config": "0.0.7",
