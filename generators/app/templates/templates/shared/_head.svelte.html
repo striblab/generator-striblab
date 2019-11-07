@@ -37,7 +37,7 @@
       `;
   };
 
-  let structuredData = function ({ config, content }) {
+  let structuredData = ({ config, content }) => {
     return `
         <script type="application/ld+json">
           {
@@ -128,8 +128,8 @@
 {/if}
 
 <!-- Google structured data -->
-{@html structuredData }
+<!-- {@html structuredData } -->
 
 <!-- Google Analytics -->
-{@html googleAnalytics }
+<!-- {@html googleAnalytics } -->
 </svelte:head>
