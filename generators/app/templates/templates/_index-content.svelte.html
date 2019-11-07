@@ -1,3 +1,19 @@
+<script>
+  export let oncreate = () => {
+    // For content that lives in the CMS directly, we hack
+    // around the share bits by removing it before we load
+    // the component, then re-attach here.
+    //
+    // This looks like
+    // <div class="share-placeholder">
+    //   <!-- share -->
+    // </div>
+    if (this.get().attachShare) {
+      this.get().attachShare();
+    }
+  }
+</script>
+
 <% if (answers.projectType === 'cms') { %>
 <div class="<%= answers.stribStylesWrapper.replace(/\./g, ' ').trim() %>">
   <section class="container-lg">
@@ -40,21 +56,3 @@
   </div>
 </footer>
 <% } %>
-
-<script>
-  export default {
-    oncreate() {
-      // For content that lives in the CMS directly, we hack
-      // around the share bits by removing it before we load
-      // the component, then re-attach here.
-      //
-      // This looks like
-      // <div class="share-placeholder">
-      //   <!-- share -->
-      // </div>
-      if (this.get().attachShare) {
-        this.get().attachShare();
-      }
-    }
-  };
-</script>
