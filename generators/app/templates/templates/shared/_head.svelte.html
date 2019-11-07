@@ -6,7 +6,7 @@
   let id = $$props.id;
 
   export let googleAnalytics = ({ config }) => {
-    // Svelte ignores svelte syntax within a <script> tag
+
     return !config.googleAnalytics
       ? ""
       : `
@@ -38,7 +38,7 @@
   };
 
   export let structuredData = ({ config, content }) => {
-    // Svelte ignores svelte syntax within a <script> tag
+
     return `
         <script type="application/ld+json">
           {
