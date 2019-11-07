@@ -5,7 +5,7 @@
   let cms = $$props.cms;
   let id = $$props.id;
 
-  export let googleAnalytics = ({ config }) => {
+  let googleAnalytics = ({ config }) => {
 
     return !config.googleAnalytics
       ? ""
@@ -37,8 +37,7 @@
       `;
   };
 
-  export let structuredData = ({ config, content }) => {
-
+  let structuredData = function ({ config, content }) {
     return `
         <script type="application/ld+json">
           {
@@ -53,8 +52,8 @@
             "image": {
               "@type": "ImageObject",
               "url": "${config.publish.production.url}${
-      config.social ? config.social.image : ""
-    }"
+                config.social ? config.social.image : ""
+              }"
             },
             "author": {
               "@type": "Person",
