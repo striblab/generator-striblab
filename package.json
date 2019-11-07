@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/striblab/generator-striblab.git"
+    "url": "git+https://github.com/striblab/generator-striblab.git@svelte3"
   },
   "author": {
     "name": "Alan Palazzolo",
